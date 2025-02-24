@@ -8,6 +8,7 @@
 #include "Engine/Managers/Window.h"
 #include "Engine/Managers/SoundManager.h"
 #include "Engine/Managers/Globals.h"
+#include "Engine/Button.h"
 
 using namespace std;
 
@@ -35,7 +36,7 @@ int main(int argc, char** argv)
     SDL_Event event;
     bool shouldQuit = false;
 
-    SoundManager::GetInstance().PlayMusic(Config::BCG_MUSIC);
+    //SoundManager::GetInstance().PlayMusic(Config::BCG_MUSIC);
 
     while (!shouldQuit)
     {
@@ -49,9 +50,9 @@ int main(int argc, char** argv)
         }
 
         //Update Objects
-        window.Render();
 
-        //Render Frame
+        //Render Frame (DOnt forget to put render after window render)
+        window.Render();
         window.UpdateFrame();
     }
 

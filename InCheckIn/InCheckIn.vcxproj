@@ -133,7 +133,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Component.cpp" />
     <ClCompile Include="InCheckIn.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Engine\Button.h" />
+    <ClInclude Include="Engine\Component.h" />
+    <ClInclude Include="Engine\Image.h" />
+    <ClInclude Include="Engine\Layout\Column.h" />
+    <ClInclude Include="Engine\Layout\Layout.h" />
+    <ClInclude Include="Engine\Layout\Row.h" />
+    <ClInclude Include="Engine\Managers\Globals.h" />
+    <ClInclude Include="Engine\Managers\LoadUtils.h" />
+    <ClInclude Include="Engine\Managers\Random.h" />
+    <ClInclude Include="Engine\Managers\ResourceManager.h" />
+    <ClInclude Include="Engine\Managers\SoundManager.h" />
+    <ClInclude Include="Engine\Managers\Window.h" />
+    <ClInclude Include="Engine\Rectangle.h" />
+    <ClInclude Include="Engine\Text.h" />
+    <ClInclude Include="Engine\TextFactory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
