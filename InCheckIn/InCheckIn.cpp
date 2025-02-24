@@ -1,20 +1,62 @@
-// InCheckIn.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_ttf.h>
+#include <SDL_mixer.h>
 
-int main()
+#include "Engine/Component.h"
+#include "Engine/Managers/Window.h"
+#include "Engine/Managers/SoundManager.h"
+#include "Engine/Managers/Globals.h"
+
+using namespace std;
+
+int main(int argc, char** argv)
 {
-    std::cout << "Hello World!\n";
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+#ifdef SHOW_DEBUG_HELPERS
+    Utils::CheckSDLErrors("SDL_Init");
+#endif
+
+    IMG_Init(IMG_INIT_PNG);
+#ifdef SHOW_DEBUG_HELPERS
+    Utils::CheckSDLErrors("IMG_Init");
+#endif
+
+    TTF_Init();
+#ifdef SHOW_DEBUG_HELPERS
+    Utils::CheckSDLErrors("TTF_Init");
+#endif 
+
+    SoundManager::OpenAudio();
+
+    Engine::Window window;
+
+    SDL_Event event;
+    bool shouldQuit = false;
+
+    SoundManager::GetInstance().PlayMusic(Config::BCG_MUSIC);
+
+    while (!shouldQuit)
+    {
+        //Handle Input
+        while (SDL_PollEvent(&event))
+        {
+            if (event.type == SDL_QUIT)
+            {
+                shouldQuit = true;
+            }
+        }
+
+        //Update Objects
+        window.Render();
+
+        //Render Frame
+        window.UpdateFrame();
+    }
+
+    Mix_Quit();
+    IMG_Quit();
+    SDL_Quit();
+    return 0;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
