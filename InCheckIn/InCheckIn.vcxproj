@@ -133,12 +133,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Engine\Component.cpp" />
+    <ClCompile Include="Engine\GameObject.cpp" />
     <ClCompile Include="InCheckIn.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\Button.h" />
     <ClInclude Include="Engine\Component.h" />
+    <ClInclude Include="Engine\Button.h" />
+    <ClInclude Include="Engine\GameObject.h" />
     <ClInclude Include="Engine\Image.h" />
     <ClInclude Include="Engine\Layout\Column.h" />
     <ClInclude Include="Engine\Layout\Layout.h" />
@@ -152,6 +153,7 @@
     <ClInclude Include="Engine\Rectangle.h" />
     <ClInclude Include="Engine\Text.h" />
     <ClInclude Include="Engine\TextFactory.h" />
+    <ClInclude Include="Engine\UIFactory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

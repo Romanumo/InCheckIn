@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Managers/Globals.h"
+#include "Managers/LoadUtils.h"
 #include "TextFactory.h"
 #include "Component.h"
 
@@ -13,11 +14,11 @@ namespace Engine
 	class Text : public Component
 	{
 	public:
-		Text(int x, int y, int w, int h, const std::string& text, 
+		Text(GameObject* parent, const std::string& text, 
 			SDL_Color color = { 0, 0,0,255 }, int fontSize = 60) : 
-			Component{x, y, w, h}, textColor(color)
+			Component(parent), textColor(color)
 		{
-			textFactory = std::make_unique<DynamicTextFactory>();
+			textFactory = std::make_unique<DynamicTextSurface>();
 
 			const std::string& fontID = Config::FONT + std::to_string(fontSize);
 			auto loadFont = [fontSize]() -> std::shared_ptr<TTF_Font>
@@ -40,7 +41,7 @@ namespace Engine
 			UpdateTextPosition();
 		}
 
-		void SetTextRenderType(std::unique_ptr<ITextFactory> textFactory)
+		void SetTextRenderType(std::unique_ptr<ITextSurface> textFactory)
 		{
 			this->textFactory = std::move(textFactory);
 		}
@@ -52,13 +53,6 @@ namespace Engine
 
 		virtual void HandleEvent(const SDL_Event& event) override {}
 
-	protected:
-		void HandleChildPosition() override
-		{
-			Component::HandleChildPosition();
-			UpdateTextPosition();
-		}
-
 	private:
 		std::shared_ptr<SDL_Surface> textSurface = nullptr;
 		std::shared_ptr<TTF_Font> font = nullptr;
@@ -66,11 +60,11 @@ namespace Engine
 		SDL_Rect textPos{ 0,0,0,0 };
 		SDL_Color textColor{ 0,0,0,255 };
 
-		std::unique_ptr<ITextFactory> textFactory;
+		std::unique_ptr<ITextSurface> textFactory;
 
 		void UpdateTextPosition()
 		{
-			auto [x, y, w, h] = *GetAbsTf();
+			auto [x, y, w, h] = *parent->GetAbsTf();
 
 			//Horizontal Centering
 			const int widthDifference = w - textSurface->w;

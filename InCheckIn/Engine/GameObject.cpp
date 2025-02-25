@@ -2,10 +2,11 @@
 #include <SDL.h>
 #include <typeinfo>
 #include <string>
+#include "GameObject.h"
 #include "Component.h"
 using namespace Engine;
 
-Component::Component(int x, int y, int w, int h) :
+GameObject::GameObject(int x, int y, int w, int h) :
 	relTf{ x, y, w, h }, parent(nullptr)
 {
 	UpdateTransform();
@@ -13,7 +14,7 @@ Component::Component(int x, int y, int w, int h) :
 
 #pragma region Positioning
 
-void Component::SetRelPosition(int x, int y)
+void GameObject::SetRelPosition(int x, int y)
 {
 	relTf.x = x;
 	relTf.y = y;
@@ -21,7 +22,7 @@ void Component::SetRelPosition(int x, int y)
 	UpdateTransform();
 }
 
-void Component::SetRelSize(int w, int h)
+void GameObject::SetRelSize(int w, int h)
 {
 	relTf.w = w;
 	relTf.h = h;
@@ -29,13 +30,13 @@ void Component::SetRelSize(int w, int h)
 	UpdateTransform();
 }
 
-void Component::UpdateTransform()
+void GameObject::UpdateTransform()
 {
 	UpdateAbsTf();
 	HandleChildPosition();
 }
 
-void Component::UpdateAbsTf()
+void GameObject::UpdateAbsTf()
 {
 	absTf = relTf;
 
@@ -46,7 +47,7 @@ void Component::UpdateAbsTf()
 	}
 }
 
-void Component::HandleChildPosition()
+void GameObject::HandleChildPosition()
 {
 	if (children.size() < 1) return;
 
@@ -60,7 +61,7 @@ void Component::HandleChildPosition()
 
 #pragma region FamilyFunctions
 
-void Component::PrintFamilyTree(int spacing)
+void GameObject::PrintFamilyTree(int spacing)
 {
 	std::string offset(spacing, '-');
 	std::cout << offset << GetName() << std::endl;
@@ -73,7 +74,7 @@ void Component::PrintFamilyTree(int spacing)
 	}
 }
 
-bool Component::AdoptChild(Component* child)
+bool GameObject::AdoptChild(GameObject* child)
 {
 	if (child == nullptr)
 	{
@@ -89,22 +90,22 @@ bool Component::AdoptChild(Component* child)
 
 	if (child->GetParent() != nullptr)
 	{
-		std::cout << "Component already have a parent" << std::endl;
+		std::cout << "GameObject already have a parent" << std::endl;
 		return false;
 	}
 
 	if (child->IsMyChild(*this))
 	{
-		std::cout << "Components ancestor is his child" << std::endl;
+		std::cout << "GameObject ancestor is his child" << std::endl;
 		return false;
 	}
 
 	child->parent = this;
-	children.push_back(std::unique_ptr<Component>(child));
+	children.push_back(std::unique_ptr<GameObject>(child));
 	return true;
 }
 
-bool Component::IsMyChild(const Component& child) const
+bool GameObject::IsMyChild(const GameObject& child) const
 {
 	if (children.size() < 1) return false;
 
@@ -118,22 +119,44 @@ bool Component::IsMyChild(const Component& child) const
 	return false;
 }
 
-void Component::ReserveChildrenSize(int reserve) { children.reserve(reserve); }
+void GameObject::ReserveChildrenSize(int reserve) { children.reserve(reserve); }
 
 #pragma endregion
 
 #pragma region GettersSetters
 
-std::string Component::GetName() const { return typeid(*this).name(); }
-Component* Component::GetParent() const { return parent; }
-const std::vector<std::unique_ptr<Component>>& Component::GetChildren() const { return children; }
+std::string GameObject::GetName() const { return typeid(*this).name(); }
+GameObject* GameObject::GetParent() const { return parent; }
+const std::vector<std::unique_ptr<GameObject>>& GameObject::GetChildren() const { return children; }
 
-const SDL_Rect* Component::GetAbsTf() const { return &absTf; }
-SDL_Rect* Component::GetAbsTf() { return &absTf; }
+const SDL_Rect* GameObject::GetAbsTf() const { return &absTf; }
+SDL_Rect* GameObject::GetAbsTf() { return &absTf; }
 
 #pragma endregion
 
-bool Component::IsWithinBounds(int x, int y) const
+void GameObject::AddComponent(Component* component)
+{
+	//Add a check for no duplicates?
+	components.push_back(std::unique_ptr<Component>(component));
+}
+
+void GameObject::HandleEvent(const SDL_Event& event)
+{
+	for (auto& component : components)
+	{
+		component->HandleEvent(event);
+	}
+}
+
+void GameObject::Render(SDL_Surface* surface)
+{
+	for (auto& component : components)
+	{
+		component->Render(surface);
+	}
+}
+
+bool GameObject::IsWithinBounds(int x, int y) const
 {
 	if (x < absTf.x) return false;
 	if (y < absTf.y) return false;
