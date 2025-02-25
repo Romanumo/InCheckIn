@@ -10,6 +10,7 @@ namespace Engine
 {
 	class Component;
 
+	//TODO: Add GetComponent
 	class GameObject
 	{
 	public:
@@ -39,7 +40,6 @@ namespace Engine
 		virtual ~GameObject() = default;
 
 	protected:
-		virtual void HandleChildPosition();
 
 		void ReserveChildrenSize(int reserve);
 		bool IsMyChild(const GameObject& child) const;
@@ -54,5 +54,6 @@ namespace Engine
 
 		void UpdateAbsTf();
 		void UpdateTransform();
+		void HandleChildPosition();
 	};
 }

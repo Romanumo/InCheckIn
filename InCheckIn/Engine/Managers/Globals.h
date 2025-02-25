@@ -13,6 +13,8 @@ namespace Config
 
 	//Size and Positioning
 	inline constexpr int PADDING = 5;
+	inline constexpr int CARD_HEIGHT = 150;
+	inline constexpr int CARD_WIDTH = 100;
 
 	inline constexpr int WINDOW_HEIGHT = 600;
 	inline constexpr int WINDOW_WIDTH = 1200;
@@ -26,6 +28,7 @@ namespace Config
 	inline constexpr SDL_Color BUTTON_FAILURE_COLOR{ 235, 210, 210, 255 };
 
 	//Asset Paths
+	inline const std::string CARD_IMAGE_HEALER = "Assets/Healer.png";
 	inline const std::string FONT = "Assets/Rubik-SemiBold.ttf";
 
 	//Max Chilren

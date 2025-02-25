@@ -9,6 +9,7 @@
 #include "Engine/Managers/Globals.h"
 #include "Engine/GameObject.h"
 #include "Engine/UIFactory.h"
+#include "Card.h"
 
 using namespace std;
 
@@ -37,7 +38,13 @@ int main(int argc, char** argv)
     bool shouldQuit = false;
 
     //SoundManager::GetInstance().PlayMusic(Config::BCG_MUSIC);
-    Engine::GameObject* row = Engine::UIFactory::GetRow(100, 100, 50, 50);
+
+    std::vector<Engine::GameObject*> cards;
+    for (int i = 0;i < 5;i++)
+    {
+        cards.push_back(new Card(0,0));
+    }
+    Engine::GameObject* hand = Engine::UIFactory::GetRow(200, 300, cards);
 
     while (!shouldQuit)
     {
@@ -48,14 +55,14 @@ int main(int argc, char** argv)
             {
                 shouldQuit = true;
             }
-            row->HandleEvent(event);
+            hand->HandleEvent(event);
         }
 
         //Update Objects
 
         //Render Frame (DOnt forget to put render after window render)
         window.Render();
-        row->Render(window.GetSurface());
+        hand->Render(window.GetSurface());
         window.UpdateFrame();
     }
 

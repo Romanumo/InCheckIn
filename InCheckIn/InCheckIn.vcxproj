@@ -137,6 +137,7 @@
     <ClCompile Include="InCheckIn.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Card.h" />
     <ClInclude Include="Engine\Component.h" />
     <ClInclude Include="Engine\Button.h" />
     <ClInclude Include="Engine\GameObject.h" />

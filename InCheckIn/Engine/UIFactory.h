@@ -1,10 +1,14 @@
 #pragma once
 #include <SDL.h>
+#include <memory>
 
 #include "Layout/Row.h"
 #include "Layout/Column.h"
 
 #include "Button.h"
+#include "Image.h"
+#include "Text.h"
+#include "TextSurface.h"
 #include "Rectangle.h"
 #include "GameObject.h"
 #include "Component.h"
@@ -34,19 +38,22 @@ namespace Engine
 			return button;
 		}
 
-		static GameObject* GetRow(int x, int y, int w, int h)
+		static GameObject* GetButton(int x, int y, int w, int h, const std::string& text)
 		{
-			std::vector<GameObject*> children;
-			for (int i = 0;i < 5;i++)
-			{
-				children.push_back(GetButton(0, 0, w, h));
-			}
+			GameObject* button = GetButton(x, y, w, h);
+			Text* textComponent = new Text(button, text, {0, 0, 0, 255}, 14);
 
-			GameObject* rowObject = new GameObject(x, y, 0, 0);
-			Row* row = new Row(rowObject, Config::PADDING, 0, children);
+			button->AddComponent(textComponent);
+			return button;
+		}
 
-			rowObject->AddComponent(row);
-			return rowObject;
+		static GameObject* GetRow(int x, int y, std::vector<GameObject*> children)
+		{
+			GameObject* row = new GameObject(x, y, 0, 0);
+			Row* rowComponent = new Row(row, Config::PADDING, 0, children);
+
+			row->AddComponent(rowComponent);
+			return row;
 		}
 	};
 }
