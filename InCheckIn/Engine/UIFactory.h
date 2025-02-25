@@ -1,5 +1,9 @@
 #pragma once
 #include <SDL.h>
+
+#include "Layout/Row.h"
+#include "Layout/Column.h"
+
 #include "Button.h"
 #include "Rectangle.h"
 #include "GameObject.h"
@@ -28,6 +32,21 @@ namespace Engine
 			button->AddComponent(controller);
 			button->AddComponent(visual);
 			return button;
+		}
+
+		static GameObject* GetRow(int x, int y, int w, int h)
+		{
+			std::vector<GameObject*> children;
+			for (int i = 0;i < 5;i++)
+			{
+				children.push_back(GetButton(0, 0, w, h));
+			}
+
+			GameObject* rowObject = new GameObject(x, y, 0, 0);
+			Row* row = new Row(rowObject, Config::PADDING, 0, children);
+
+			rowObject->AddComponent(row);
+			return rowObject;
 		}
 	};
 }

@@ -21,7 +21,6 @@ namespace Engine
 		void SetRelSize(int w, int h);
 		void SetRelPosition(int x, int y);
 		bool IsWithinBounds(int x, int y) const;
-		void OnTransformChanged(std::function<void()> tranformChanged);
 
 		std::string GetName() const;
 		GameObject* GetParent() const; 
@@ -51,9 +50,7 @@ namespace Engine
 
 		GameObject* parent = nullptr;
 		std::vector<std::unique_ptr<GameObject>> children;
-
 		std::vector<std::unique_ptr<Component>> components;
-		std::function<void()> onTransformChanged;
 
 		void UpdateAbsTf();
 		void UpdateTransform();

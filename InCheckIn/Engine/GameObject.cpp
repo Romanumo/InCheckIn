@@ -34,12 +34,6 @@ void GameObject::UpdateTransform()
 {
 	UpdateAbsTf();
 	HandleChildPosition();
-	if(onTransformChanged) onTransformChanged();
-}
-
-void GameObject::OnTransformChanged(std::function<void()> tranformChanged)
-{
-	onTransformChanged = std::move(tranformChanged);
 }
 
 void GameObject::UpdateAbsTf()
@@ -57,9 +51,9 @@ void GameObject::HandleChildPosition()
 {
 	if (children.size() < 1) return;
 
-	for (const auto& component : children)
+	for (const auto& gameObject : children)
 	{
-		component->UpdateTransform();
+		gameObject->UpdateTransform();
 	}
 }
 
@@ -152,6 +146,13 @@ void GameObject::HandleEvent(const SDL_Event& event)
 	{
 		component->HandleEvent(event);
 	}
+
+	if (children.size() < 1) return;
+
+	for (const auto& gameObject : children)
+	{
+		gameObject->HandleEvent(event);
+	}
 }
 
 void GameObject::Render(SDL_Surface* surface)
@@ -159,6 +160,13 @@ void GameObject::Render(SDL_Surface* surface)
 	for (auto& component : components)
 	{
 		component->Render(surface);
+	}
+
+	if (children.size() < 1) return;
+
+	for (const auto& gameObject : children)
+	{
+		gameObject->Render(surface);
 	}
 }
 

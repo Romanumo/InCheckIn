@@ -25,22 +25,8 @@ namespace Engine
 			StretchContainer(objRect, myRect);
 		}
 
-		/*void Render(SDL_Surface* surface) override
-		{
-			for (const auto& component : GetChildren())
-			{
-				component->Render(surface);
-			}
-		}
-
-		void HandleEvent(const SDL_Event& event) override
-		{
-			for (const auto& component : GetChildren())
-			{
-				component->HandleEvent(event);
-			}
-		}*/
-
+		void Render(SDL_Surface* surface) override {}
+		void HandleEvent(const SDL_Event& event) override {}
 		virtual ~Layout() = default;
 
 	protected:
