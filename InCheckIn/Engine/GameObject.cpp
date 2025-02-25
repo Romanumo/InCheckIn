@@ -34,6 +34,12 @@ void GameObject::UpdateTransform()
 {
 	UpdateAbsTf();
 	HandleChildPosition();
+	if(onTransformChanged) onTransformChanged();
+}
+
+void GameObject::OnTransformChanged(std::function<void()> tranformChanged)
+{
+	onTransformChanged = std::move(tranformChanged);
 }
 
 void GameObject::UpdateAbsTf()

@@ -9,30 +9,23 @@ namespace Engine
 	class Column : public Layout
 	{
 	public:
-		Column(int padding, int margin, int x, int y, std::vector<Component*> components) :
-			Layout(padding, margin, x, y, components) 
+		Column(GameObject* parent, int padding, int margin, std::vector<GameObject*> children) :
+			Layout(parent, padding, margin, children)
 		{
-			InitLayout(components);
+			InitLayout(children);
 		}
-
-		Column(int padding, int margin, std::vector<Component*> components) :
-			Column(padding, margin, 0, 0, components) {
-		}
-
-		Column(std::vector<Component*> components) :
-			Column(Config::PADDING, 0, 0,0, components) {}
 
 	protected:
 		void HandleChildPosition() override
 		{
-			if (GetChildren().size() < 1) return;
+			if (parent->GetChildren().size() < 1) return;
 
 			int yLength = GetMargin();
 
-			for (const auto& component : GetChildren())
+			for (const auto& gameObject : parent->GetChildren())
 			{
-				component->SetRelPosition(GetMargin(), yLength);
-				yLength += component->GetAbsTf()->h + GetPadding();
+				gameObject->SetRelPosition(GetMargin(), yLength);
+				yLength += gameObject->GetAbsTf()->h + GetPadding();
 			}
 		}
 
@@ -48,7 +41,7 @@ namespace Engine
 				updatedW = objRect->w;
 			}
 
-			SetRelSize(updatedW, updatedH);
+			parent->SetRelSize(updatedW, updatedH);
 		}
 	};
 }
