@@ -4,7 +4,7 @@
 
 #include "Managers/Globals.h"
 #include "Managers/LoadUtils.h"
-#include "TextFactory.h"
+#include "TextSurface.h"
 #include "Component.h"
 
 //Maybe assign dynamic as defaut and make a separate function to change it

@@ -8,16 +8,39 @@
 
 namespace Engine
 {
+	class Event
+	{
+	public:
+		Event()
+		{
+			onInvoke.reserve(Config::MAX_OBSERVERS);
+		}
+
+		void AddEvent(std::function<void()> action)
+		{
+			onInvoke.push_back(std::move(action));
+		}
+
+		void Invoke()
+		{
+			if (onInvoke.size() < 1) return;
+
+			for (auto& function : onInvoke) function();
+		}
+
+	private:
+		std::vector<std::function<void()>> onInvoke;
+	};
+
 	class Button : public Component
 	{
 	public:
-		Button(GameObject* parent) :
-			Component(parent){
-		}
+		Button(GameObject* parent) : Component(parent){}
 
-		void AddOnLeftClick(std::function<void()> leftClick) { onLeftClick.push_back(std::move(leftClick)); }
-		void AddOnRightClick(std::function<void()> rightClick) { onRightClick.push_back(std::move(rightClick)); }
-		void AddOnHover(std::function<void(bool)> hover) { onHover.push_back(std::move(hover)); }
+		void AddOnLeftClick(std::function<void()> leftClick) { onLeftClick.AddEvent(leftClick); }
+		void AddOnRightClick(std::function<void()> rightClick) { onRightClick.AddEvent(rightClick); }
+		void AddOnHoverEnter(std::function<void()> hoverEnter) { onHoverEnter.AddEvent(hoverEnter); }
+		void AddOnHoverExit(std::function<void()> hoverExit) { onHoverExit.AddEvent(hoverExit); }
 		void SetEnabled(bool state) { isEnabled = state; }
 
 		virtual void HandleEvent(const SDL_Event& event) override
@@ -33,7 +56,7 @@ namespace Engine
 				if (parent->IsWithinBounds(event.button.x, event.button.y))
 				{
 					event.button.button == SDL_BUTTON_LEFT ? 
-						HandleLeftClick() : HandleRightClick();
+						onLeftClick.Invoke() : onRightClick.Invoke();
 				}
 			}
 		}
@@ -43,40 +66,25 @@ namespace Engine
 	protected:
 		void HandleMouseMotion(const SDL_MouseMotionEvent& event)
 		{
-			isHovered = parent->IsWithinBounds(event.x, event.y);
-
-			HandleHover();
+			if (parent->IsWithinBounds(event.x, event.y))
+			{
+				if (!isHovered) onHoverEnter.Invoke();
+				isHovered = true;
+			}
+			else
+			{
+				if (isHovered) onHoverExit.Invoke();
+				isHovered = false;
+			}
 		}
 
 	private:
 		bool isEnabled = true;
-		bool isHovered = true;
+		bool isHovered = false;
 
-		std::vector<std::function<void()>> onLeftClick;
-		std::vector<std::function<void()>> onRightClick;
-		std::vector<std::function<void(bool)>> onHover;
-
-		void HandleLeftClick()
-		{
-			if (onLeftClick.size() < 1) return;
-
-			for (auto& function : onLeftClick) function();
-			//SoundManager::GetInstance().PlaySFX();
-		}
-
-		void HandleRightClick()
-		{
-			if (onRightClick.size() < 1) return;
-
-			for (auto& function : onRightClick) function();
-			//SoundManager::GetInstance().PlaySFX();
-		}
-
-		void HandleHover()
-		{
-			if (onHover.size() < 1) return;
-
-			for (auto& function : onHover) function(isHovered);
-		}
+		Event onLeftClick = Event();
+		Event onRightClick = Event();
+		Event onHoverEnter = Event();
+		Event onHoverExit = Event();
 	};
 }

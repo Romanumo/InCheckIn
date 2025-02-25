@@ -152,7 +152,7 @@
     <ClInclude Include="Engine\Managers\Window.h" />
     <ClInclude Include="Engine\Rectangle.h" />
     <ClInclude Include="Engine\Text.h" />
-    <ClInclude Include="Engine\TextFactory.h" />
+    <ClInclude Include="Engine\TextSurface.h" />
     <ClInclude Include="Engine\UIFactory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -15,16 +15,14 @@ namespace Engine
 			GameObject* button = new GameObject(x, y, w, h);
 			Button* controller = new Button(button);
 			Rectangle* visual = new Rectangle(button);
+			visual->SetColor(Config::BUTTON_COLOR);
 
-			controller->AddOnHover([visual](bool isHovered) {
-				if (isHovered)
-				{
-					visual->SetColor(Config::BUTTON_HOVER_COLOR);
-				}
-				else
-				{
-					visual->SetColor(Config::BUTTON_COLOR);
-				}
+			controller->AddOnHoverEnter([visual] {
+				visual->SetColor(Config::BUTTON_HOVER_COLOR);
+				});
+
+			controller->AddOnHoverExit([visual] {
+				visual->SetColor(Config::BUTTON_COLOR);
 				});
 
 			button->AddComponent(controller);
