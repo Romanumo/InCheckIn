@@ -8,15 +8,15 @@
 
 namespace Engine
 {
-	class ITextFactory
+	class ITextSurface
 	{
 	public:
-		virtual ~ITextFactory() = default;
+		virtual ~ITextSurface() = default;
 		virtual std::shared_ptr<SDL_Surface> GetSurface(
 			const std::string& text, TTF_Font* font, SDL_Color color) = 0;
 	};
 
-	class DynamicTextFactory : public ITextFactory
+	class DynamicTextSurface : public ITextSurface
 	{
 	public:
 		std::shared_ptr<SDL_Surface> GetSurface(
@@ -26,7 +26,7 @@ namespace Engine
 		}
 	};
 
-	class CachedTextFactory : public ITextFactory
+	class CachedTextSurface : public ITextSurface
 	{
 	public:
 		std::shared_ptr<SDL_Surface> GetSurface(

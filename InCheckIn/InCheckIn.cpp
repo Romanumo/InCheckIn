@@ -4,11 +4,11 @@
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
 
-#include "Engine/Component.h"
 #include "Engine/Managers/Window.h"
 #include "Engine/Managers/SoundManager.h"
 #include "Engine/Managers/Globals.h"
-#include "Engine/Button.h"
+#include "Engine/GameObject.h"
+#include "Engine/UIFactory.h"
 
 using namespace std;
 
@@ -37,6 +37,7 @@ int main(int argc, char** argv)
     bool shouldQuit = false;
 
     //SoundManager::GetInstance().PlayMusic(Config::BCG_MUSIC);
+    Engine::GameObject* row = Engine::UIFactory::GetRow(100, 100, 50, 50);
 
     while (!shouldQuit)
     {
@@ -47,12 +48,14 @@ int main(int argc, char** argv)
             {
                 shouldQuit = true;
             }
+            row->HandleEvent(event);
         }
 
         //Update Objects
 
         //Render Frame (DOnt forget to put render after window render)
         window.Render();
+        row->Render(window.GetSurface());
         window.UpdateFrame();
     }
 

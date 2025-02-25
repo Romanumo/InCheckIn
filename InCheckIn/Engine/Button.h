@@ -3,22 +3,44 @@
 #include <functional>
 #include "Managers/SoundManager.h"
 #include "Managers/Globals.h"
-#include "Rectangle.h"
+#include "Component.h"
+#include "GameObject.h"
 
 namespace Engine
 {
-	class Button : public Rectangle
+	class Event
 	{
 	public:
-		using Callback = std::function<void()>;
-
-		Button(int x, int y, int w, int h) :
-			Rectangle(x, y, w, h, Config::BUTTON_COLOR){
+		Event()
+		{
+			onInvoke.reserve(Config::MAX_OBSERVERS);
 		}
 
-		void SetOnLeftClick(Callback leftClick) { onLeftClick = std::move(leftClick); }
-		void SetOnRightClick(Callback rightClick) { onRightClick = std::move(rightClick); }
-		void SetOnHover(Callback hover) { onHover = std::move(hover); }
+		void AddEvent(std::function<void()> action)
+		{
+			onInvoke.push_back(std::move(action));
+		}
+
+		void Invoke()
+		{
+			if (onInvoke.size() < 1) return;
+
+			for (auto& function : onInvoke) function();
+		}
+
+	private:
+		std::vector<std::function<void()>> onInvoke;
+	};
+
+	class Button : public Component
+	{
+	public:
+		Button(GameObject* parent) : Component(parent){}
+
+		void AddOnLeftClick(std::function<void()> leftClick) { onLeftClick.AddEvent(leftClick); }
+		void AddOnRightClick(std::function<void()> rightClick) { onRightClick.AddEvent(rightClick); }
+		void AddOnHoverEnter(std::function<void()> hoverEnter) { onHoverEnter.AddEvent(hoverEnter); }
+		void AddOnHoverExit(std::function<void()> hoverExit) { onHoverExit.AddEvent(hoverExit); }
 		void SetEnabled(bool state) { isEnabled = state; }
 
 		virtual void HandleEvent(const SDL_Event& event) override
@@ -31,48 +53,38 @@ namespace Engine
 			}
 			else if (event.type == SDL_MOUSEBUTTONDOWN)
 			{
-				if (IsWithinBounds(event.button.x, event.button.y))
+				if (parent->IsWithinBounds(event.button.x, event.button.y))
 				{
 					event.button.button == SDL_BUTTON_LEFT ? 
-						HandleLeftClick() : HandleRightClick();
+						onLeftClick.Invoke() : onRightClick.Invoke();
 				}
 			}
 		}
 
+		void Render(SDL_Surface* surface) override {}
+
 	protected:
-		void HandleLeftClick() 
-		{
-			if (onLeftClick) onLeftClick();
-			//SoundManager::GetInstance().PlaySFX();
-		}
-
-		void HandleRightClick() 
-		{
-			if (onRightClick) onRightClick();
-			//SoundManager::GetInstance().PlaySFX();
-		}
-
 		void HandleMouseMotion(const SDL_MouseMotionEvent& event)
 		{
-			if (IsWithinBounds(event.x, event.y))
+			if (parent->IsWithinBounds(event.x, event.y))
 			{
-				SetColor(Config::BUTTON_HOVER_COLOR);
-				if(onHover && !isHovered) onHover();
+				if (!isHovered) onHoverEnter.Invoke();
 				isHovered = true;
 			}
 			else
 			{
-				SetColor(Config::BUTTON_COLOR);
+				if (isHovered) onHoverExit.Invoke();
 				isHovered = false;
 			}
 		}
 
 	private:
 		bool isEnabled = true;
-		bool isHovered = true;
+		bool isHovered = false;
 
-		Callback onLeftClick = nullptr;
-		Callback onRightClick = nullptr;
-		Callback onHover = nullptr;
+		Event onLeftClick = Event();
+		Event onRightClick = Event();
+		Event onHoverEnter = Event();
+		Event onHoverExit = Event();
 	};
 }

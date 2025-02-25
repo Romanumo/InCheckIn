@@ -5,7 +5,6 @@
 #include "Managers/ResourceManager.h"
 #include "Managers/LoadUtils.h"
 #include "Managers/Globals.h"
-
 #include "Component.h"
 
 namespace Engine
@@ -13,18 +12,17 @@ namespace Engine
 	class Image : public Component
 	{
 	public:
-		Image(int x, int y, int w, int h,
-			const std::string& file) :
-			Component{ x, y, w, h }
+		Image(GameObject* parent, const std::string file) : 
+			Component(parent)
 		{
 			SetImage(file);
 		}
 
-		virtual void HandleEvent(const SDL_Event& event) override {}
+		void HandleEvent(const SDL_Event& event) override {}
 
 		void Render(SDL_Surface* destSurface) override
 		{
-			SDL_BlitScaled(imageSurface.get(), nullptr, destSurface, GetAbsTf());
+			SDL_BlitScaled(imageSurface.get(), nullptr, destSurface, parent->GetAbsTf());
 		}
 
 		void SetImage(const std::string& filePath)

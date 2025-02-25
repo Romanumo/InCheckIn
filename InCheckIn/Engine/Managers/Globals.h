@@ -28,8 +28,9 @@ namespace Config
 	//Asset Paths
 	inline const std::string FONT = "Assets/Rubik-SemiBold.ttf";
 
-	//Layout
+	//Max Chilren
 	inline const int MAX_CHILDREN = 20;
+	inline const int MAX_OBSERVERS = 5;
 }
 
 namespace Utils

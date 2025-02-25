@@ -9,19 +9,17 @@ namespace Engine
 	class Rectangle : public Component
 	{
 	public:
-		Rectangle(int x, int y, int w, int h,
-			SDL_Color color = { 0,0,0, 255 }) :
-			Component{ x, y, w, h }, color(color) {
-		}
+		Rectangle(GameObject* parent, SDL_Color color = { 0,0,0, 255 }) :
+			Component(parent), color(color) {}
 
-		virtual void Render(SDL_Surface* surface) override
+		void Render(SDL_Surface* surface) override
 		{
-			SDL_FillRect(surface, GetAbsTf(), SDL_MapRGB(
+			SDL_FillRect(surface, parent->GetAbsTf(), SDL_MapRGB(
 				surface->format,
 				color.r, color.g, color.b));
 		}
 
-		virtual void HandleEvent(const SDL_Event& event) override {}
+		void HandleEvent(const SDL_Event& event) override {}
 
 		void SetColor(SDL_Color col) { color = col; }
 

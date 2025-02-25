@@ -18,7 +18,7 @@
     <ClCompile Include="InCheckIn.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component.cpp">
+    <ClCompile Include="Engine\GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -26,7 +26,7 @@
     <ClInclude Include="Engine\Button.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Component.h">
+    <ClInclude Include="Engine\GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Image.h">
@@ -38,7 +38,7 @@
     <ClInclude Include="Engine\Text.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\TextFactory.h">
+    <ClInclude Include="Engine\TextSurface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Layout\Column.h">
@@ -66,6 +66,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Managers\Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\UIFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
