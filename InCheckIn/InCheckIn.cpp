@@ -9,10 +9,17 @@
 #include "Engine/Managers/Globals.h"
 #include "Engine/GameObject.h"
 #include "Engine/UIFactory.h"
-#include "Card.h"
+
+#include "Table.h"
 
 using namespace std;
 
+
+//TODO:
+//Clean code a bit
+//Refine Row Center align
+//Globals might need a table width and height
+//Add center align for column
 int main(int argc, char** argv)
 {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
@@ -39,12 +46,7 @@ int main(int argc, char** argv)
 
     //SoundManager::GetInstance().PlayMusic(Config::BCG_MUSIC);
 
-    std::vector<Engine::GameObject*> cards;
-    for (int i = 0;i < 5;i++)
-    {
-        cards.push_back(new Card(0,0));
-    }
-    Engine::GameObject* hand = Engine::UIFactory::GetRow(200, 300, cards);
+    Table* table = new Table();
 
     while (!shouldQuit)
     {
@@ -55,14 +57,14 @@ int main(int argc, char** argv)
             {
                 shouldQuit = true;
             }
-            hand->HandleEvent(event);
+            table->HandleEvent(event);
         }
 
         //Update Objects
 
         //Render Frame (DOnt forget to put render after window render)
         window.Render();
-        hand->Render(window.GetSurface());
+        table->Render(window.GetSurface());
         window.UpdateFrame();
     }
 

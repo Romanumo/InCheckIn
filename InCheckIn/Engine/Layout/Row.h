@@ -15,6 +15,26 @@ namespace Engine
 			InitLayout(children);
 		}
 
+		void AlignOnCenter() override
+		{
+			if (parent->GetChildren().size() < 1) return;
+
+			int xLength = 0;
+			for (const auto& gameObject : parent->GetChildren())
+			{
+				xLength += gameObject->GetAbsTf()->w + GetPadding();
+			}
+
+			int offset = parent->GetAbsTf()->w - xLength - GetPadding();
+			offset /= 2;
+			xLength = 0;
+			for (const auto& gameObject : parent->GetChildren())
+			{
+				gameObject->SetRelPosition(offset + xLength, GetMargin());
+				xLength += gameObject->GetAbsTf()->w + GetPadding();
+			}
+		}
+
 	protected:
 		void HandleChildPosition() override
 		{
@@ -32,8 +52,8 @@ namespace Engine
 		void StretchContainer(const SDL_Rect* objRect, 
 							const SDL_Rect* myRect) override
 		{
-			int updatedW = 0;
-			int updatedH = 0;
+			int updatedW = myRect->w;
+			int updatedH = myRect->h;
 
 			updatedW = objRect->w + myRect->w + GetPadding();
 			if (objRect->h > myRect->h)

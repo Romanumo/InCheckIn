@@ -48,6 +48,25 @@ namespace LoadUtils
 
 			return nullptr;
 		}
+
+		SDL_PixelFormatEnum targetFormat = SDL_PIXELFORMAT_RGBA32;
+
+		if (rawSurface->format->palette != nullptr || rawSurface->format->format != targetFormat)
+		{
+			std::cout << "[INFO] Converting " << filePath << " to RGBA 32-bit format." << std::endl;
+
+			SDL_Surface* convertedSurface = SDL_ConvertSurfaceFormat(rawSurface, targetFormat, 0);
+			SDL_FreeSurface(rawSurface);
+
+			if (!convertedSurface)
+			{
+				std::cout << "[ERROR] Conversion failed for " << filePath << std::endl;
+				return nullptr;
+			}
+
+			rawSurface = convertedSurface;
+		}
+
 		return std::shared_ptr<SDL_Surface>(rawSurface, SDL_FreeSurface);
 	}
 }

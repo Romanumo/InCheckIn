@@ -134,6 +134,7 @@ SDL_Rect* GameObject::GetAbsTf() { return &absTf; }
 
 #pragma endregion
 
+//Rework with template. Remove explicit Component creation
 void GameObject::AddComponent(Component* component)
 {
 	//Add a check for no duplicates?

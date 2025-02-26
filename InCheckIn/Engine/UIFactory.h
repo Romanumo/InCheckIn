@@ -47,13 +47,30 @@ namespace Engine
 			return button;
 		}
 
+		static void GetRowComponent(GameObject* host, std::vector<GameObject*> children)
+		{
+			Row* rowComponent = new Row(host, Config::PADDING, 0, children);
+			host->AddComponent(rowComponent);
+		}
+
+		static void GetColumnComponent(GameObject* host, std::vector<GameObject*> children)
+		{
+			Column* columnComponent = new Column(host, Config::PADDING, 0, children);
+			host->AddComponent(columnComponent);
+		}
+
 		static GameObject* GetRow(int x, int y, std::vector<GameObject*> children)
 		{
 			GameObject* row = new GameObject(x, y, 0, 0);
-			Row* rowComponent = new Row(row, Config::PADDING, 0, children);
-
-			row->AddComponent(rowComponent);
+			GetRowComponent(row, children);
 			return row;
+		}
+
+		static GameObject* GetColumn(int x, int y, std::vector<GameObject*> children)
+		{
+			GameObject* column = new GameObject(x, y, 0, 0);
+			GetColumnComponent(column, children);
+			return column;
 		}
 	};
 }
