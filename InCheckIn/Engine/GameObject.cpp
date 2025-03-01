@@ -131,6 +131,7 @@ const std::vector<std::unique_ptr<GameObject>>& GameObject::GetChildren() const 
 
 const SDL_Rect* GameObject::GetAbsTf() const { return &absTf; }
 SDL_Rect* GameObject::GetAbsTf() { return &absTf; }
+const SDL_Rect* GameObject::GetRelTf() const { return &relTf; }
 
 #pragma endregion
 

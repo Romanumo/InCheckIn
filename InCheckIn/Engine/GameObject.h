@@ -17,6 +17,7 @@ namespace Engine
 
 		SDL_Rect* GetAbsTf();
 		const SDL_Rect* GetAbsTf() const;
+		const SDL_Rect* GetRelTf() const;
 
 		void SetRelSize(int w, int h);
 		void SetRelPosition(int x, int y);
