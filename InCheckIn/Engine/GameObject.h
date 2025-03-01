@@ -30,6 +30,7 @@ namespace Engine
 		void PrintFamilyTree(int spacing = 0);
 
 		void AddComponent(Component* component);
+		template<typename T> T* GetComponent();
 
 		void HandleEvent(const SDL_Event& event);
 		void Render(SDL_Surface* surface);
@@ -39,7 +40,6 @@ namespace Engine
 		virtual ~GameObject() = default;
 
 	protected:
-		virtual void HandleChildPosition();
 
 		void ReserveChildrenSize(int reserve);
 		bool IsMyChild(const GameObject& child) const;
@@ -54,5 +54,6 @@ namespace Engine
 
 		void UpdateAbsTf();
 		void UpdateTransform();
+		void HandleChildPosition();
 	};
 }

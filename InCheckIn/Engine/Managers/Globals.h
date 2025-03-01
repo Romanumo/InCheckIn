@@ -1,5 +1,5 @@
 #pragma once
-//#define SHOW_DEBUG_HELPERS
+#define SHOW_DEBUG_HELPERS
 
 #include<iostream>
 #include<SDL.h>
@@ -13,9 +13,15 @@ namespace Config
 
 	//Size and Positioning
 	inline constexpr int PADDING = 5;
+	inline constexpr int CARD_HEIGHT = 150;
+	inline constexpr int CARD_WIDTH = 100;
+	inline constexpr int SIDE_MAX_CARDS = 6;
 
-	inline constexpr int WINDOW_HEIGHT = 600;
-	inline constexpr int WINDOW_WIDTH = 1200;
+	inline constexpr int TABLE_WIDTH = (CARD_WIDTH + PADDING) * SIDE_MAX_CARDS + PADDING;
+	inline constexpr int TABLE_HEIGHT = (CARD_HEIGHT + PADDING) * 3 + PADDING;
+
+	inline constexpr int WINDOW_HEIGHT = TABLE_HEIGHT;
+	inline constexpr int WINDOW_WIDTH = TABLE_WIDTH;
 
 	//Colors
 	inline constexpr SDL_Color BACKGROUND_COLOR{ 170, 170, 170, 255 };
@@ -26,6 +32,9 @@ namespace Config
 	inline constexpr SDL_Color BUTTON_FAILURE_COLOR{ 235, 210, 210, 255 };
 
 	//Asset Paths
+	inline const std::string PLACEHOLDER_IMAGE = "Assets/Placeholder.png";
+	inline const std::string CARD_IMAGE_HEALER = "Assets/Healer.png";
+	inline const std::string DESK_IMAGE = "Assets/TableSide.png";
 	inline const std::string FONT = "Assets/Rubik-SemiBold.ttf";
 
 	//Max Chilren
@@ -41,7 +50,7 @@ namespace Utils
 		const char* error = SDL_GetError();
 		if (*error != '\0')
 		{
-			std::cerr << msg << "Error: " << error << '\n';
+			std::cerr << msg << "[ERROR]: " << error << '\n';
 			SDL_ClearError();
 		}
 	}

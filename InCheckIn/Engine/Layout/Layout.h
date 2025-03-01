@@ -15,6 +15,8 @@ namespace Engine
 			parent->SetRelSize(margin * 2, margin * 2);
 		}
 
+		virtual void AlignOnCenter() {}
+
 		void AddComponent(GameObject& child)
 		{
 			if (!parent->AdoptChild(&child)) return;

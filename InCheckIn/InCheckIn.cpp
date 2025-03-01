@@ -10,6 +10,7 @@
 #include "Engine/GameObject.h"
 #include "Engine/UIFactory.h"
 
+#include "Table.h"
 using namespace std;
 
 int main(int argc, char** argv)
@@ -37,7 +38,8 @@ int main(int argc, char** argv)
     bool shouldQuit = false;
 
     //SoundManager::GetInstance().PlayMusic(Config::BCG_MUSIC);
-    Engine::GameObject* row = Engine::UIFactory::GetRow(100, 100, 50, 50);
+
+    Table* table = new Table();
 
     while (!shouldQuit)
     {
@@ -48,14 +50,14 @@ int main(int argc, char** argv)
             {
                 shouldQuit = true;
             }
-            row->HandleEvent(event);
+            table->HandleEvent(event);
         }
 
         //Update Objects
 
         //Render Frame (DOnt forget to put render after window render)
         window.Render();
-        row->Render(window.GetSurface());
+        table->Render(window.GetSurface());
         window.UpdateFrame();
     }
 
