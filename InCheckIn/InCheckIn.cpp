@@ -14,12 +14,8 @@
 
 using namespace std;
 
-
-//TODO:
-//Clean code a bit
-//Refine Row Center align
-//Globals might need a table width and height
-//Add center align for column
+//TODO: Improve GameObject Adding component
+// Add GetComponent and AddCOmponent as template
 int main(int argc, char** argv)
 {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);

@@ -10,8 +10,8 @@ public:
     TableSide() : Engine::GameObject(0, 0, 0, 0)
     {
         using namespace Engine;
-        //Image* sideImage = new Image(this, Config::DESK_IMAGE);
-        //this->AddComponent(sideImage);
+        Image* sideImage = new Image(this, Config::DESK_IMAGE);
+        this->AddComponent(sideImage);
 
         std::vector<GameObject*> cardsPlaceholder;
         for (int i = 0;i < Config::SIDE_MAX_CARDS;i++)

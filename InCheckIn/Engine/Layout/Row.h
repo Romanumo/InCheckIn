@@ -17,21 +17,20 @@ namespace Engine
 
 		void AlignOnCenter() override
 		{
-			if (parent->GetChildren().size() < 1) return;
+			const auto& children = parent->GetChildren();
+			if (children.empty()) return;
 
-			int xLength = 0;
-			for (const auto& gameObject : parent->GetChildren())
+			int totalWidth = -GetPadding();
+			for (const auto& gameObject : children)
 			{
-				xLength += gameObject->GetAbsTf()->w + GetPadding();
+				totalWidth += gameObject->GetAbsTf()->w + GetPadding();
 			}
 
-			int offset = parent->GetAbsTf()->w - xLength - GetPadding();
-			offset /= 2;
-			xLength = 0;
-			for (const auto& gameObject : parent->GetChildren())
+			int offset = (parent->GetAbsTf()->w - totalWidth)/2;
+			for (const auto& gameObject : children)
 			{
-				gameObject->SetRelPosition(offset + xLength, GetMargin());
-				xLength += gameObject->GetAbsTf()->w + GetPadding();
+				gameObject->SetRelPosition(offset, GetMargin());
+				offset += gameObject->GetAbsTf()->w + GetPadding();
 			}
 		}
 
@@ -55,7 +54,7 @@ namespace Engine
 			int updatedW = myRect->w;
 			int updatedH = myRect->h;
 
-			updatedW = objRect->w + myRect->w + GetPadding();
+			updatedW += GetPadding() + objRect->w;
 			if (objRect->h > myRect->h)
 			{
 				updatedH = objRect->h;

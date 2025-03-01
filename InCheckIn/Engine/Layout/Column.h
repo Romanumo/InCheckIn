@@ -15,7 +15,24 @@ namespace Engine
 			InitLayout(children);
 		}
 
-		void AlignOnCenter() override {}
+		void AlignOnCenter() override
+		{
+			const auto& children = parent->GetChildren();
+			if (children.empty()) return;
+
+			int totalHeight = -GetPadding();
+			for (const auto& gameObject : children)
+			{
+				totalHeight += gameObject->GetAbsTf()->h + GetPadding();
+			}
+
+			int offset = (parent->GetAbsTf()->h - totalHeight) / 2;
+			for (const auto& gameObject : children)
+			{
+				gameObject->SetRelPosition(GetMargin(), offset);
+				offset += gameObject->GetAbsTf()->h + GetPadding();
+			}
+		}
 
 	protected:
 		void HandleChildPosition() override
@@ -37,7 +54,7 @@ namespace Engine
 			int updatedW = myRect->w;
 			int updatedH = myRect->h;
 
-			updatedH = objRect->h + myRect->h + GetPadding();
+			updatedH += objRect->h + GetPadding();
 			if (objRect->w > myRect->w)
 			{
 				updatedW = objRect->w;

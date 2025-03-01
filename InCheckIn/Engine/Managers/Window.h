@@ -15,6 +15,7 @@ namespace Engine
 				SDL_WINDOWPOS_UNDEFINED, 
 				Config::WINDOW_WIDTH, 
 				Config::WINDOW_HEIGHT, 0);
+			//SDL_SetWindowFullscreen(SDLWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
 		}
 
 		void Render()
