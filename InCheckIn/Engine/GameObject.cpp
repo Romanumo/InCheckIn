@@ -134,11 +134,33 @@ SDL_Rect* GameObject::GetAbsTf() { return &absTf; }
 
 #pragma endregion
 
-//Rework with template. Remove explicit Component creation
 void GameObject::AddComponent(Component* component)
 {
-	//Add a check for no duplicates?
+	for (const auto& comp : components)
+	{
+		if (typeid(*component) == typeid(*comp))
+		{
+			std::cout << "GameObject cant have duplicates of the same component type" << std::endl;
+			return;
+		}
+	}
+
 	components.push_back(std::unique_ptr<Component>(component));
+}
+
+template<typename T>
+T* GameObject::GetComponent()
+{
+	static_assert(std::is_base_of<Component, T>::value, "T must derive from Component");
+
+	for (const auto& comp : components)
+	{
+		T* derived = dynamic_cast<T*>(comp);
+		if (derived) return derived;
+	}
+
+	std::cout << "GameObject tried to get non included component" << std::endl;
+	return nullptr;
 }
 
 void GameObject::HandleEvent(const SDL_Event& event)
@@ -180,3 +202,23 @@ bool GameObject::IsWithinBounds(int x, int y) const
 
 	return true;
 }
+
+//POssess a Link bug
+/*template<typename T>
+void GameObject::RemoveComponent()
+{
+	static_assert(std::is_base_of<Component, T>::value, "T must derive from Component");
+
+	for (int i = 0;i < components.size();i++)
+	{
+		T* derived = dynamic_cast<T*>(components[i].get());
+		if (derived)
+		{
+			std::cout << typeid(*components.at(i)).name() << std::endl;
+			components.erase(components.begin() + i);
+			return;
+		}
+	}
+
+	std::cout << "GameObject tried to remove non included component" << std::endl;
+}*/

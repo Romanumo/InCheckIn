@@ -11,11 +11,8 @@
 #include "Engine/UIFactory.h"
 
 #include "Table.h"
-
 using namespace std;
 
-//TODO: Improve GameObject Adding component
-// Add GetComponent and AddCOmponent as template
 int main(int argc, char** argv)
 {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);

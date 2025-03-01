@@ -10,7 +10,6 @@ namespace Engine
 {
 	class Component;
 
-	//TODO: Add GetComponent
 	class GameObject
 	{
 	public:
@@ -31,6 +30,7 @@ namespace Engine
 		void PrintFamilyTree(int spacing = 0);
 
 		void AddComponent(Component* component);
+		template<typename T> T* GetComponent();
 
 		void HandleEvent(const SDL_Event& event);
 		void Render(SDL_Surface* surface);
