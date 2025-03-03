@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <typeinfo>
 #include <string>
+#include <algorithm> 
 #include "GameObject.h"
 #include "Component.h"
 using namespace Engine;
@@ -74,7 +75,60 @@ void GameObject::PrintFamilyTree(int spacing)
 	}
 }
 
-bool GameObject::AdoptChild(GameObject* child)
+bool GameObject::AdoptChild(std::unique_ptr<GameObject> child)
+{
+	if (!CheckChildInheritance(child.get())) return false;
+
+	child->parent = this;
+	children.push_back(std::move(child));
+	return true;
+}
+
+std::unique_ptr<GameObject> GameObject::TransferChild(GameObject* child)
+{
+	auto it = std::find_if(children.begin(), children.end(), 
+		[child](const std::unique_ptr<GameObject>& p) {
+		return p.get() == child;
+		});
+
+	if (it != children.end()) 
+	{
+		child->parent = nullptr;
+		std::unique_ptr<GameObject> result = std::move(*it);
+		children.erase(it);
+		return result;
+	}
+
+	std::cout << "Child hasnt been found" << std::endl;
+	return nullptr;
+}
+
+void GameObject::RemoveChild(GameObject* child)
+{
+	auto it = std::find_if(children.begin(), children.end(),
+		[child](const std::unique_ptr<GameObject>& p) {
+			return p.get() == child;
+		});
+
+	child->parent = nullptr;
+	children.erase(it);
+}
+
+bool GameObject::IsMyChild(const GameObject& child) const
+{
+	if (children.size() < 1) return false;
+
+	for (const auto& component : children)
+	{
+		if (component.get() == &child) return true;
+
+		if (component->IsMyChild(child)) return true;
+	}
+
+	return false;
+}
+
+bool GameObject::CheckChildInheritance(const GameObject* child)
 {
 	if (child == nullptr)
 	{
@@ -100,23 +154,7 @@ bool GameObject::AdoptChild(GameObject* child)
 		return false;
 	}
 
-	child->parent = this;
-	children.push_back(std::unique_ptr<GameObject>(child));
 	return true;
-}
-
-bool GameObject::IsMyChild(const GameObject& child) const
-{
-	if (children.size() < 1) return false;
-
-	for (const auto& component : children)
-	{
-		if (component.get() == &child) return true;
-
-		if (component->IsMyChild(child)) return true;
-	}
-
-	return false;
 }
 
 void GameObject::ReserveChildrenSize(int reserve) { children.reserve(reserve); }
@@ -131,6 +169,7 @@ const std::vector<std::unique_ptr<GameObject>>& GameObject::GetChildren() const 
 
 const SDL_Rect* GameObject::GetAbsTf() const { return &absTf; }
 SDL_Rect* GameObject::GetAbsTf() { return &absTf; }
+const SDL_Rect* GameObject::GetRelTf() const { return &relTf; }
 
 #pragma endregion
 
@@ -146,21 +185,6 @@ void GameObject::AddComponent(Component* component)
 	}
 
 	components.push_back(std::unique_ptr<Component>(component));
-}
-
-template<typename T>
-T* GameObject::GetComponent()
-{
-	static_assert(std::is_base_of<Component, T>::value, "T must derive from Component");
-
-	for (const auto& comp : components)
-	{
-		T* derived = dynamic_cast<T*>(comp);
-		if (derived) return derived;
-	}
-
-	std::cout << "GameObject tried to get non included component" << std::endl;
-	return nullptr;
 }
 
 void GameObject::HandleEvent(const SDL_Event& event)
@@ -202,23 +226,3 @@ bool GameObject::IsWithinBounds(int x, int y) const
 
 	return true;
 }
-
-//POssess a Link bug
-/*template<typename T>
-void GameObject::RemoveComponent()
-{
-	static_assert(std::is_base_of<Component, T>::value, "T must derive from Component");
-
-	for (int i = 0;i < components.size();i++)
-	{
-		T* derived = dynamic_cast<T*>(components[i].get());
-		if (derived)
-		{
-			std::cout << typeid(*components.at(i)).name() << std::endl;
-			components.erase(components.begin() + i);
-			return;
-		}
-	}
-
-	std::cout << "GameObject tried to remove non included component" << std::endl;
-}*/

@@ -2,6 +2,7 @@
 #include "Engine/Managers/Globals.h"
 #include "Engine/UIFactory.h"
 #include "Engine/GameObject.h"
+#include "Cell.h"
 #include "CardHand.h"
 
 class TableSide : public Engine::GameObject
@@ -10,20 +11,27 @@ public:
     TableSide() : Engine::GameObject(0, 0, 0, 0)
     {
         using namespace Engine;
-        //Image* sideImage = new Image(this, Config::DESK_IMAGE);
-        //this->AddComponent(sideImage);
 
-        std::vector<GameObject*> cardsPlaceholder;
+        std::vector<std::unique_ptr<GameObject>> cardsPlaceholder;
         for (int i = 0;i < Config::SIDE_MAX_CARDS;i++)
         {
-            GameObject* placeholder = new GameObject(0, 0,
-                Config::CARD_WIDTH, Config::CARD_HEIGHT);
-            Image* image = new Image(placeholder, Config::PLACEHOLDER_IMAGE);
+            auto cell = std::make_unique<Cell>(0,0, Config::CARD_WIDTH, Config::CARD_HEIGHT);
 
-            placeholder->AddComponent(image);
-            cardsPlaceholder.push_back(placeholder);
+            cells.push_back(cell.get());
+            cardsPlaceholder.push_back(std::move(cell));
         }
 
-        UIFactory::GetRowComponent(this, cardsPlaceholder);
+        UIFactory::GetRowComponent(this, std::move(cardsPlaceholder));
     }
+
+    void AssignToPlayer(CardHand* hand)
+    {
+        for (Cell* cell : cells)
+        {
+            cell->AssignToPlayer(hand);
+        }
+    }
+
+private:
+    std::vector<Cell*> cells;
 };

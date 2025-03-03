@@ -47,29 +47,29 @@ namespace Engine
 			return button;
 		}
 
-		static void GetRowComponent(GameObject* host, std::vector<GameObject*> children)
+		static void GetRowComponent(GameObject* host, std::vector<std::unique_ptr<GameObject>>&& children)
 		{
-			Row* rowComponent = new Row(host, Config::PADDING, 0, children);
+			Row* rowComponent = new Row(host, Config::PADDING, 0, std::move(children));
 			host->AddComponent(rowComponent);
 		}
 
-		static void GetColumnComponent(GameObject* host, std::vector<GameObject*> children)
+		static void GetColumnComponent(GameObject* host, std::vector<std::unique_ptr<GameObject>>&& children)
 		{
-			Column* columnComponent = new Column(host, Config::PADDING, 0, children);
+			Column* columnComponent = new Column(host, Config::PADDING, 0, std::move(children));
 			host->AddComponent(columnComponent);
 		}
 
-		static GameObject* GetRow(int x, int y, std::vector<GameObject*> children)
+		static GameObject* GetRow(int x, int y, std::vector<std::unique_ptr<GameObject>>&& children)
 		{
 			GameObject* row = new GameObject(x, y, 0, 0);
-			GetRowComponent(row, children);
+			GetRowComponent(row, std::move(children));
 			return row;
 		}
 
-		static GameObject* GetColumn(int x, int y, std::vector<GameObject*> children)
+		static GameObject* GetColumn(int x, int y, std::vector<std::unique_ptr<GameObject>>&& children)
 		{
 			GameObject* column = new GameObject(x, y, 0, 0);
-			GetColumnComponent(column, children);
+			GetColumnComponent(column, std::move(children));
 			return column;
 		}
 	};
