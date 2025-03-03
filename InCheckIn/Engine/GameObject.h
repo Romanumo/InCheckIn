@@ -28,10 +28,11 @@ namespace Engine
 		const std::vector<std::unique_ptr<GameObject>>& GetChildren() const;
 
 		bool AdoptChild(GameObject* child);
-		void PrintFamilyTree(int spacing = 0);
+		bool AdoptChild(std::unique_ptr<GameObject> child);
+		void RemoveChild(GameObject* child);
 
-		void AddComponent(Component* component);
-		template<typename T> T* GetComponent();
+		void PrintFamilyTree(int spacing = 0);
+		std::unique_ptr<GameObject> TransferChild(GameObject* child);
 
 		void HandleEvent(const SDL_Event& event);
 		void Render(SDL_Surface* surface);
@@ -40,8 +41,38 @@ namespace Engine
 		GameObject& operator=(const GameObject&) = delete;
 		virtual ~GameObject() = default;
 
-	protected:
+		void AddComponent(Component* component);
+		template<typename T> T* GetComponent()
+		{
+			static_assert(std::is_base_of<Component, T>::value, "T must derive from Component");
 
+			for (const auto& comp : components)
+			{
+				T* derived = dynamic_cast<T*>(comp.get());
+				if (derived) return derived;
+			}
+
+			std::cout << "GameObject tried to get non included component" << std::endl;
+			return nullptr;
+		}
+		template<typename T> void RemoveComponent()
+		{
+			static_assert(std::is_base_of<Component, T>::value, "T must derive from Component");
+
+			for (int i = 0;i < components.size();i++)
+			{
+				T* derived = dynamic_cast<T*>(components[i].get());
+				if (derived)
+				{
+					components.erase(components.begin() + i);
+					return;
+				}
+			}
+
+			std::cout << "GameObject tried to remove non included component" << std::endl;
+		}
+
+	protected:
 		void ReserveChildrenSize(int reserve);
 		bool IsMyChild(const GameObject& child) const;
 
@@ -56,5 +87,7 @@ namespace Engine
 		void UpdateAbsTf();
 		void UpdateTransform();
 		void HandleChildPosition();
+
+		bool CheckChildInheritance(const GameObject* child);
 	};
 }

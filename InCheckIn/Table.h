@@ -21,6 +21,7 @@ public:
         hand = new CardHand(0, 0);
         parts.push_back(hand);
 
+        playerSide->AssignHand(hand);
         Engine::UIFactory::GetColumnComponent(this, parts);
     }
 
