@@ -23,7 +23,7 @@ public:
         hand = handOriginal.get();
         parts.push_back(std::move(handOriginal));
 
-        playerSide->AssignHand(hand);
+        playerSide->AssignToPlayer(hand);
         Engine::UIFactory::GetColumnComponent(this, std::move(parts));
     }
 

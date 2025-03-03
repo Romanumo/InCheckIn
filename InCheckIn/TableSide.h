@@ -2,6 +2,7 @@
 #include "Engine/Managers/Globals.h"
 #include "Engine/UIFactory.h"
 #include "Engine/GameObject.h"
+#include "Cell.h"
 #include "CardHand.h"
 
 class TableSide : public Engine::GameObject
@@ -14,38 +15,23 @@ public:
         std::vector<std::unique_ptr<GameObject>> cardsPlaceholder;
         for (int i = 0;i < Config::SIDE_MAX_CARDS;i++)
         {
-            auto placeholder = std::make_unique<GameObject>
-                (0, 0, Config::CARD_WIDTH, Config::CARD_HEIGHT);
-            Image* image = new Image(placeholder.get(), Config::PLACEHOLDER_IMAGE);
-            Button* button = new Button(placeholder.get());
+            auto cell = std::make_unique<Cell>(0,0, Config::CARD_WIDTH, Config::CARD_HEIGHT);
 
-            placeholder->AddComponent(image);
-            placeholder->AddComponent(button);
-
-            cardsPlaceholder.push_back(std::move(placeholder));
-            placeholdersButtons.push_back(button);
+            cells.push_back(cell.get());
+            cardsPlaceholder.push_back(std::move(cell));
         }
 
         UIFactory::GetRowComponent(this, std::move(cardsPlaceholder));
     }
 
-    void AssignHand(CardHand* hand)
+    void AssignToPlayer(CardHand* hand)
     {
-        for (Engine::Button* button : placeholdersButtons)
+        for (Cell* cell : cells)
         {
-            button->AddOnLeftClick([hand, button] {
-                std::unique_ptr<GameObject> cardOriginal = hand->PlaceCard();
-                GameObject* cardRef = cardOriginal.get();
-                
-                if (cardOriginal)
-                {
-                    button->GetParent()->AdoptChild(std::move(cardOriginal));
-                    cardRef->SetRelPosition(0, 0);
-                }
-                });
+            cell->AssignToPlayer(hand);
         }
     }
 
 private:
-    std::vector<Engine::Button*> placeholdersButtons;
+    std::vector<Cell*> cells;
 };
