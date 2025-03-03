@@ -75,15 +75,6 @@ void GameObject::PrintFamilyTree(int spacing)
 	}
 }
 
-bool GameObject::AdoptChild(GameObject* child)
-{
-	if (!CheckChildInheritance(child)) return false;
-
-	child->parent = this;
-	children.push_back(std::unique_ptr<GameObject>(child));
-	return true;
-}
-
 bool GameObject::AdoptChild(std::unique_ptr<GameObject> child)
 {
 	if (!CheckChildInheritance(child.get())) return false;

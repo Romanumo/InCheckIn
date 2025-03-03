@@ -9,10 +9,10 @@ namespace Engine
 	class Column : public Layout
 	{
 	public:
-		Column(GameObject* parent, int padding, int margin, std::vector<GameObject*> children) :
-			Layout(parent, padding, margin, children)
+		Column(GameObject* parent, int padding, int margin, std::vector<std::unique_ptr<GameObject>>&& children) :
+			Layout(parent, padding, margin)
 		{
-			InitLayout(children);
+			InitLayout(std::move(children));
 		}
 
 		void AlignOnCenter() override

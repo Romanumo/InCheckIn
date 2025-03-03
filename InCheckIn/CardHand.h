@@ -9,27 +9,27 @@ class CardHand : public Engine::GameObject
 public:
     CardHand(int x, int y) : Engine::GameObject(x, y, 0, 0)
 	{
-        std::vector<Engine::GameObject*> cards;
+        using namespace Engine;
+        std::vector<std::unique_ptr<GameObject>> cards;
         for (int i = 0;i < 5;i++)
         {
-            Card* card = new Card(0, 0);
+            auto card = std::make_unique<Card>(0,0);
 
-            card->GetComponent<Engine::Button>()->AddOnLeftClick([card, this] {
+            card->GetComponent<Button>()->AddOnLeftClick(
+                [card = card.get(), this] {
                 if (card->GetState() == CardState::CHOSEN)
                 {
                     ChooseCard(card);
                 }
                 });
 
-            this->cards.push_back(card);
-            cards.push_back(card);
+            this->cards.push_back(card.get());
+            cards.push_back(std::move(card));
         }
-        Engine::Row* rowComponent = new 
-            Engine::Row(this, Config::PADDING, 0, cards);
-        this->SetRelSize((Config::CARD_WIDTH + Config::PADDING) * Config::SIDE_MAX_CARDS,
-            Config::CARD_HEIGHT);
+        rowComponent = new Row(this, Config::PADDING, 0, std::move(cards));
+        this->SetRelSize(Config::TABLE_WIDTH, Config::CARD_HEIGHT);
         rowComponent->AlignOnCenter();
-
+        
         AddComponent(rowComponent);
 	}
 
@@ -50,13 +50,16 @@ public:
         chosenCard->IntoPlayedState();
         RemoveCard(chosenCard);
 
+        rowComponent->AlignOnCenter();
         chosenCard = nullptr;
         return child;
     }
 
 private:
     std::vector<Card*> cards;
+
     Card* chosenCard = nullptr;
+    Engine::Row* rowComponent = nullptr;
 
     void RemoveCard(Card* card)
     {

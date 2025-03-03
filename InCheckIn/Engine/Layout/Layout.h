@@ -9,7 +9,7 @@ namespace Engine
 	class Layout : public Component
 	{
 	public:
-		Layout(GameObject *parent, int padding, int margin, std::vector<GameObject*> children) :
+		Layout(GameObject *parent, int padding, int margin) :
 			Component(parent), padding(padding), margin(margin)
 		{
 			parent->SetRelSize(margin * 2, margin * 2);
@@ -17,12 +17,12 @@ namespace Engine
 
 		virtual void AlignOnCenter() {}
 
-		void AddComponent(GameObject& child)
+		void AddComponent(std::unique_ptr<GameObject> child)
 		{
-			if (!parent->AdoptChild(&child)) return;
-
+			const SDL_Rect* objRect = child->GetAbsTf();
 			const SDL_Rect* myRect = parent->GetAbsTf();
-			const SDL_Rect* objRect = child.GetAbsTf();
+
+			if (!parent->AdoptChild(std::move(child))) return;
 
 			StretchContainer(objRect, myRect);
 		}
@@ -35,11 +35,11 @@ namespace Engine
 		int GetPadding() { return padding; }
 		int GetMargin() { return margin; }
 
-		void InitLayout(std::vector<GameObject*> children)
+		void InitLayout(std::vector<std::unique_ptr<GameObject>>&& children)
 		{
 			for (auto& component : children)
 			{
-				AddComponent(*component);
+				AddComponent(std::move(component));
 			}
 
 			HandleChildPosition();

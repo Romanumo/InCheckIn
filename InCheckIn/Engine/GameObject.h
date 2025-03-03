@@ -27,19 +27,17 @@ namespace Engine
 		GameObject* GetParent() const; 
 		const std::vector<std::unique_ptr<GameObject>>& GetChildren() const;
 
-		bool AdoptChild(GameObject* child);
-		bool AdoptChild(std::unique_ptr<GameObject> child);
-		void RemoveChild(GameObject* child);
-
 		void PrintFamilyTree(int spacing = 0);
+		void RemoveChild(GameObject* child);
+		bool AdoptChild(std::unique_ptr<GameObject> child);
 		std::unique_ptr<GameObject> TransferChild(GameObject* child);
 
 		void HandleEvent(const SDL_Event& event);
 		void Render(SDL_Surface* surface);
 
+		virtual ~GameObject() = default;
 		GameObject(const GameObject&) = delete;
 		GameObject& operator=(const GameObject&) = delete;
-		virtual ~GameObject() = default;
 
 		void AddComponent(Component* component);
 		template<typename T> T* GetComponent()
