@@ -15,8 +15,11 @@ public:
         auto playerOriginal = std::make_unique<PlayerSide>();
         playerSide = playerOriginal.get();
 
-        AddComponent(new Engine::Column(this, Config::PADDING, 0,
-            std::move(enemyOriginal), std::move(playerOriginal)));
+        Engine::Layout* col = new Engine::Layout(this, new Engine::Column(),
+            Config::PADDING, 0);
+        col->AddGameObject(std::move(enemyOriginal));
+        col->AddGameObject(std::move(playerOriginal));
+        AddComponent(col);
     }
 
 private:

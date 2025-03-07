@@ -15,8 +15,14 @@ public:
         using namespace Engine;
 
         auto cardGrid = std::make_unique<GameObject>(0, 0, 0, 0);
-        cells = UIFactory::GetRow<Cell>(cardGrid.get(), Config::SIDE_MAX_CARDS,
-            Config::CARD_WIDTH, Config::CARD_HEIGHT);
+        Layout* cardRow = new Layout(cardGrid.get(), new Row(), Config::PADDING, 0);
+        for (int i = 0;i < Config::SIDE_MAX_CARDS;i++)
+        {
+            auto cell = std::make_unique<Cell>(Config::CARD_WIDTH, Config::CARD_HEIGHT);
+            cells.push_back(cell.get());
+            cardRow->AddGameObject(std::move(cell));
+        }
+        cardGrid->AddComponent(cardRow);
 
         auto handOriginal = std::make_unique<CardHand>(0, 0);
         hand = handOriginal.get();
@@ -27,13 +33,15 @@ public:
         player = participant.get();
 
         auto playableUI = std::make_unique<GameObject>(0, 0, 0, 0);
-        playableUI->AddComponent(new Column(playableUI.get(), Config::PADDING, 0, 
-            std::move(cardGrid),std::move(handOriginal)));
+        Layout* playUICol = new Layout(playableUI.get(), new Column(), Config::PADDING, 0);
+        playUICol->AddGameObject(std::move(cardGrid));
+        playUICol->AddGameObject(std::move(handOriginal));
+        playableUI->AddComponent(playUICol);
 
-        AddComponent(new Row(this, 0, 0, 
-            std::vector<std::unique_ptr<GameObject>>{
-            std::move(playableUI),
-            std::move(participant) }));
+        Layout* row = new Layout(this, new Row(), Config::PADDING, 0);
+        row->AddGameObject(std::move(playableUI));
+        row->AddGameObject(std::move(participant));
+        AddComponent(row);
     }
 
     void ConnectCellsToHand(CardHand* hand)

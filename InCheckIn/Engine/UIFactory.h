@@ -2,8 +2,7 @@
 #include <SDL.h>
 #include <memory>
 
-#include "Layout/Row.h"
-#include "Layout/Column.h"
+#include "Layout/Layout.h"
 
 #include "Button.h"
 #include "Image.h"
@@ -40,7 +39,7 @@ namespace Engine
 			return button;
 		}
 
-		template<typename Type, typename... Args>
+		/*template<typename Type, typename... Args>
 		static std::vector<Type*> GetRow(GameObject* host, int count, Args&&... args)
 		{
 			static_assert(std::is_base_of<GameObject, Type>::value, "Type must derive from GameObject");
@@ -56,7 +55,7 @@ namespace Engine
 			host->AddComponent(rowComponent);
 
 			return pointers;
-		}
+		}*/
 
 		/*template<typename Type, typename... Args>
 		static std::vector<Type*> GetColumn(GameObject* host, int count, Args&&... args)

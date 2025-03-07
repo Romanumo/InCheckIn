@@ -145,9 +145,8 @@
     <ClInclude Include="Engine\Button.h" />
     <ClInclude Include="Engine\GameObject.h" />
     <ClInclude Include="Engine\Image.h" />
-    <ClInclude Include="Engine\Layout\Column.h" />
     <ClInclude Include="Engine\Layout\Layout.h" />
-    <ClInclude Include="Engine\Layout\Row.h" />
+    <ClInclude Include="Engine\Layout\LayoutType.h" />
     <ClInclude Include="Engine\Managers\Globals.h" />
     <ClInclude Include="Engine\Managers\LoadUtils.h" />
     <ClInclude Include="Engine\Managers\Random.h" />
