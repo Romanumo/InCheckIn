@@ -17,13 +17,14 @@ namespace Engine
 
 		virtual void AlignOnCenter() {}
 
-		void AddComponent(std::unique_ptr<GameObject> child)
+		void AddGameObject(std::unique_ptr<GameObject> child)
 		{
 			const SDL_Rect* objRect = child->GetAbsTf();
 			const SDL_Rect* myRect = parent->GetAbsTf();
 
 			if (!parent->AdoptChild(std::move(child))) return;
 
+			HandleChildPosition();
 			StretchContainer(objRect, myRect);
 		}
 
@@ -39,7 +40,7 @@ namespace Engine
 		{
 			for (auto& component : children)
 			{
-				AddComponent(std::move(component));
+				AddGameObject(std::move(component));
 			}
 
 			HandleChildPosition();
