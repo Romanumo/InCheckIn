@@ -17,7 +17,7 @@ namespace Config
 	inline constexpr int CARD_WIDTH = 100;
 	inline constexpr int SIDE_MAX_CARDS = 6;
 
-	inline constexpr int TABLE_WIDTH = (CARD_WIDTH + PADDING) * SIDE_MAX_CARDS + PADDING;
+	inline constexpr int TABLE_WIDTH = (CARD_WIDTH + PADDING) * SIDE_MAX_CARDS - PADDING;
 	inline constexpr int TABLE_HEIGHT = (CARD_HEIGHT + PADDING) * 3 + PADDING;
 
 	inline constexpr int WINDOW_HEIGHT = TABLE_HEIGHT;

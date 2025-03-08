@@ -14,20 +14,13 @@ public:
     {
         using namespace Engine;
 
-        Layout* row = new Layout(this, new Row(), Config::PADDING, 0);
-        for (int i = 0;i < Config::SIDE_MAX_CARDS;i++)
-        {
-            auto cell = std::make_unique<Cell>(Config::CARD_WIDTH, Config::CARD_HEIGHT);
-            cells.push_back(cell.get());
-            row->AddGameObject(std::move(cell));
-        }
+        cells = UIFactory::GetLayout<Cell>(this, new Row(),Config::SIDE_MAX_CARDS);
 
         auto participant = std::make_unique<Participant>
             (Config::CARD_WIDTH, Config::CARD_HEIGHT, Config::DESK_IMAGE);
         enemy = participant.get();
-        row->AddGameObject(std::move(participant));
 
-        AddComponent(row);
+        GetComponent<Layout>()->AddGameObject(std::move(participant));
     }
 private:
     std::vector<Cell*> cells;

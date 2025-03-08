@@ -7,7 +7,7 @@
 class Cell : public Engine::GameObject
 {
 public:
-    Cell(int w, int h) : Engine::GameObject(0, 0, w, h)
+    Cell() : Engine::GameObject(0, 0, Config::CARD_WIDTH, Config::CARD_HEIGHT)
 	{
         using namespace Engine;
         Image* image = new Image(this, Config::PLACEHOLDER_IMAGE);

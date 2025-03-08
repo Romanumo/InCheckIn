@@ -13,15 +13,14 @@ enum CardState
 class Card : public Engine::GameObject
 {
 public:
-	Card(int x, int y) : 
-		GameObject(x, y, Config::CARD_WIDTH, Config::CARD_HEIGHT)
+	Card() : GameObject(0,0, Config::CARD_WIDTH, Config::CARD_HEIGHT)
 	{
 		using namespace Engine;
 		button = new Button(this);
 		Image* image = new Image(this, Config::CARD_IMAGE_HEALER);
 
-		this->y = GetRelTf()->y;
-		button->AddOnHoverEnter([this, y] {
+		this->initY = GetRelTf()->y;
+		button->AddOnHoverEnter([this] {
 			if (state == CardState::IDLE)
 			{
 				SetRelPosition(GetRelTf()->x, GetRelTf()->y - 5);
@@ -29,7 +28,7 @@ public:
 			}
 			});
 
-		button->AddOnLeftClick([this, y] {
+		button->AddOnLeftClick([this] {
 			if (state == CardState::HOVERED)
 			{
 				SetRelPosition(GetRelTf()->x, GetRelTf()->y - 15);
@@ -37,7 +36,7 @@ public:
 			}
 			});
 
-		button->AddOnHoverExit([this, y] {
+		button->AddOnHoverExit([this] {
 			if (state == CardState::HOVERED)
 			{
 				Deselect();
@@ -55,7 +54,7 @@ public:
 
 	void Deselect()
 	{
-		SetRelPosition(GetRelTf()->x, y);
+		SetRelPosition(GetRelTf()->x, initY);
 		state = CardState::IDLE;
 	}
 
@@ -65,5 +64,5 @@ private:
 	Engine::Button* button;
 
 	CardState state = CardState::IDLE;
-	int y = 0;
+	int initY = 0;
 };

@@ -13,7 +13,7 @@ public:
         rowComponent = new Layout(this, new Row(), Config::PADDING, 0);
         for (int i = 0;i < 5;i++)
         {
-            auto card = std::make_unique<Card>(0,0);
+            auto card = std::make_unique<Card>();
 
             card->GetComponent<Button>()->AddOnLeftClick(
                 [card = card.get(), this] {

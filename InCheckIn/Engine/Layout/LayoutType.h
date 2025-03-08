@@ -34,7 +34,7 @@ namespace Engine
 				}
 			}
 
-			if(offset == 0) parent->SetRelSize(xLength, yLength);
+			if(offset == 0) parent->SetRelSize(xLength - padding, yLength);
 		}
 
 		int GetDimension(const SDL_Rect& rect) override
