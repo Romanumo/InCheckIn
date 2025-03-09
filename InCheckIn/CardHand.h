@@ -7,13 +7,13 @@
 class CardHand : public Engine::GameObject
 {
 public:
-    CardHand(int x, int y) : Engine::GameObject(x, y, 0, 0)
+    CardHand() : Engine::GameObject()
 	{
         using namespace Engine;
-        std::vector<std::unique_ptr<GameObject>> cards;
+        rowComponent = new Layout(this, new Row(), Config::PADDING, 0);
         for (int i = 0;i < 5;i++)
         {
-            auto card = std::make_unique<Card>(0,0);
+            auto card = std::make_unique<Card>();
 
             card->GetComponent<Button>()->AddOnLeftClick(
                 [card = card.get(), this] {
@@ -24,11 +24,10 @@ public:
                 });
 
             this->cards.push_back(card.get());
-            cards.push_back(std::move(card));
+            rowComponent->AddGameObject(std::move(card));
         }
-        rowComponent = new Row(this, Config::PADDING, 0, std::move(cards));
         this->SetRelSize(Config::TABLE_WIDTH, Config::CARD_HEIGHT);
-        rowComponent->AlignOnCenter();
+        rowComponent->AlignCenter();
         
         AddComponent(rowComponent);
 	}
@@ -50,7 +49,7 @@ public:
         chosenCard->IntoPlayedState();
         RemoveCard(chosenCard);
 
-        rowComponent->AlignOnCenter();
+        rowComponent->AlignCenter();
         chosenCard = nullptr;
         return child;
     }
@@ -59,7 +58,7 @@ private:
     std::vector<Card*> cards;
 
     Card* chosenCard = nullptr;
-    Engine::Row* rowComponent = nullptr;
+    Engine::Layout* rowComponent = nullptr;
 
     void RemoveCard(Card* card)
     {

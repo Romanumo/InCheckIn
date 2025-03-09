@@ -2,11 +2,12 @@
 #include "Engine/Managers/Globals.h"
 #include "Engine/UIFactory.h"
 #include "Engine/GameObject.h"
+#include "CardHand.h"
 
 class Cell : public Engine::GameObject
 {
 public:
-	Cell(int x, int y, int w, int h) : Engine::GameObject(x, y, w, h)
+    Cell() : Engine::GameObject(0, 0, Config::CARD_WIDTH, Config::CARD_HEIGHT)
 	{
         using namespace Engine;
         Image* image = new Image(this, Config::PLACEHOLDER_IMAGE);
@@ -34,6 +35,6 @@ public:
     }
 
 private:
-    Card* containingCard;
+    Card* containingCard = nullptr;
     Engine::Button* button;
 };

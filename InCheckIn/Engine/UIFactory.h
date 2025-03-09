@@ -2,8 +2,7 @@
 #include <SDL.h>
 #include <memory>
 
-#include "Layout/Row.h"
-#include "Layout/Column.h"
+#include "Layout/Layout.h"
 
 #include "Button.h"
 #include "Image.h"
@@ -13,16 +12,18 @@
 #include "GameObject.h"
 #include "Component.h"
 
+#include "../Card.h"
+
 namespace Engine
 {
 	static class UIFactory
 	{
 	public:
-		static GameObject* GetButton(int x, int y, int w, int h)
+		static std::unique_ptr<GameObject> GetButton(int x, int y, int w, int h)
 		{
-			GameObject* button = new GameObject(x, y, w, h);
-			Button* controller = new Button(button);
-			Rectangle* visual = new Rectangle(button);
+			auto button = std::make_unique<GameObject>(x, y, w, h);
+			Button* controller = new Button(button.get());
+			Rectangle* visual = new Rectangle(button.get());
 			visual->SetColor(Config::BUTTON_COLOR);
 
 			controller->AddOnHoverEnter([visual] {
@@ -38,39 +39,48 @@ namespace Engine
 			return button;
 		}
 
-		static GameObject* GetButton(int x, int y, int w, int h, const std::string& text)
+		template<typename Type, typename... Args>
+		static std::vector<Type*> GetLayout(GameObject* host, LayoutType* type, 
+			int count, Args&&... args)
 		{
-			GameObject* button = GetButton(x, y, w, h);
-			Text* textComponent = new Text(button, text, {0, 0, 0, 255}, 14);
+			static_assert(std::is_base_of<GameObject, Type>::value, "Type must derive from GameObject");
+			Layout* layout = new Layout(host, type, Config::PADDING, 0);
+			std::vector<Type*> pointers;
 
-			button->AddComponent(textComponent);
-			return button;
+			for (int i = 0;i < count;i++)
+			{
+				auto obj = std::make_unique<Type>(std::forward<Args>(args)...);
+				pointers.push_back(obj.get());
+				layout->AddGameObject(std::move(obj));
+			}
+
+			host->AddComponent(layout);
+			return pointers;
 		}
 
-		static void GetRowComponent(GameObject* host, std::vector<std::unique_ptr<GameObject>>&& children)
+		template<typename... Args>
+		static std::unique_ptr<GameObject> GetColumn(Args&&... args)
 		{
-			Row* rowComponent = new Row(host, Config::PADDING, 0, std::move(children));
-			host->AddComponent(rowComponent);
+			return GetLayoutObj(new Column(), std::forward<Args>(args)...);
 		}
 
-		static void GetColumnComponent(GameObject* host, std::vector<std::unique_ptr<GameObject>>&& children)
+		template<typename... Args>
+		static std::unique_ptr<GameObject> GetRow(Args&&... args)
 		{
-			Column* columnComponent = new Column(host, Config::PADDING, 0, std::move(children));
-			host->AddComponent(columnComponent);
+			return GetLayoutObj(new Row(), std::forward<Args>(args)...);
 		}
 
-		static GameObject* GetRow(int x, int y, std::vector<std::unique_ptr<GameObject>>&& children)
+	private:
+		template<typename... Args>
+		static std::unique_ptr<GameObject> GetLayoutObj(LayoutType* type, Args&&... args)
 		{
-			GameObject* row = new GameObject(x, y, 0, 0);
-			GetRowComponent(row, std::move(children));
-			return row;
-		}
+			auto compartment = std::make_unique<GameObject>();
+			Layout* layout = new Layout(compartment.get(), type, Config::PADDING, 0);
 
-		static GameObject* GetColumn(int x, int y, std::vector<std::unique_ptr<GameObject>>&& children)
-		{
-			GameObject* column = new GameObject(x, y, 0, 0);
-			GetColumnComponent(column, std::move(children));
-			return column;
+			(layout->AddGameObject(std::move(args)), ...);
+
+			compartment->AddComponent(layout);
+			return compartment;
 		}
 	};
 }

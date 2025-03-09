@@ -13,6 +13,7 @@ namespace Engine
 	class GameObject
 	{
 	public:
+		GameObject();
 		GameObject(int x, int y, int w, int h);
 
 		SDL_Rect* GetAbsTf();

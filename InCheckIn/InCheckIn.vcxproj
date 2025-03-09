@@ -140,13 +140,13 @@
     <ClInclude Include="Card.h" />
     <ClInclude Include="CardHand.h" />
     <ClInclude Include="Cell.h" />
+    <ClInclude Include="EnemySide.h" />
     <ClInclude Include="Engine\Component.h" />
     <ClInclude Include="Engine\Button.h" />
     <ClInclude Include="Engine\GameObject.h" />
     <ClInclude Include="Engine\Image.h" />
-    <ClInclude Include="Engine\Layout\Column.h" />
     <ClInclude Include="Engine\Layout\Layout.h" />
-    <ClInclude Include="Engine\Layout\Row.h" />
+    <ClInclude Include="Engine\Layout\LayoutType.h" />
     <ClInclude Include="Engine\Managers\Globals.h" />
     <ClInclude Include="Engine\Managers\LoadUtils.h" />
     <ClInclude Include="Engine\Managers\Random.h" />
@@ -157,8 +157,9 @@
     <ClInclude Include="Engine\Text.h" />
     <ClInclude Include="Engine\TextSurface.h" />
     <ClInclude Include="Engine\UIFactory.h" />
+    <ClInclude Include="Participant.h" />
     <ClInclude Include="Table.h" />
-    <ClInclude Include="TableSide.h" />
+    <ClInclude Include="PlayerSide.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Assets\AssetsRef.txt" />

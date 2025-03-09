@@ -1,34 +1,28 @@
 #pragma once
 #include "Engine/UIFactory.h"
 #include "Engine/GameObject.h"
-#include "CardHand.h"
-#include "TableSide.h"
+#include "PlayerSide.h"
+#include "EnemySide.h"
 
 class Table : public Engine::GameObject
 {
 public:
     Table() : Engine::GameObject(Config::PADDING, Config::PADDING, 0, 0)
     {
-        std::vector<std::unique_ptr<Engine::GameObject>> parts;
-        for (int i = 0;i < 2;i++)
-        {
-            auto side = std::make_unique<TableSide>();
-            if (!enemySide) enemySide = side.get();
-            else if (!playerSide) playerSide = side.get();
+        auto enemyOriginal = std::make_unique<EnemySide>();
+        enemySide = enemyOriginal.get();
 
-            parts.push_back(std::move(side));
-        }
+        auto playerOriginal = std::make_unique<PlayerSide>();
+        playerSide = playerOriginal.get();
 
-        auto handOriginal = std::make_unique<CardHand>(0,0);
-        hand = handOriginal.get();
-        parts.push_back(std::move(handOriginal));
-
-        playerSide->AssignToPlayer(hand);
-        Engine::UIFactory::GetColumnComponent(this, std::move(parts));
+        Engine::Layout* col = new Engine::Layout(this, new Engine::Column(),
+            Config::PADDING, 0);
+        col->AddGameObject(std::move(enemyOriginal));
+        col->AddGameObject(std::move(playerOriginal));
+        AddComponent(col);
     }
 
 private:
-    TableSide* enemySide = nullptr;
-    TableSide* playerSide = nullptr;
-    CardHand* hand;
+    EnemySide* enemySide = nullptr;
+    PlayerSide* playerSide = nullptr;
 };

@@ -17,11 +17,11 @@ namespace Config
 	inline constexpr int CARD_WIDTH = 100;
 	inline constexpr int SIDE_MAX_CARDS = 6;
 
-	inline constexpr int TABLE_WIDTH = (CARD_WIDTH + PADDING) * SIDE_MAX_CARDS + PADDING;
+	inline constexpr int TABLE_WIDTH = (CARD_WIDTH + PADDING) * SIDE_MAX_CARDS - PADDING;
 	inline constexpr int TABLE_HEIGHT = (CARD_HEIGHT + PADDING) * 3 + PADDING;
 
 	inline constexpr int WINDOW_HEIGHT = TABLE_HEIGHT;
-	inline constexpr int WINDOW_WIDTH = TABLE_WIDTH;
+	inline constexpr int WINDOW_WIDTH = TABLE_WIDTH + 300;
 
 	//Colors
 	inline constexpr SDL_Color BACKGROUND_COLOR{ 170, 170, 170, 255 };

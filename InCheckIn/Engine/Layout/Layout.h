@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include <memory>
+#include "LayoutType.h"
 #include "../Component.h"
 
 namespace Engine
@@ -9,48 +10,45 @@ namespace Engine
 	class Layout : public Component
 	{
 	public:
-		Layout(GameObject *parent, int padding, int margin) :
-			Component(parent), padding(padding), margin(margin)
+		Layout(GameObject *parent, LayoutType* type, int padding, int margin) :
+			Component(parent), type(type), padding(padding), margin(margin)
 		{
 			parent->SetRelSize(margin * 2, margin * 2);
 		}
 
-		virtual void AlignOnCenter() {}
-
-		void AddComponent(std::unique_ptr<GameObject> child)
+		void AddGameObject(std::unique_ptr<GameObject> child)
 		{
 			const SDL_Rect* objRect = child->GetAbsTf();
 			const SDL_Rect* myRect = parent->GetAbsTf();
 
 			if (!parent->AdoptChild(std::move(child))) return;
 
-			StretchContainer(objRect, myRect);
+			type->HandleChildPosition(parent, padding, margin);
+		}
+
+		void AlignCenter()
+		{
+			if (parent->GetChildren().empty()) return;
+
+			int offset = -padding;
+			for (const auto& gameObject : parent->GetChildren())
+			{
+				offset += type->GetDimension(*gameObject->GetAbsTf()) + padding;
+			}
+			offset = (type->GetDimension(*parent->GetAbsTf()) - offset) / 2;
+
+			type->HandleChildPosition(parent, padding, margin, offset);
 		}
 
 		void Render(SDL_Surface* surface) override {}
 		void HandleEvent(const SDL_Event& event) override {}
-		virtual ~Layout() = default;
-
-	protected:
-		int GetPadding() { return padding; }
-		int GetMargin() { return margin; }
-
-		void InitLayout(std::vector<std::unique_ptr<GameObject>>&& children)
+		~Layout()
 		{
-			for (auto& component : children)
-			{
-				AddComponent(std::move(component));
-			}
-
-			HandleChildPosition();
+			delete type;
 		}
 
-		virtual void HandleChildPosition() = 0;
-
-		virtual void StretchContainer(const SDL_Rect* objRect,
-			const SDL_Rect* myRect) = 0;
-
 	private:
+		LayoutType* type;
 		int padding = 0;
 		int margin = 0;
 	};

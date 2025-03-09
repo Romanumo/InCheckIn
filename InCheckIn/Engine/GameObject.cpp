@@ -13,6 +13,9 @@ GameObject::GameObject(int x, int y, int w, int h) :
 	UpdateTransform();
 }
 
+GameObject::GameObject() :
+	relTf{ 0,0,0,0 }, parent(nullptr) {}
+
 #pragma region Positioning
 
 void GameObject::SetRelPosition(int x, int y)
