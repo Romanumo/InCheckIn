@@ -7,7 +7,7 @@
 class CardHand : public Engine::GameObject
 {
 public:
-    CardHand(int x, int y) : Engine::GameObject(x, y, 0, 0)
+    CardHand() : Engine::GameObject()
 	{
         using namespace Engine;
         rowComponent = new Layout(this, new Row(), Config::PADDING, 0);

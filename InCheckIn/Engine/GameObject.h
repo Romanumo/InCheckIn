@@ -9,7 +9,7 @@
 namespace Engine
 {
 	class Component;
-	//GameObject needs to remove component when destrictor
+
 	class GameObject
 	{
 	public:

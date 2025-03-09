@@ -42,6 +42,10 @@ namespace Engine
 
 		void Render(SDL_Surface* surface) override {}
 		void HandleEvent(const SDL_Event& event) override {}
+		~Layout()
+		{
+			delete type;
+		}
 
 	private:
 		LayoutType* type;

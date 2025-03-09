@@ -59,6 +59,19 @@ namespace Engine
 		}
 
 		template<typename... Args>
+		static std::unique_ptr<GameObject> GetColumn(Args&&... args)
+		{
+			return GetLayoutObj(new Column(), std::forward<Args>(args)...);
+		}
+
+		template<typename... Args>
+		static std::unique_ptr<GameObject> GetRow(Args&&... args)
+		{
+			return GetLayoutObj(new Row(), std::forward<Args>(args)...);
+		}
+
+	private:
+		template<typename... Args>
 		static std::unique_ptr<GameObject> GetLayoutObj(LayoutType* type, Args&&... args)
 		{
 			auto compartment = std::make_unique<GameObject>();
