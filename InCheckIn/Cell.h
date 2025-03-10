@@ -7,10 +7,10 @@
 class Cell : public Engine::GameObject
 {
 public:
-    Cell() : Engine::GameObject(0, 0, Config::CARD_WIDTH, Config::CARD_HEIGHT)
+    Cell() : Engine::GameObject(0, 0, Conf::CARD_WIDTH, Conf::CARD_HEIGHT)
 	{
         using namespace Engine;
-        Image* image = new Image(this, Config::PLACEHOLDER_IMAGE);
+        Image* image = new Image(this, Conf::PLACEHOLDER_IMAGE);
         button = new Button(this);
 
         AddComponent(image);

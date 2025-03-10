@@ -7,8 +7,6 @@
 #include "TextSurface.h"
 #include "Component.h"
 
-//Maybe assign dynamic as defaut and make a separate function to change it
-
 namespace Engine
 {
 	class Text : public Component
@@ -20,9 +18,9 @@ namespace Engine
 		{
 			textFactory = std::make_unique<DynamicTextSurface>();
 
-			const std::string& fontID = Config::FONT + std::to_string(fontSize);
+			const std::string& fontID = Conf::FONT + std::to_string(fontSize);
 			auto loadFont = [fontSize]() -> std::shared_ptr<TTF_Font>
-				{return LoadUtils::LoadFont(Config::FONT, fontSize);};
+				{return LoadUtils::LoadFont(Conf::FONT, fontSize);};
 
 			font = ResourceManager<TTF_Font>::GetInstance().
 				GetByName(fontID, loadFont);
@@ -48,6 +46,7 @@ namespace Engine
 
 		void Render(SDL_Surface* surface) override
 		{
+			UpdateTextPosition();
 			SDL_BlitScaled(textSurface.get(), nullptr, surface, &textPos);
 		}
 
@@ -60,6 +59,7 @@ namespace Engine
 		SDL_Rect textPos{ 0,0,0,0 };
 		SDL_Color textColor{ 0,0,0,255 };
 
+		//Why unique?
 		std::unique_ptr<ITextSurface> textFactory;
 
 		void UpdateTextPosition()

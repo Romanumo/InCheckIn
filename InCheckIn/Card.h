@@ -13,12 +13,47 @@ enum CardState
 class Card : public Engine::GameObject
 {
 public:
-	Card() : GameObject(0,0, Config::CARD_WIDTH, Config::CARD_HEIGHT)
+	Card() : GameObject(0,0, Conf::CARD_WIDTH, Conf::CARD_HEIGHT)
 	{
 		using namespace Engine;
+		
 		button = new Button(this);
-		Image* image = new Image(this, Config::CARD_IMAGE_HEALER);
+		Image* image = new Image(this, Conf::CARD_IMAGE_HEALER);
 
+		AssignButton(button);
+
+		AdoptChild(std::move(UIFactory::NewText(
+			10, Conf::CARD_HEIGHT - 30, Conf::CARD_WIDTH / 5, 20,
+			sanityText)));
+		sanityText->SetText("0", Conf::SANITY_COLOR);
+
+		this->AddComponent(image);
+		this->AddComponent(button);
+	}
+
+	void IntoPlayedState()
+	{
+		button->SetEnabled(false);
+		state = CardState::PLAYED;
+	}
+
+	void Deselect()
+	{
+		SetRelPosition(GetRelTf()->x, initY);
+		state = CardState::IDLE;
+	}
+
+	CardState GetState() { return state; }
+
+private:
+	Engine::Button* button;
+	Engine::Text* sanityText;
+
+	CardState state = CardState::IDLE;
+	int initY = 0;
+
+	void AssignButton(Engine::Button* button)
+	{
 		this->initY = GetRelTf()->y;
 		button->AddOnHoverEnter([this] {
 			if (state == CardState::IDLE)
@@ -42,27 +77,5 @@ public:
 				Deselect();
 			}
 			});
-
-		this->AddComponent(image);
-		this->AddComponent(button);
 	}
-
-	void IntoPlayedState()
-	{
-		state = CardState::PLAYED;
-	}
-
-	void Deselect()
-	{
-		SetRelPosition(GetRelTf()->x, initY);
-		state = CardState::IDLE;
-	}
-
-	CardState GetState() { return state; }
-
-private:
-	Engine::Button* button;
-
-	CardState state = CardState::IDLE;
-	int initY = 0;
 };

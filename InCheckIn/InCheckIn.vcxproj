@@ -140,6 +140,7 @@
     <ClInclude Include="Card.h" />
     <ClInclude Include="CardHand.h" />
     <ClInclude Include="Cell.h" />
+    <ClInclude Include="Creature.h" />
     <ClInclude Include="EnemySide.h" />
     <ClInclude Include="Engine\Component.h" />
     <ClInclude Include="Engine\Button.h" />

@@ -10,11 +10,11 @@ namespace Engine
 		Window()
 		{
 			SDLWindow = SDL_CreateWindow(
-				Config::GAME_NAME.c_str(), 
+				Conf::GAME_NAME.c_str(), 
 				SDL_WINDOWPOS_UNDEFINED,
 				SDL_WINDOWPOS_UNDEFINED, 
-				Config::WINDOW_WIDTH, 
-				Config::WINDOW_HEIGHT, 0);
+				Conf::WINDOW_WIDTH, 
+				Conf::WINDOW_HEIGHT, 0);
 			//SDL_SetWindowFullscreen(SDLWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
 		}
 
@@ -23,9 +23,9 @@ namespace Engine
 			SDL_FillRect(GetSurface(), nullptr,
 				SDL_MapRGB(
 					GetSurface()->format, 
-					Config::BACKGROUND_COLOR.r,
-					Config::BACKGROUND_COLOR.g,
-					Config::BACKGROUND_COLOR.b));
+					Conf::BACKGROUND_COLOR.r,
+					Conf::BACKGROUND_COLOR.g,
+					Conf::BACKGROUND_COLOR.b));
 		}
 
 		SDL_Surface* GetSurface()

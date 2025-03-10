@@ -10,7 +10,7 @@ public:
     CardHand() : Engine::GameObject()
 	{
         using namespace Engine;
-        rowComponent = new Layout(this, new Row(), Config::PADDING, 0);
+        rowComponent = new Layout(this, new Row(), Conf::PADDING, 0);
         for (int i = 0;i < 5;i++)
         {
             auto card = std::make_unique<Card>();
@@ -26,7 +26,7 @@ public:
             this->cards.push_back(card.get());
             rowComponent->AddGameObject(std::move(card));
         }
-        this->SetRelSize(Config::TABLE_WIDTH, Config::CARD_HEIGHT);
+        this->SetRelSize(Conf::TABLE_WIDTH, Conf::CARD_HEIGHT);
         rowComponent->AlignCenter();
         
         AddComponent(rowComponent);

@@ -14,10 +14,10 @@ public:
     {
         using namespace Engine;
 
-        cells = UIFactory::GetLayout<Cell>(this, new Row(),Config::SIDE_MAX_CARDS);
+        cells = UIFactory::GetLayout<Cell>(this, new Row(),Conf::SIDE_MAX_CARDS);
 
         auto participant = std::make_unique<Participant>
-            (Config::CARD_WIDTH, Config::CARD_HEIGHT, Config::DESK_IMAGE);
+            (Conf::PARTICIPANT_WIDTH, Conf::CARD_HEIGHT, Conf::DESK_IMAGE, "Conjurer");
         enemy = participant.get();
 
         GetComponent<Layout>()->AddGameObject(std::move(participant));

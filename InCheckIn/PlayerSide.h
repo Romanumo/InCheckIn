@@ -16,18 +16,18 @@ public:
 
         auto cellGrid = std::make_unique<GameObject>();
         cells = UIFactory::GetLayout<Cell>(cellGrid.get(), new Row(), 
-            Config::SIDE_MAX_CARDS);
+            Conf::SIDE_MAX_CARDS);
 
         auto handOriginal = std::make_unique<CardHand>();
         hand = handOriginal.get();
         ConnectCellsToHand(hand);
 
         auto participant = std::make_unique<Participant>
-            (Config::CARD_WIDTH, Config::CARD_HEIGHT, Config::DESK_IMAGE);
+            (Conf::PARTICIPANT_WIDTH, Conf::CARD_HEIGHT, Conf::DESK_IMAGE, "You");
         player = participant.get();
 
-        Layout* row = new Layout(this, new Row(), Config::PADDING, 0);
-        row->AddGameObject(std::move(UIFactory::GetColumn(
+        Layout* row = new Layout(this, new Row(), Conf::PADDING, 0);
+        row->AddGameObject(std::move(UIFactory::NewColumn(
             std::move(cellGrid), 
             std::move(handOriginal))));
         row->AddGameObject(std::move(participant));

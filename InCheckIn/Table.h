@@ -7,7 +7,7 @@
 class Table : public Engine::GameObject
 {
 public:
-    Table() : Engine::GameObject(Config::PADDING, Config::PADDING, 0, 0)
+    Table() : Engine::GameObject(Conf::PADDING, Conf::PADDING, 0, 0)
     {
         auto enemyOriginal = std::make_unique<EnemySide>();
         enemySide = enemyOriginal.get();
@@ -16,7 +16,7 @@ public:
         playerSide = playerOriginal.get();
 
         Engine::Layout* col = new Engine::Layout(this, new Engine::Column(),
-            Config::PADDING, 0);
+            Conf::PADDING, 0);
         col->AddGameObject(std::move(enemyOriginal));
         col->AddGameObject(std::move(playerOriginal));
         AddComponent(col);
