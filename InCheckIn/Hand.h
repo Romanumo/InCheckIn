@@ -4,12 +4,11 @@
 #include "Engine/GameObject.h"
 #include "Card.h"
 
-class CardHand : public Engine::GameObject
+class Hand : public GameObject
 {
 public:
-    CardHand() : Engine::GameObject()
+    Hand() : GameObject()
 	{
-        using namespace Engine;
         rowComponent = new Layout(this, new Row(), Conf::PADDING, 0);
         for (int i = 0;i < 5;i++)
         {
@@ -58,7 +57,7 @@ private:
     std::vector<Card*> cards;
 
     Card* chosenCard = nullptr;
-    Engine::Layout* rowComponent = nullptr;
+    Layout* rowComponent = nullptr;
 
     void RemoveCard(Card* card)
     {

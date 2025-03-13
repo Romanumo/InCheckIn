@@ -38,6 +38,15 @@ namespace Engine
 		}
 
 		static std::unique_ptr<GameObject> NewText(int x, int y, int w, int h,
+			const std::string& text)
+		{
+			auto textObj = std::make_unique<GameObject>(x, y, w, h);
+			Text* textComponent = new Engine::Text(textObj.get(), text, { 0,0,0, 255 }, 30);
+			textObj->AddComponent(textComponent);
+			return textObj;
+		}
+
+		static std::unique_ptr<GameObject> NewText(int x, int y, int w, int h,
 			Text*& textComponent)
 		{
 			auto textObj = std::make_unique<GameObject>(x, y, w, h);

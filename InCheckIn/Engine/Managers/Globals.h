@@ -17,11 +17,11 @@ namespace Conf
 	inline constexpr int CARD_WIDTH = 100;
 	inline constexpr int MAX_CARDS = 6;
 
-	inline constexpr int PARTICIPANT_WIDTH = CARD_WIDTH * 2;
-	inline constexpr int PARTICIPANT_HEIGHT = CARD_HEIGHT;
+	inline constexpr int AVATAR_WIDTH = CARD_WIDTH * 2;
+	inline constexpr int AVATAR_HEIGHT = CARD_HEIGHT;
 
-	inline constexpr int TURNBT_WIDTH = PARTICIPANT_WIDTH;
-	inline constexpr int TURNBT_HEIGHT = PARTICIPANT_HEIGHT;
+	inline constexpr int TURNBT_WIDTH = AVATAR_WIDTH;
+	inline constexpr int TURNBT_HEIGHT = AVATAR_HEIGHT;
 
 	inline constexpr int TABLE_WIDTH = (CARD_WIDTH + PADDING) * MAX_CARDS - PADDING;
 	inline constexpr int TABLE_HEIGHT = (CARD_HEIGHT + PADDING) * 3 + PADDING;

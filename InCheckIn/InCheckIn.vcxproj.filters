@@ -71,31 +71,16 @@
     <ClInclude Include="Card.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CardHand.h">
+    <ClInclude Include="Hand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Table.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Cell.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemySide.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Layout\LayoutType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Participant.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerSide.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Creature.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TurnButton.h">
+    <ClInclude Include="Field.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

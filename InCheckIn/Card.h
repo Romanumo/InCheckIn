@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/GameObject.h"
 #include "Engine/UIFactory.h"
+using namespace Engine;
 
 enum CardState
 {
@@ -10,15 +11,11 @@ enum CardState
 	PLAYED
 };
 
-class Card : public Engine::GameObject
+class Card : public GameObject
 {
 public:
-	//MIght need to receive a Table Grid & Table Get a Portrait pointer
-	//Table would also have an opposing table pointer
 	Card() : GameObject(0,0, Conf::CARD_WIDTH, Conf::CARD_HEIGHT)
 	{
-		using namespace Engine;
-		
 		button = new Button(this);
 		Image* image = new Image(this, Conf::CARD_IMAGE_HEALER);
 
@@ -48,8 +45,8 @@ public:
 	CardState GetState() { return state; }
 
 private:
-	Engine::Button* button;
-	Engine::Text* sanityText;
+	Button* button;
+	Text* sanityText;
 
 	CardState state = CardState::IDLE;
 	int initY = 0;
