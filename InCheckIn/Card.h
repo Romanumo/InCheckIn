@@ -13,6 +13,8 @@ enum CardState
 class Card : public Engine::GameObject
 {
 public:
+	//MIght need to receive a Table Grid & Table Get a Portrait pointer
+	//Table would also have an opposing table pointer
 	Card() : GameObject(0,0, Conf::CARD_WIDTH, Conf::CARD_HEIGHT)
 	{
 		using namespace Engine;

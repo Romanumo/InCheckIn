@@ -6,6 +6,7 @@
 #include "Cell.h"
 #include "CardHand.h"
 #include "Participant.h"
+#include "TurnButton.h"
 
 class PlayerSide : public Engine::GameObject
 {
@@ -16,21 +17,26 @@ public:
 
         auto cellGrid = std::make_unique<GameObject>();
         cells = UIFactory::GetLayout<Cell>(cellGrid.get(), new Row(), 
-            Conf::SIDE_MAX_CARDS);
+            Conf::MAX_CARDS);
 
         auto handOriginal = std::make_unique<CardHand>();
         hand = handOriginal.get();
         ConnectCellsToHand(hand);
 
-        auto participant = std::make_unique<Participant>
-            (Conf::PARTICIPANT_WIDTH, Conf::CARD_HEIGHT, Conf::DESK_IMAGE, "You");
+        auto participant = std::make_unique<Participant>(Conf::DESK_IMAGE, "You");
         player = participant.get();
+
+        auto turnButton = std::make_unique<TurnButton>();
 
         Layout* row = new Layout(this, new Row(), Conf::PADDING, 0);
         row->AddGameObject(std::move(UIFactory::NewColumn(
             std::move(cellGrid), 
             std::move(handOriginal))));
-        row->AddGameObject(std::move(participant));
+
+        row->AddGameObject(std::move(UIFactory::NewColumn(
+            std::move(participant),
+            std::move(turnButton))));
+
         AddComponent(row);
     }
 

@@ -95,6 +95,9 @@
     <ClInclude Include="Creature.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TurnButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Assets\AssetsRef.txt" />

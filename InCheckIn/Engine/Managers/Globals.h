@@ -15,11 +15,15 @@ namespace Conf
 	inline constexpr int PADDING = 5;
 	inline constexpr int CARD_HEIGHT = 150;
 	inline constexpr int CARD_WIDTH = 100;
-	inline constexpr int SIDE_MAX_CARDS = 6;
+	inline constexpr int MAX_CARDS = 6;
 
 	inline constexpr int PARTICIPANT_WIDTH = CARD_WIDTH * 2;
+	inline constexpr int PARTICIPANT_HEIGHT = CARD_HEIGHT;
 
-	inline constexpr int TABLE_WIDTH = (CARD_WIDTH + PADDING) * SIDE_MAX_CARDS - PADDING;
+	inline constexpr int TURNBT_WIDTH = PARTICIPANT_WIDTH;
+	inline constexpr int TURNBT_HEIGHT = PARTICIPANT_HEIGHT;
+
+	inline constexpr int TABLE_WIDTH = (CARD_WIDTH + PADDING) * MAX_CARDS - PADDING;
 	inline constexpr int TABLE_HEIGHT = (CARD_HEIGHT + PADDING) * 3 + PADDING;
 
 	inline constexpr int WINDOW_HEIGHT = TABLE_HEIGHT;
@@ -37,6 +41,7 @@ namespace Conf
 	//Asset Paths
 	inline const std::string PLACEHOLDER_IMAGE = "Assets/Placeholder.png";
 	inline const std::string CARD_IMAGE_HEALER = "Assets/Healer.png";
+	inline const std::string TURNBT_IMAGE = "Assets/TableSide.png";
 	inline const std::string DESK_IMAGE = "Assets/TableSide.png";
 	inline const std::string FONT = "Assets/Rubik-SemiBold.ttf";
 

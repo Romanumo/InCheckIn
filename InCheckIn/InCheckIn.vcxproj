@@ -161,6 +161,7 @@
     <ClInclude Include="Participant.h" />
     <ClInclude Include="Table.h" />
     <ClInclude Include="PlayerSide.h" />
+    <ClInclude Include="TurnButton.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Assets\AssetsRef.txt" />
