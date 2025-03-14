@@ -13,7 +13,7 @@ namespace Engine
 	public:
 		Event()
 		{
-			onInvoke.reserve(Config::MAX_OBSERVERS);
+			onInvoke.reserve(Conf::MAX_OBSERVERS);
 		}
 
 		void AddEvent(std::function<void()> action)

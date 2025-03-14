@@ -84,6 +84,7 @@ bool GameObject::AdoptChild(std::unique_ptr<GameObject> child)
 
 	child->parent = this;
 	children.push_back(std::move(child));
+	UpdateTransform();
 	return true;
 }
 

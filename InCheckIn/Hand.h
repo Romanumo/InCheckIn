@@ -2,18 +2,18 @@
 #include "Engine/UIFactory.h"
 #include "Engine/Button.h"
 #include "Engine/GameObject.h"
+#include "CardFactory.h"
 #include "Card.h"
 
-class CardHand : public Engine::GameObject
+class Hand : public GameObject
 {
 public:
-    CardHand() : Engine::GameObject()
+    Hand() : GameObject()
 	{
-        using namespace Engine;
-        rowComponent = new Layout(this, new Row(), Config::PADDING, 0);
+        rowComponent = new Layout(this, new Row(), Conf::PADDING, 0);
         for (int i = 0;i < 5;i++)
         {
-            auto card = std::make_unique<Card>();
+            auto card = std::make_unique<Card>(CardFactory::Healer());
 
             card->GetComponent<Button>()->AddOnLeftClick(
                 [card = card.get(), this] {
@@ -26,7 +26,7 @@ public:
             this->cards.push_back(card.get());
             rowComponent->AddGameObject(std::move(card));
         }
-        this->SetRelSize(Config::TABLE_WIDTH, Config::CARD_HEIGHT);
+        this->SetRelSize(Conf::TABLE_WIDTH, Conf::CARD_HEIGHT);
         rowComponent->AlignCenter();
         
         AddComponent(rowComponent);
@@ -58,7 +58,7 @@ private:
     std::vector<Card*> cards;
 
     Card* chosenCard = nullptr;
-    Engine::Layout* rowComponent = nullptr;
+    Layout* rowComponent = nullptr;
 
     void RemoveCard(Card* card)
     {

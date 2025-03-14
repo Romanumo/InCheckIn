@@ -41,13 +41,7 @@
     <ClInclude Include="Engine\TextSurface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Layout\Column.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Layout\Layout.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Layout\Row.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Managers\Globals.h">
@@ -77,16 +71,22 @@
     <ClInclude Include="Card.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CardHand.h">
+    <ClInclude Include="Hand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Table.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TableSide.h">
+    <ClInclude Include="Engine\Layout\LayoutType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Cell.h">
+    <ClInclude Include="Field.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CardFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CardStats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
