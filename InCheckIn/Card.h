@@ -14,20 +14,21 @@ enum CardState
 class Card : public GameObject
 {
 public:
-	Card() : GameObject(0,0, Conf::CARD_WIDTH, Conf::CARD_HEIGHT)
+	Card(CardStats stats) : GameObject(0,0, Conf::CARD_WIDTH, Conf::CARD_HEIGHT), 
+		stats(stats)
 	{
 		button = new Button(this);
-		Image* image = new Image(this, Conf::CARD_IMAGE_HEALER);
+		Image* image = new Image(this, stats.imagePath);
 
 		AssignButton(button);
 
 		AdoptChild(std::move(UIFactory::NewText(
 			10, Conf::CARD_HEIGHT - 30, Conf::CARD_WIDTH / 5, 20,
 			sanityText)));
-		sanityText->SetText("0", Conf::SANITY_COLOR);
+		sanityText->SetText(std::to_string(stats.sanity), Conf::SANITY_COLOR);
 
-		this->AddComponent(image);
-		this->AddComponent(button);
+		AddComponent(image);
+		AddComponent(button);
 	}
 
 	void IntoPlayedState()
@@ -50,6 +51,8 @@ private:
 
 	CardState state = CardState::IDLE;
 	int initY = 0;
+
+	CardStats stats;
 
 	void AssignButton(Engine::Button* button)
 	{

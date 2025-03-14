@@ -2,6 +2,7 @@
 #include "Engine/UIFactory.h"
 #include "Engine/Button.h"
 #include "Engine/GameObject.h"
+#include "CardFactory.h"
 #include "Card.h"
 
 class Hand : public GameObject
@@ -12,7 +13,7 @@ public:
         rowComponent = new Layout(this, new Row(), Conf::PADDING, 0);
         for (int i = 0;i < 5;i++)
         {
-            auto card = std::make_unique<Card>();
+            auto card = std::make_unique<Card>(CardFactory::Healer());
 
             card->GetComponent<Button>()->AddOnLeftClick(
                 [card = card.get(), this] {

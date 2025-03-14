@@ -26,6 +26,8 @@ public:
             std::move(handObj),
             std::move(CreateTurnBell()))));
         AddComponent(col);
+
+        playerField->SetOpposingField(enemyField);
     }
 
 private:

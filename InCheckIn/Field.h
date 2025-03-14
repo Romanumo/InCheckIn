@@ -15,7 +15,16 @@ public:
         CreateAvatar(name, imagePath);
     }
 
+    void SetOpposingField(Field* opposing)
+    {
+        if (opposingField) return;
+
+        opposingField = opposing;
+        opposing->SetOpposingField(this);
+    }
+
 private:
+    Field* opposingField;
     Text* sanityText;
     int sanity;
 
@@ -26,15 +35,17 @@ private:
         auto slots = UIFactory::GetLayout<GameObject>(this, new Row(), Conf::MAX_CARDS,
             0, 0, Conf::CARD_WIDTH, Conf::CARD_HEIGHT);
 
+        int index = 0;
         for (const auto slot : slots)
         {
             Button* button = new Button(slot);
             Image* image = new Image(slot, Conf::PLACEHOLDER_IMAGE);
 
-            if (hand) AssignHand(hand, button, slot);
+            if (hand) AssignHand(hand, button, slot, index);
 
             slot->AddComponent(button);
             slot->AddComponent(image);
+            index++;
         }
     }
 
@@ -56,18 +67,18 @@ private:
         GetComponent<Layout>()->AddGameObject(std::move(avatar));
     }
 
-    void AssignHand(Hand* hand, Engine::Button* button, GameObject* slot)
+    void AssignHand(Hand* hand, Button* button, GameObject* slot, int index)
     {
-        button->AddOnLeftClick([hand, button, slot] {
+        button->AddOnLeftClick([this, hand, button, slot, index] {
             std::unique_ptr<GameObject> cardOriginal = hand->PlaceCard();
-            GameObject* cardRef = cardOriginal.get();
-
             if (cardOriginal)
             {
+                GameObject* cardRef = cardOriginal.get();
                 slot->AdoptChild(std::move(cardOriginal));
                 cardRef->SetRelPosition(0, 0);
 
                 button->SetEnabled(false);
+                cardPlaced[index] = dynamic_cast<Card*>(cardRef);
             }
         });
     }
