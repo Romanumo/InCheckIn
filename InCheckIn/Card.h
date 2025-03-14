@@ -44,6 +44,7 @@ public:
 	}
 
 	CardState GetState() { return state; }
+	std::string GetName() { return stats.name; }
 
 private:
 	Button* button;

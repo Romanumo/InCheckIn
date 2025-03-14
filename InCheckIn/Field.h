@@ -23,13 +23,23 @@ public:
         opposing->SetOpposingField(this);
     }
 
+    void PlayTurn()
+    {
+        for (int i = 0;i < Conf::MAX_CARDS;i++)
+        {
+            if(cardPlaced[i]) std::cout << "Card in " << i <<
+                 " is: " << cardPlaced[i]->GetName() << std::endl;
+        }
+    }
+
 private:
     Field* opposingField;
     Text* sanityText;
     int sanity;
 
-    Card* cardPlaced[Conf::MAX_CARDS];
+    Card** cardPlaced = new Card * [Conf::MAX_CARDS];
 
+    #pragma region Init
     void CreateSlots(Hand* hand)
     {
         auto slots = UIFactory::GetLayout<GameObject>(this, new Row(), Conf::MAX_CARDS,
@@ -47,6 +57,12 @@ private:
             slot->AddComponent(image);
             index++;
         }
+
+        for (int i = 0; i < Conf::MAX_CARDS; i++) 
+        {
+            cardPlaced[i] = nullptr;
+        }
+
     }
 
     void CreateAvatar(const std::string& name, const std::string& imagePath)
@@ -80,6 +96,7 @@ private:
                 button->SetEnabled(false);
                 cardPlaced[index] = dynamic_cast<Card*>(cardRef);
             }
-        });
+            });
     }
+    #pragma endregion
 };

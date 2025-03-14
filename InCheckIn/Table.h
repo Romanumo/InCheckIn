@@ -4,10 +4,46 @@
 #include "Field.h"
 #include "Hand.h"
 
+enum GameFlow
+{
+    CHOOSING,
+    PLAYER, 
+    ENEMY
+};
+
 class Table : public Engine::GameObject
 {
 public:
     Table() : Engine::GameObject(Conf::PADDING, Conf::PADDING, 0, 0)
+    {
+        CreateTable();
+        playerField->SetOpposingField(enemyField);
+    }
+
+private:
+    Field* enemyField = nullptr;
+    Field* playerField = nullptr;
+    GameFlow turn = GameFlow::CHOOSING;
+
+    void NextTurn()
+    {
+        switch (turn)
+        {
+        case CHOOSING:
+            turn = GameFlow::PLAYER;
+            playerField->PlayTurn();
+            break;
+        case PLAYER:
+            turn = GameFlow::ENEMY;
+            break;
+        case ENEMY:
+            turn = GameFlow::CHOOSING;
+            break;
+        }
+    }
+
+    #pragma region Init
+    void CreateTable()
     {
         auto eFieldObj = std::make_unique<Field>("Concussion", Conf::DESK_IMAGE);
         enemyField = eFieldObj.get();
@@ -23,23 +59,16 @@ public:
         col->AddGameObject(std::move(pFieldObj));
         col->AddGameObject(std::move(
             UIFactory::NewRow(
-            std::move(handObj),
-            std::move(CreateTurnBell()))));
+                std::move(handObj),
+                std::move(CreateTurnBell()))));
         AddComponent(col);
-
-        playerField->SetOpposingField(enemyField);
     }
-
-private:
-    Field* enemyField = nullptr;
-    Field* playerField = nullptr;
 
     std::unique_ptr<GameObject> CreateTurnBell()
     {
-        auto bellObj = std::make_unique<GameObject>(0, 0, 
+        auto bellObj = std::make_unique<GameObject>(0, 0,
             Conf::TURNBT_WIDTH, Conf::TURNBT_HEIGHT);
         Image* image = new Image(bellObj.get(), Conf::TURNBT_IMAGE);
-        bellObj->AddComponent(image);
 
         bellObj->AdoptChild(std::move(UIFactory::NewText(0, 0,
             Conf::TURNBT_WIDTH, Conf::TURNBT_HEIGHT, "End Turn")));
@@ -47,15 +76,12 @@ private:
         Button* button = new Button(bellObj.get());
 
         button->AddOnLeftClick([this] {
-            NextTurn();
+            if (turn == GameFlow::CHOOSING) NextTurn();
             });
 
+        bellObj->AddComponent(image);
         bellObj->AddComponent(button);
         return bellObj;
     }
-
-    void NextTurn()
-    {
-
-    }
+    #pragma endregion
 };
