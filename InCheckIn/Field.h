@@ -27,26 +27,47 @@ public:
     {
         for (int i = 0;i < Conf::MAX_CARDS;i++)
         {
-            if(cardPlaced[i]) std::cout << "Card in " << i <<
-                 " is: " << cardPlaced[i]->GetName() << std::endl;
+            if (cardPlaced[i])
+            {
+                std::cout << "Place " << i << ": ";
+                cardPlaced[i]->Trigger();
+            }
         }
     }
+
+    void PlaceCard(std::unique_ptr<Card> card, int slotIndex)
+    {
+        if (!card || !isEnabled) return;
+
+        Card* cardRef = card.get();
+        slots[slotIndex]->GetParent()->AdoptChild(std::move(card));
+        cardRef->SetRelPosition(0, 0);
+        cardRef->IntoPlayedState();
+
+        slots[slotIndex]->SetEnabled(false);
+        cardPlaced[slotIndex] = cardRef;
+    }
+
+    void SetEnabled(bool enabled) { isEnabled = enabled; }
 
 private:
     Field* opposingField;
     Text* sanityText;
     int sanity;
 
+    bool isEnabled = true;
+
     Card** cardPlaced = new Card * [Conf::MAX_CARDS];
+    Button** slots = new Button * [Conf::MAX_CARDS];
 
     #pragma region Init
     void CreateSlots(Hand* hand)
     {
-        auto slots = UIFactory::GetLayout<GameObject>(this, new Row(), Conf::MAX_CARDS,
+        auto slotsObj = UIFactory::GetLayout<GameObject>(this, new Row(), Conf::MAX_CARDS,
             0, 0, Conf::CARD_WIDTH, Conf::CARD_HEIGHT);
 
         int index = 0;
-        for (const auto slot : slots)
+        for (const auto slot : slotsObj)
         {
             Button* button = new Button(slot);
             Image* image = new Image(slot, Conf::PLACEHOLDER_IMAGE);
@@ -55,6 +76,7 @@ private:
 
             slot->AddComponent(button);
             slot->AddComponent(image);
+            slots[index] = button;
             index++;
         }
 
@@ -62,7 +84,6 @@ private:
         {
             cardPlaced[i] = nullptr;
         }
-
     }
 
     void CreateAvatar(const std::string& name, const std::string& imagePath)
@@ -86,16 +107,8 @@ private:
     void AssignHand(Hand* hand, Button* button, GameObject* slot, int index)
     {
         button->AddOnLeftClick([this, hand, button, slot, index] {
-            std::unique_ptr<GameObject> cardOriginal = hand->PlaceCard();
-            if (cardOriginal)
-            {
-                GameObject* cardRef = cardOriginal.get();
-                slot->AdoptChild(std::move(cardOriginal));
-                cardRef->SetRelPosition(0, 0);
-
-                button->SetEnabled(false);
-                cardPlaced[index] = dynamic_cast<Card*>(cardRef);
-            }
+            std::unique_ptr<Card> cardOriginal = hand->PlaceCard();
+            PlaceCard(std::move(cardOriginal), index);
             });
     }
     #pragma endregion

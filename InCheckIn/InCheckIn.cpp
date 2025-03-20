@@ -15,7 +15,7 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER);
 #ifdef SHOW_DEBUG_HELPERS
     Utils::CheckSDLErrors("SDL_Init");
 #endif

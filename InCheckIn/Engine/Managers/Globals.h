@@ -40,7 +40,7 @@ namespace Conf
 
 	//Asset Paths
 	inline const std::string PLACEHOLDER_IMAGE = "Assets/Placeholder.png";
-	inline const std::string CARD_IMAGE_HEALER = "Assets/Healer.png";
+	inline const std::string CARD_IMAGE_LEFTY = "Assets/Lefty.png";
 	inline const std::string TURNBT_IMAGE = "Assets/TableSide.png";
 	inline const std::string DESK_IMAGE = "Assets/TableSide.png";
 	inline const std::string FONT = "Assets/Rubik-SemiBold.ttf";

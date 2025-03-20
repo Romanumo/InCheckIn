@@ -13,7 +13,7 @@ public:
         rowComponent = new Layout(this, new Row(), Conf::PADDING, 0);
         for (int i = 0;i < 5;i++)
         {
-            auto card = std::make_unique<Card>(CardFactory::Healer());
+            auto card = std::make_unique<Card>(CardFactory::Lefty());
 
             card->GetComponent<Button>()->AddOnLeftClick(
                 [card = card.get(), this] {
@@ -39,21 +39,18 @@ public:
         chosenCard = card;
     }
 
-    std::unique_ptr<GameObject> PlaceCard()
+    std::unique_ptr<Card> PlaceCard()
     {
         if (!chosenCard) return nullptr;
 
-        //Hand needs to move ownership of card to the tableSide
         std::unique_ptr<GameObject> child = TransferChild(chosenCard);
-
-        chosenCard->IntoPlayedState();
         RemoveCard(chosenCard);
 
-        rowComponent->AlignCenter();
         chosenCard = nullptr;
-        return child;
+        rowComponent->AlignCenter();
+        return std::unique_ptr<Card>(dynamic_cast<Card*>(child.release()));
     }
-
+    
 private:
     std::vector<Card*> cards;
 

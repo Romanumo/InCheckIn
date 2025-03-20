@@ -6,8 +6,8 @@
 static class CardFactory
 {
 public:
-	static CardStats Healer()
+	static CardStats Lefty()
 	{
-		return CardStats("Healer", Conf::CARD_IMAGE_HEALER, 0, 2, NULL);
+		return CardStats("Lefty", Conf::CARD_IMAGE_LEFTY, 0, 2, NULL);
 	}
 };

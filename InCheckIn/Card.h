@@ -43,6 +43,11 @@ public:
 		state = CardState::IDLE;
 	}
 
+	void Trigger()
+	{
+		std::cout << GetName() << std::endl;
+	}
+
 	CardState GetState() { return state; }
 	std::string GetName() { return stats.name; }
 
@@ -54,6 +59,11 @@ private:
 	int initY = 0;
 
 	CardStats stats;
+
+	Card* GetLeftNeighbor()
+	{
+
+	}
 
 	void AssignButton(Engine::Button* button)
 	{

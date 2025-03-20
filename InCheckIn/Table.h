@@ -18,6 +18,8 @@ public:
     {
         CreateTable();
         playerField->SetOpposingField(enemyField);
+
+        enemyField->PlaceCard(std::make_unique<Card>(CardFactory::Lefty()), 2);
     }
 
 private:
@@ -31,15 +33,21 @@ private:
         {
         case CHOOSING:
             turn = GameFlow::PLAYER;
-            playerField->PlayTurn();
+            NextTurn();
             break;
         case PLAYER:
+            playerField->SetEnabled(false);
+            playerField->PlayTurn();
             turn = GameFlow::ENEMY;
+            NextTurn();
             break;
         case ENEMY:
+            enemyField->PlayTurn();
+            playerField->SetEnabled(true);
             turn = GameFlow::CHOOSING;
             break;
         }
+
     }
 
     #pragma region Init
@@ -76,7 +84,7 @@ private:
         Button* button = new Button(bellObj.get());
 
         button->AddOnLeftClick([this] {
-            if (turn == GameFlow::CHOOSING) NextTurn();
+            if(turn == GameFlow::CHOOSING) NextTurn();
             });
 
         bellObj->AddComponent(image);
