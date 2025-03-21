@@ -42,7 +42,7 @@ public:
         Card* cardRef = card.get();
         slots[slotIndex]->GetParent()->AdoptChild(std::move(card));
         cardRef->SetRelPosition(0, 0);
-        cardRef->IntoPlayedState();
+        cardRef->IntoPlayedState(this);
 
         slots[slotIndex]->SetEnabled(false);
         cardPlaced[slotIndex] = cardRef;

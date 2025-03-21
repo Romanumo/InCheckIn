@@ -11,6 +11,7 @@ enum CardState
 	PLAYED
 };
 
+//Add card to hand function
 class Card : public GameObject
 {
 public:
@@ -31,21 +32,24 @@ public:
 		AddComponent(button);
 	}
 
-	void IntoPlayedState()
+	void IntoPlayedState(Field* field)
 	{
 		button->SetEnabled(false);
 		state = CardState::PLAYED;
+		this->field = field;
 	}
 
 	void Deselect()
 	{
+		if (state != CardState::CHOSEN) return;
+
 		SetRelPosition(GetRelTf()->x, initY);
 		state = CardState::IDLE;
 	}
 
 	void Trigger()
 	{
-		std::cout << GetName() << std::endl;
+		stats.onTrigger(this);
 	}
 
 	CardState GetState() { return state; }
@@ -54,16 +58,12 @@ public:
 private:
 	Button* button;
 	Text* sanityText;
+	Field* field;
 
 	CardState state = CardState::IDLE;
 	int initY = 0;
 
 	CardStats stats;
-
-	Card* GetLeftNeighbor()
-	{
-
-	}
 
 	void AssignButton(Engine::Button* button)
 	{
