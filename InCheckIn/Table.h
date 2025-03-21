@@ -33,18 +33,21 @@ private:
         {
         case CHOOSING:
             turn = GameFlow::PLAYER;
+            std::cout << "Chosing Ends" << std::endl;
             NextTurn();
             break;
         case PLAYER:
             playerField->SetEnabled(false);
             playerField->PlayTurn();
             turn = GameFlow::ENEMY;
+            std::cout << "Player Turn Ends" << std::endl;
             NextTurn();
             break;
         case ENEMY:
             enemyField->PlayTurn();
             playerField->SetEnabled(true);
             turn = GameFlow::CHOOSING;
+            std::cout << "Enemy Turn Ends" << std::endl;
             break;
         }
 

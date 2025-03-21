@@ -4,12 +4,13 @@
 #include "Engine/GameObject.h"
 
 class Card;
+class Field;
 
 struct CardStats
 {
 public:
 	CardStats(const std::string& name, const std::string& imagePath,
-		int attack, int sanity, std::function<void(Card*)> trigger)
+		int attack, int sanity, std::function<void(Card*, Field*, int)> trigger)
 	{
 		this->name = name;
 		this->imagePath = imagePath;
@@ -22,5 +23,5 @@ public:
 	std::string imagePath;
 	int attack;
 	int sanity;
-	std::function<void(Card*)> onTrigger;
+	std::function<void(Card*, Field*, int)> onTrigger;
 };

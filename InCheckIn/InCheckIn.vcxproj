@@ -133,7 +133,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Card.cpp" />
     <ClCompile Include="Engine\GameObject.cpp" />
+    <ClCompile Include="Field.cpp" />
     <ClCompile Include="InCheckIn.cpp" />
   </ItemGroup>
   <ItemGroup>
