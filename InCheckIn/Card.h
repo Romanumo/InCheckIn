@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/GameObject.h"
 #include "Engine/UIFactory.h"
+#include "CardStats.h"
 using namespace Engine;
 
 enum CardState
@@ -11,39 +12,22 @@ enum CardState
 	PLAYED
 };
 
+//Might need to have 2 states rather. Just make this card into 2 compoennts
+//2 have the CardStats passing to eahc other. As I might have a hand return
+
+//BUt Card(Hand) need to have a refence to Card (Minion) either as pointer or a function pointer
+
 class Card : public GameObject
 {
 public:
-	Card(CardStats stats) : GameObject(0,0, Conf::CARD_WIDTH, Conf::CARD_HEIGHT), 
-		stats(stats)
-	{
-		button = new Button(this);
-		Image* image = new Image(this, stats.imagePath);
+	Card(CardStats stats);
 
-		AssignButton(button);
+	void IntoPlayedState();
+	void Deselect();
+	void Trigger(Field* field, int index);
 
-		AdoptChild(std::move(UIFactory::NewText(
-			10, Conf::CARD_HEIGHT - 30, Conf::CARD_WIDTH / 5, 20,
-			sanityText)));
-		sanityText->SetText(std::to_string(stats.sanity), Conf::SANITY_COLOR);
-
-		AddComponent(image);
-		AddComponent(button);
-	}
-
-	void IntoPlayedState()
-	{
-		button->SetEnabled(false);
-		state = CardState::PLAYED;
-	}
-
-	void Deselect()
-	{
-		SetRelPosition(GetRelTf()->x, initY);
-		state = CardState::IDLE;
-	}
-
-	CardState GetState() { return state; }
+	CardState GetState();
+	std::string GetName();
 
 private:
 	Button* button;
@@ -54,30 +38,5 @@ private:
 
 	CardStats stats;
 
-	void AssignButton(Engine::Button* button)
-	{
-		this->initY = GetRelTf()->y;
-		button->AddOnHoverEnter([this] {
-			if (state == CardState::IDLE)
-			{
-				SetRelPosition(GetRelTf()->x, GetRelTf()->y - 5);
-				state = CardState::HOVERED;
-			}
-			});
-
-		button->AddOnLeftClick([this] {
-			if (state == CardState::HOVERED)
-			{
-				SetRelPosition(GetRelTf()->x, GetRelTf()->y - 15);
-				state = CardState::CHOSEN;
-			}
-			});
-
-		button->AddOnHoverExit([this] {
-			if (state == CardState::HOVERED)
-			{
-				Deselect();
-			}
-			});
-	}
+	void AssignButton(Engine::Button* button);
 };

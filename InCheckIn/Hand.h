@@ -11,26 +11,20 @@ public:
     Hand() : GameObject()
 	{
         rowComponent = new Layout(this, new Row(), Conf::PADDING, 0);
-        for (int i = 0;i < 5;i++)
+        AddComponent(rowComponent);
+
+        for (int i = 0;i < 3;i++)
         {
-            auto card = std::make_unique<Card>(CardFactory::Healer());
+            auto card = std::make_unique<Card>(CardFactory::Lefty());
 
-            card->GetComponent<Button>()->AddOnLeftClick(
-                [card = card.get(), this] {
-                if (card->GetState() == CardState::CHOSEN)
-                {
-                    ChooseCard(card);
-                }
-                });
-
-            this->cards.push_back(card.get());
-            rowComponent->AddGameObject(std::move(card));
+            AddCard(std::move(card));
         }
+
+        AddCard(std::make_unique<Card>(CardFactory::Basic()));
+        AddCard(std::make_unique<Card>(CardFactory::Basic()));
         this->SetRelSize(Conf::TABLE_WIDTH, Conf::CARD_HEIGHT);
         rowComponent->AlignCenter();
-        
-        AddComponent(rowComponent);
-	}
+    }
 
     void ChooseCard(Card* card)
     {
@@ -39,21 +33,34 @@ public:
         chosenCard = card;
     }
 
-    std::unique_ptr<GameObject> PlaceCard()
+    void AddCard(std::unique_ptr<Card> card)
+    {
+        card->GetComponent<Button>()->AddOnLeftClick(
+            [card = card.get(), this] {
+                if (card->GetState() == CardState::CHOSEN)
+                {
+                    ChooseCard(card);
+                }
+            });
+
+        cards.push_back(card.get());
+
+        rowComponent->AddGameObject(std::move(card));
+        rowComponent->AlignCenter();
+    }
+    
+    std::unique_ptr<Card> PlaceCard()
     {
         if (!chosenCard) return nullptr;
 
-        //Hand needs to move ownership of card to the tableSide
         std::unique_ptr<GameObject> child = TransferChild(chosenCard);
-
-        chosenCard->IntoPlayedState();
         RemoveCard(chosenCard);
 
-        rowComponent->AlignCenter();
         chosenCard = nullptr;
-        return child;
+        rowComponent->AlignCenter();
+        return std::unique_ptr<Card>(dynamic_cast<Card*>(child.release()));
     }
-
+    
 private:
     std::vector<Card*> cards;
 

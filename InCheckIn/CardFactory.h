@@ -2,12 +2,26 @@
 #include "Engine/UIFactory.h"
 #include "Engine/Component.h"
 #include "CardStats.h"
+#include "Field.h"
+#include "Card.h"
 
 static class CardFactory
 {
 public:
-	static CardStats Healer()
+	static CardStats Lefty()
 	{
-		return CardStats("Healer", Conf::CARD_IMAGE_HEALER, 0, 2, NULL);
+		return CardStats("Lefty", Conf::CARD_IMAGE_LEFTY, 0, 2, []
+		(Card* card, Field* field, int index) {
+			std::cout << card->GetName() << ": Repeating Left" << std::endl;
+			if (index - 1 >= 0) field->TriggerCard(index - 1);
+			});
+	}
+
+	static CardStats Basic()
+	{
+		return CardStats("Basic", Conf::CARD_IMAGE_BASIC, 0, 0, []
+		(Card* card, Field* field, int index) {
+			std::cout << card->GetName() << ": Do Something" << std::endl;
+			});
 	}
 };

@@ -10,6 +10,7 @@ namespace Engine
 {
 	class Component;
 
+	//AddComponenet? with args
 	class GameObject
 	{
 	public:
