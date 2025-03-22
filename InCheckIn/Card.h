@@ -14,17 +14,17 @@ enum CardState
 class Card : public Button
 {
 public:
-	Card(GameObject* parent, Minion* minion) : Button(parent), minion(minion)
+	Card(GameObject* parent, int spiralCost, Minion* minion) : 
+		Button(parent), minion(minion), spiral(spiralCost)
 	{
 		AssignButton();
 	}
 
-	Minion* TransformToMinion(Field* field)
+	void TransformToMinion(Field* field, Minion*& minion)
 	{
-		minion->SetParent(GetParent());
-		GetParent()->AddComponent(minion);
-
-		return minion;
+		minion = this->minion;
+		minion->ActivateMinion(GetParent(), field);
+		GetParent()->RemoveComponent<Card>();
 	}
 
 	void Deselect()
@@ -33,10 +33,10 @@ public:
 		state = CardState::IDLE;
 	}
 
-	std::string GetName() { return minion->GetName(); }
 	CardState GetState() { return state; }
 
 private:
+	int spiral;
 	Minion* minion;
 
 	CardState state = CardState::IDLE;

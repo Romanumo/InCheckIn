@@ -39,11 +39,11 @@ void Field::PlaceCard(std::unique_ptr<GameObject> card, int slotIndex)
     slots[slotIndex]->GetParent()->AdoptChild(std::move(card));
     cardRef->GetParent()->SetRelPosition(0, 0);
 
-    Minion* minion = cardRef->TransformToMinion(this);
-    cardRef->GetParent()->RemoveComponent<Card>();
+    Minion* minion;
+    cardRef->TransformToMinion(this, minion);
 
-    slots[slotIndex]->SetEnabled(false);
     minionPlaced[slotIndex] = minion;
+    slots[slotIndex]->SetEnabled(false);
 }
 
 void Field::SetEnabled(bool enabled) { isEnabled = enabled; }
@@ -85,7 +85,7 @@ void Field::CreateAvatar(const std::string& name, const std::string& imagePath)
     avatar->AdoptChild(std::move(UIFactory::NewText(0, 10, w, 30, name)));
 
     avatar->AdoptChild(std::move(UIFactory::NewText(10, h - 30, w / 5, 20, sanityText)));
-    sanityText->SetText(std::to_string(sanity), Conf::SANITY_COLOR);
+    sanityText->SetText(std::to_string(sanity), Conf::SPIRAL_COLOR);
 
     avatar->AddComponent(image);
 

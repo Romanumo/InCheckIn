@@ -140,7 +140,6 @@
   <ItemGroup>
     <ClInclude Include="Card.h" />
     <ClInclude Include="CardFactory.h" />
-    <ClInclude Include="CardStats.h" />
     <ClInclude Include="Hand.h" />
     <ClInclude Include="Engine\Component.h" />
     <ClInclude Include="Engine\Button.h" />

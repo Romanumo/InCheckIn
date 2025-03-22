@@ -4,14 +4,22 @@
 #include "Field.h"
 using namespace Engine;
 
+//Minion in a way is both a capsule, a container holding a minion relavant info
+//But can be activated later to be an actual component, when played in board
+
 class Minion : public Component
 {
 public:
-	Minion(int sanity, int attack, const std::string& name) : Component()
+	Minion(const std::string& name) : Component()
 	{
 		this->name = name;
-		this->attack = attack;
-		this->sanity = sanity;
+	}
+
+	void ActivateMinion(GameObject* parent, Field* field)
+	{
+		this->parent = parent;
+		this->field = field;
+		parent->AddComponent(this);
 	}
 
 	void Trigger(Field* field, int index)
@@ -24,16 +32,14 @@ public:
 		if (trigger) onTrigger = trigger;
 	}
 
-	void SetParent(GameObject* parent) { this->parent = parent; }
-	int GetSanity() { return sanity; }
 	std::string GetName() { return name; }
 
 	virtual void Render(SDL_Surface* surface) {}
 	virtual void HandleEvent(const SDL_Event& event) {}
 
 private:
-	int attack;
-	int sanity;
 	std::string name;
 	std::function<void(Field*, int)> onTrigger;
+
+	Field* field;
 };

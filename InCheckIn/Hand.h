@@ -15,7 +15,7 @@ public:
 
         for (int i = 0;i < 3;i++)
         {
-            AddCard(std::move(CardFactory::Lefty()));
+            AddCard(CardFactory::Lefty());
         }
 
         AddCard(CardFactory::Basic());
@@ -32,20 +32,20 @@ public:
         chosenCard = card;
     }
 
-    void AddCard(std::unique_ptr<GameObject> card)
+    void AddCard(std::unique_ptr<GameObject> cardObj)
     {
-        Card* cardComp = card->GetComponent<Card>();
-        cardComp->AddOnLeftClick(
-            [this, cardComp] {
-                if (cardComp->GetState() == CardState::CHOSEN)
+        Card* card = cardObj->GetComponent<Card>();
+        card->AddOnLeftClick(
+            [this, card] {
+                if (card->GetState() == CardState::CHOSEN)
                 {
-                    ChooseCard(cardComp);
+                    ChooseCard(card);
                 }
             });
 
-        cards.push_back(cardComp);
+        cards.push_back(card);
 
-        rowComponent->AddGameObject(std::move(card));
+        rowComponent->AddGameObject(std::move(cardObj));
         rowComponent->AlignCenter();
     }
     
