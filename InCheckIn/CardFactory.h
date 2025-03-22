@@ -9,31 +9,27 @@ static class CardFactory
 public:
 	static std::unique_ptr<GameObject> Lefty()
 	{
-		Minion* minion = new Minion("Lefty");
-		minion->SetTrigger([minion](Field* field, int index) {
-			std::cout << minion->GetName() << ": Repeating Left" << std::endl;
+		return NewCard(Conf::CARD_IMAGE_LEFTY, 2, 
+			MinionStats("Lefty", [](Minion* self, Field* field, int index) {
+			std::cout << self->GetName() << ": Repeating Left" << std::endl;
 			if (index - 1 >= 0) field->TriggerCard(index - 1);
-			});
-
-		return NewCard(Conf::CARD_IMAGE_LEFTY, 2, minion);
+			}));
 	}
 
 	static std::unique_ptr<GameObject> Basic()
 	{
-		Minion* minion = new Minion("Basic");
-		minion->SetTrigger([minion](Field* field, int index) {
-			std::cout << minion->GetName() << ": Do Something Basic" << std::endl;
-			});
-
-		return NewCard(Conf::CARD_IMAGE_BASIC, 0, minion);
+		return NewCard(Conf::CARD_IMAGE_BASIC, 0,
+			MinionStats("Basic", [](Minion* self, Field* field, int index) {
+			std::cout << self->GetName() << ": Do Something" << std::endl;
+			}));
 	}
 
 private:
 	static std::unique_ptr<GameObject> NewCard(
-		const std::string& imagePath, int spiralCost, Minion* minion)
+		const std::string& imagePath, int spiralCost, MinionStats minionStats)
 	{
 		auto cardObj = std::make_unique<GameObject>(0, 0, Conf::CARD_WIDTH, Conf::CARD_HEIGHT);
-		Card* card = new Card(cardObj.get(), spiralCost, minion);
+		Card* card = new Card(cardObj.get(), spiralCost, minionStats);
 		Image* image = new Image(cardObj.get(), imagePath);
 
 		Text* text;
