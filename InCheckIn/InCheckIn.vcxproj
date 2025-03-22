@@ -133,7 +133,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Card.cpp" />
     <ClCompile Include="Engine\GameObject.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="InCheckIn.cpp" />
@@ -160,6 +159,7 @@
     <ClInclude Include="Engine\TextSurface.h" />
     <ClInclude Include="Engine\UIFactory.h" />
     <ClInclude Include="Field.h" />
+    <ClInclude Include="Minion.h" />
     <ClInclude Include="Table.h" />
   </ItemGroup>
   <ItemGroup>

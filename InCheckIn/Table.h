@@ -19,7 +19,7 @@ public:
         CreateTable();
         playerField->SetOpposingField(enemyField);
 
-        enemyField->PlaceCard(std::make_unique<Card>(CardFactory::Lefty()), 2);
+        enemyField->PlaceCard(CardFactory::Basic(), 2);
     }
 
 private:

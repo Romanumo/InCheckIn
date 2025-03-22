@@ -15,13 +15,12 @@ public:
 
         for (int i = 0;i < 3;i++)
         {
-            auto card = std::make_unique<Card>(CardFactory::Lefty());
-
-            AddCard(std::move(card));
+            AddCard(std::move(CardFactory::Lefty()));
         }
 
-        AddCard(std::make_unique<Card>(CardFactory::Basic()));
-        AddCard(std::make_unique<Card>(CardFactory::Basic()));
+        AddCard(CardFactory::Basic());
+        AddCard(CardFactory::Basic());
+
         this->SetRelSize(Conf::TABLE_WIDTH, Conf::CARD_HEIGHT);
         rowComponent->AlignCenter();
     }
@@ -33,32 +32,33 @@ public:
         chosenCard = card;
     }
 
-    void AddCard(std::unique_ptr<Card> card)
+    void AddCard(std::unique_ptr<GameObject> card)
     {
-        card->GetComponent<Button>()->AddOnLeftClick(
-            [card = card.get(), this] {
-                if (card->GetState() == CardState::CHOSEN)
+        Card* cardComp = card->GetComponent<Card>();
+        cardComp->AddOnLeftClick(
+            [this, cardComp] {
+                if (cardComp->GetState() == CardState::CHOSEN)
                 {
-                    ChooseCard(card);
+                    ChooseCard(cardComp);
                 }
             });
 
-        cards.push_back(card.get());
+        cards.push_back(cardComp);
 
         rowComponent->AddGameObject(std::move(card));
         rowComponent->AlignCenter();
     }
     
-    std::unique_ptr<Card> PlaceCard()
+    std::unique_ptr<GameObject> PlaceCard()
     {
         if (!chosenCard) return nullptr;
 
-        std::unique_ptr<GameObject> child = TransferChild(chosenCard);
+        std::unique_ptr<GameObject> child = TransferChild(chosenCard->GetParent());
         RemoveCard(chosenCard);
 
         chosenCard = nullptr;
         rowComponent->AlignCenter();
-        return std::unique_ptr<Card>(dynamic_cast<Card*>(child.release()));
+        return child;
     }
     
 private:

@@ -1,6 +1,7 @@
 #pragma once
 #include "Field.h"
 #include "Hand.h"
+#include "Card.h"
 
 Field::Field(const std::string& name, const std::string& imagePath,
     Hand* hand) : GameObject()
@@ -21,26 +22,28 @@ void Field::PlayTurn()
 {
     for (int i = 0;i < Conf::MAX_CARDS;i++)
     {
-        if (cardPlaced[i]) cardPlaced[i]->Trigger(this, i);
+        TriggerCard(i);
     }
 }
 
 void Field::TriggerCard(int index)
 {
-    if (cardPlaced[index]) cardPlaced[index]->Trigger(this, index);
+    if (minionPlaced[index]) minionPlaced[index]->Trigger(this, index);
 }
 
-void Field::PlaceCard(std::unique_ptr<Card> card, int slotIndex)
+void Field::PlaceCard(std::unique_ptr<GameObject> card, int slotIndex)
 {
     if (!card || !isEnabled) return;
 
-    Card* cardRef = card.get();
+    Card* cardRef = card->GetComponent<Card>();
     slots[slotIndex]->GetParent()->AdoptChild(std::move(card));
-    cardRef->SetRelPosition(0, 0);
-    cardRef->IntoPlayedState();
+    cardRef->GetParent()->SetRelPosition(0, 0);
+
+    Minion* minion = cardRef->TransformToMinion(this);
+    cardRef->GetParent()->RemoveComponent<Card>();
 
     slots[slotIndex]->SetEnabled(false);
-    cardPlaced[slotIndex] = cardRef;
+    minionPlaced[slotIndex] = minion;
 }
 
 void Field::SetEnabled(bool enabled) { isEnabled = enabled; }
@@ -67,7 +70,7 @@ void Field::CreateSlots(Hand* hand)
 
     for (int i = 0; i < Conf::MAX_CARDS; i++)
     {
-        cardPlaced[i] = nullptr;
+        minionPlaced[i] = nullptr;
     }
 }
 
@@ -92,7 +95,7 @@ void Field::CreateAvatar(const std::string& name, const std::string& imagePath)
 void Field::AssignHand(Hand* hand, Button* button, GameObject* slot, int index)
 {
     button->AddOnLeftClick([this, hand, button, slot, index] {
-        std::unique_ptr<Card> cardOriginal = hand->PlaceCard();
+        std::unique_ptr<GameObject> cardOriginal = hand->PlaceCard();
         PlaceCard(std::move(cardOriginal), index);
         });
 }

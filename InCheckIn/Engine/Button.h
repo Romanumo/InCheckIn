@@ -43,7 +43,7 @@ namespace Engine
 		void AddOnHoverExit(std::function<void()> hoverExit) { onHoverExit.AddEvent(hoverExit); }
 		void SetEnabled(bool state) { isEnabled = state; }
 
-		virtual void HandleEvent(const SDL_Event& event) override
+		void HandleEvent(const SDL_Event& event) override
 		{
 			if (!isEnabled) return;
 

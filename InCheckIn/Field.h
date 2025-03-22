@@ -2,9 +2,10 @@
 #include "Engine/Managers/Globals.h"
 #include "Engine/UIFactory.h"
 #include "Engine/GameObject.h"
-#include "Card.h"
+using namespace Engine;
 
 class Hand;
+class Minion;
 
 class Field : public GameObject
 {
@@ -14,7 +15,7 @@ public:
     void SetOpposingField(Field* opposing);
 
     void TriggerCard(int index);
-    void PlaceCard(std::unique_ptr<Card> card, int slotIndex);
+    void PlaceCard(std::unique_ptr<GameObject> card, int slotIndex);
 
     void PlayTurn();
     void SetEnabled(bool enabled);
@@ -26,7 +27,7 @@ private:
     Field* opposingField;
     bool isEnabled = true;
 
-    Card** cardPlaced = new Card * [Conf::MAX_CARDS];
+    Minion** minionPlaced = new Minion * [Conf::MAX_CARDS];
     Button** slots = new Button * [Conf::MAX_CARDS];
 
     void CreateSlots(Hand* hand);
