@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/UIFactory.h"
 #include "Engine/GameObject.h"
+#include "AnimationManager.h"
 #include "Field.h"
 #include "Hand.h"
 

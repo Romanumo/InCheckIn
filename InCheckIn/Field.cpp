@@ -22,20 +22,31 @@ void Field::SetOpposingField(Field* opposing)
 
 void Field::PlayTurn()
 {
-    for (int i = 0;i < Conf::MAX_CARDS;i++)
-    {
-        TriggerCard(i);
-    }
-
+    TriggerCard(0);
     AnimationManager::GetInstance().PlayNextAnimation();
 }
 
 void Field::TriggerCard(int index)
 {
-    if (!minionPlaced[index]) return;
+    if (index >= Conf::MAX_CARDS)
+    {
+        if (cardQueue >= Conf::MAX_CARDS)
+        {
+            cardQueue = 0;
+            std::cout << "End Of Queue-----------" << std::endl;
+        }
+        return;
+    }
 
-    AnimationManager::GetInstance().EnqueueAnimation([=] { 
-        minionPlaced[index]->Trigger(index); });
+    if (!minionPlaced[index]) TriggerCard(++cardQueue);
+    else AnimationManager::GetInstance().EnqueueAnimation([=] {
+        bool isBreaker = minionPlaced[index]->Trigger(index);
+        if (isBreaker)
+        {
+            TriggerCard(++cardQueue);
+            std::cout << "Next List Card-----------" << std::endl;
+        }
+        });
 }
 
 void Field::PlaceCard(std::unique_ptr<GameObject> card, int slotIndex)

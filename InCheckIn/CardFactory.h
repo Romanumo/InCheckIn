@@ -10,17 +10,19 @@ public:
 	static std::unique_ptr<GameObject> Lefty()
 	{
 		return NewCard(Conf::CARD_IMAGE_LEFTY, 2, 
-			MinionStats("Lefty", [](Minion* self, int index) {
+			MinionStats("Lefty", [](Minion* self, int index) -> bool {
 			std::cout << self->GetName() << " " << index << ": Repeating Left" << std::endl;
 			if (index - 1 >= 0) self->GetField()->TriggerCard(index - 1);
+			return false;
 			}));
 	}
 
 	static std::unique_ptr<GameObject> Basic()
 	{
 		return NewCard(Conf::CARD_IMAGE_BASIC, 0,
-			MinionStats("Basic", [](Minion* self, int index) {
+			MinionStats("Basic", [](Minion* self, int index) -> bool {
 			std::cout << self->GetName() << " " << index << ": Do Something" << std::endl;
+			return true;
 			}));
 	}
 

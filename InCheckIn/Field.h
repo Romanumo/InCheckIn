@@ -26,6 +26,8 @@ private:
     Text* sanityText;
     int spiral;
 
+    int cardQueue = 0;
+
     Field* opposingField;
     bool isEnabled = true;
 
