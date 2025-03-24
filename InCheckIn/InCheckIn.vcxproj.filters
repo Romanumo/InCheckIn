@@ -92,6 +92,9 @@
     <ClInclude Include="Minion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AnimationManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Assets\AssetsRef.txt" />

@@ -1,4 +1,5 @@
 #pragma once
+#include "AnimationManager.h"
 #include "Field.h"
 #include "Hand.h"
 #include "Card.h"
@@ -25,11 +26,16 @@ void Field::PlayTurn()
     {
         TriggerCard(i);
     }
+
+    AnimationManager::GetInstance().PlayNextAnimation();
 }
 
 void Field::TriggerCard(int index)
 {
-    if (minionPlaced[index]) minionPlaced[index]->Trigger(index);
+    if (!minionPlaced[index]) return;
+
+    AnimationManager::GetInstance().EnqueueAnimation([=] { 
+        minionPlaced[index]->Trigger(index); });
 }
 
 void Field::PlaceCard(std::unique_ptr<GameObject> card, int slotIndex)

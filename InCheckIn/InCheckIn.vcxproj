@@ -138,6 +138,7 @@
     <ClCompile Include="InCheckIn.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationManager.h" />
     <ClInclude Include="Card.h" />
     <ClInclude Include="CardFactory.h" />
     <ClInclude Include="Hand.h" />

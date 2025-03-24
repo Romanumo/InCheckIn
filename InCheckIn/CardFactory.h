@@ -11,7 +11,7 @@ public:
 	{
 		return NewCard(Conf::CARD_IMAGE_LEFTY, 2, 
 			MinionStats("Lefty", [](Minion* self, int index) {
-			std::cout << self->GetName() << ": Repeating Left" << std::endl;
+			std::cout << self->GetName() << " " << index << ": Repeating Left" << std::endl;
 			if (index - 1 >= 0) self->GetField()->TriggerCard(index - 1);
 			}));
 	}
@@ -20,7 +20,7 @@ public:
 	{
 		return NewCard(Conf::CARD_IMAGE_BASIC, 0,
 			MinionStats("Basic", [](Minion* self, int index) {
-			std::cout << self->GetName() << ": Do Something" << std::endl;
+			std::cout << self->GetName() << " " << index << ": Do Something" << std::endl;
 			}));
 	}
 
