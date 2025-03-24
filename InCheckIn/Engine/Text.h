@@ -13,7 +13,7 @@ namespace Engine
 	{
 	public:
 		Text(GameObject* parent, const std::string& text, 
-			SDL_Color color = { 0, 0,0,255 }, int fontSize = 60) : 
+			SDL_Color color = { 0, 0,0,255 }, int fontSize = 30) : 
 			Component(parent), textColor(color)
 		{
 			textFactory = std::make_unique<DynamicTextSurface>();

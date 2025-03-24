@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/UIFactory.h"
 #include "Engine/GameObject.h"
+#include "AnimationManager.h"
 #include "Field.h"
 #include "Hand.h"
 
@@ -19,7 +20,30 @@ public:
         CreateTable();
         playerField->SetOpposingField(enemyField);
 
-        enemyField->PlaceCard(std::make_unique<Card>(CardFactory::Lefty()), 2);
+        enemyField->PlaceCard(CardFactory::Basic(), 2);
+    }
+
+    void NextTurn()
+    {
+        switch (turn)
+        {
+        case CHOOSING:
+            std::cout << "Chosing Ends" << std::endl;
+            turn = GameFlow::PLAYER;
+            playerField->SetEnabled(false);
+            playerField->PlayTurn();
+            break;
+        case PLAYER:
+            std::cout << "Player Turn Ends" << std::endl;
+            turn = GameFlow::ENEMY;
+            enemyField->PlayTurn();
+            break;
+        case ENEMY:
+            std::cout << "Enemy Turn Ends" << std::endl;
+            turn = GameFlow::CHOOSING;
+            playerField->SetEnabled(true);
+            break;
+        }
     }
 
 private:
@@ -27,41 +51,16 @@ private:
     Field* playerField = nullptr;
     GameFlow turn = GameFlow::CHOOSING;
 
-    void NextTurn()
-    {
-        switch (turn)
-        {
-        case CHOOSING:
-            turn = GameFlow::PLAYER;
-            std::cout << "Chosing Ends" << std::endl;
-            NextTurn();
-            break;
-        case PLAYER:
-            playerField->SetEnabled(false);
-            playerField->PlayTurn();
-            turn = GameFlow::ENEMY;
-            std::cout << "Player Turn Ends" << std::endl;
-            NextTurn();
-            break;
-        case ENEMY:
-            enemyField->PlayTurn();
-            playerField->SetEnabled(true);
-            turn = GameFlow::CHOOSING;
-            std::cout << "Enemy Turn Ends" << std::endl;
-            break;
-        }
-
-    }
-
     #pragma region Init
     void CreateTable()
     {
-        auto eFieldObj = std::make_unique<Field>("Concussion", Conf::DESK_IMAGE);
+        auto eFieldObj = std::make_unique<Field>("Hobby", Conf::DESK_IMAGE, this);
         enemyField = eFieldObj.get();
 
         auto handObj = std::make_unique<Hand>();
 
-        auto pFieldObj = std::make_unique<Field>("You", Conf::DESK_IMAGE, handObj.get());
+        auto pFieldObj = std::make_unique<Field>("You", Conf::DESK_IMAGE, this, 
+            handObj.get(), 10);
         playerField = pFieldObj.get();
 
         Engine::Layout* col = new Engine::Layout(this, new Engine::Column(),

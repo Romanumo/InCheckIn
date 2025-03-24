@@ -36,7 +36,7 @@ namespace Conf
 	inline constexpr SDL_Color BUTTON_CLEARED_COLOR{ 240, 240, 240, 255 };
 	inline constexpr SDL_Color BUTTON_SUCCESS_COLOR{ 210, 235, 210, 255 };
 	inline constexpr SDL_Color BUTTON_FAILURE_COLOR{ 235, 210, 210, 255 };
-	inline constexpr SDL_Color SANITY_COLOR{ 100, 100, 255, 255 };
+	inline constexpr SDL_Color SPIRAL_COLOR{ 100, 100, 255, 255 };
 
 	//Asset Paths
 	inline const std::string PLACEHOLDER_IMAGE = "Assets/Placeholder.png";

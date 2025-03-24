@@ -1,42 +1,74 @@
 #pragma once
 #include "Engine/GameObject.h"
 #include "Engine/UIFactory.h"
-#include "CardStats.h"
+#include "Minion.h"
 using namespace Engine;
 
 enum CardState
 {
 	IDLE,
 	HOVERED,
-	CHOSEN,
-	PLAYED
+	CHOSEN
 };
 
-//Might need to have 2 states rather. Just make this card into 2 compoennts
-//2 have the CardStats passing to eahc other. As I might have a hand return
-
-//BUt Card(Hand) need to have a refence to Card (Minion) either as pointer or a function pointer
-
-class Card : public GameObject
+class Card : public Button
 {
 public:
-	Card(CardStats stats);
+	Card(GameObject* parent, int spiralCost, MinionStats stats) : 
+		Button(parent), minionStats(stats), spiral(spiralCost)
+	{
+		AssignButton();
+	}
 
-	void IntoPlayedState();
-	void Deselect();
-	void Trigger(Field* field, int index);
+	void TransformToMinion(Field* field, Minion*& minion)
+	{
+		minion = new Minion(GetParent(), field, minionStats);
+		GetParent()->AddComponent(minion);
+		GetParent()->RemoveComponent<Card>();
+	}
 
-	CardState GetState();
-	std::string GetName();
+	void Deselect()
+	{
+		GetParent()->SetRelPosition(GetParent()->GetRelTf()->x, initY);
+		state = CardState::IDLE;
+	}
+
+	int GetSpiral() { return spiral; }
+	CardState GetState() { return state; }
 
 private:
-	Button* button;
-	Text* sanityText;
+	int spiral;
+	MinionStats minionStats;
 
 	CardState state = CardState::IDLE;
 	int initY = 0;
 
-	CardStats stats;
+	void AssignButton()
+	{
+		const SDL_Rect* relTF = GetParent()->GetRelTf();
+		this->initY = relTF->y;
 
-	void AssignButton(Engine::Button* button);
+		AddOnHoverEnter([this, relTF] {
+			if (state == CardState::IDLE)
+			{
+				GetParent()->SetRelPosition(relTF->x, relTF->y - 5);
+				state = CardState::HOVERED;
+			}
+			});
+
+		AddOnLeftClick([this, relTF] {
+			if (state == CardState::HOVERED)
+			{
+				GetParent()->SetRelPosition(relTF->x, relTF->y - 15);
+				state = CardState::CHOSEN;
+			}
+			});
+
+		AddOnHoverExit([this] {
+			if (state == CardState::HOVERED)
+			{
+				Deselect();
+			}
+			});
+	}
 };

@@ -15,13 +15,12 @@ public:
 
         for (int i = 0;i < 3;i++)
         {
-            auto card = std::make_unique<Card>(CardFactory::Lefty());
-
-            AddCard(std::move(card));
+            AddCard(CardFactory::Lefty());
         }
 
-        AddCard(std::make_unique<Card>(CardFactory::Basic()));
-        AddCard(std::make_unique<Card>(CardFactory::Basic()));
+        AddCard(CardFactory::Basic());
+        AddCard(CardFactory::Basic());
+
         this->SetRelSize(Conf::TABLE_WIDTH, Conf::CARD_HEIGHT);
         rowComponent->AlignCenter();
     }
@@ -33,33 +32,35 @@ public:
         chosenCard = card;
     }
 
-    void AddCard(std::unique_ptr<Card> card)
+    void AddCard(std::unique_ptr<GameObject> cardObj)
     {
-        card->GetComponent<Button>()->AddOnLeftClick(
-            [card = card.get(), this] {
+        Card* card = cardObj->GetComponent<Card>();
+        card->AddOnLeftClick(
+            [this, card] {
                 if (card->GetState() == CardState::CHOSEN)
                 {
                     ChooseCard(card);
                 }
             });
 
-        cards.push_back(card.get());
+        cards.push_back(card);
 
-        rowComponent->AddGameObject(std::move(card));
+        rowComponent->AddGameObject(std::move(cardObj));
         rowComponent->AlignCenter();
     }
     
-    std::unique_ptr<Card> PlaceCard()
+    std::unique_ptr<GameObject> PlaceCard()
     {
         if (!chosenCard) return nullptr;
 
-        std::unique_ptr<GameObject> child = TransferChild(chosenCard);
+        std::unique_ptr<GameObject> child = TransferChild(chosenCard->GetParent());
         RemoveCard(chosenCard);
 
-        chosenCard = nullptr;
         rowComponent->AlignCenter();
-        return std::unique_ptr<Card>(dynamic_cast<Card*>(child.release()));
+        return child;
     }
+
+    int GetChosenCardSpiral() { return chosenCard->GetSpiral(); }
     
 private:
     std::vector<Card*> cards;
@@ -70,6 +71,7 @@ private:
     void RemoveCard(Card* card)
     {
         auto it = std::find(cards.begin(), cards.end(), chosenCard);
+        if (card == chosenCard) chosenCard = nullptr;
         if (it != cards.end()) cards.erase(it);
     }
 };

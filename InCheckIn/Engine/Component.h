@@ -4,9 +4,11 @@
 
 namespace Engine
 {
+	//Divide into rendering/Event Abstarcat interfaces
 	class Component
 	{
 	public:
+		Component() {}
 		Component(GameObject* parent)
 		{
 			this->parent = parent;

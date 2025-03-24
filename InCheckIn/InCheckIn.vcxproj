@@ -133,15 +133,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Card.cpp" />
     <ClCompile Include="Engine\GameObject.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="InCheckIn.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationManager.h" />
     <ClInclude Include="Card.h" />
     <ClInclude Include="CardFactory.h" />
-    <ClInclude Include="CardStats.h" />
     <ClInclude Include="Hand.h" />
     <ClInclude Include="Engine\Component.h" />
     <ClInclude Include="Engine\Button.h" />
@@ -160,6 +159,7 @@
     <ClInclude Include="Engine\TextSurface.h" />
     <ClInclude Include="Engine\UIFactory.h" />
     <ClInclude Include="Field.h" />
+    <ClInclude Include="Minion.h" />
     <ClInclude Include="Table.h" />
   </ItemGroup>
   <ItemGroup>
