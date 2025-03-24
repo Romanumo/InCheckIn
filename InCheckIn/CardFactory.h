@@ -38,6 +38,10 @@ private:
 			10, Conf::CARD_HEIGHT - 30, Conf::CARD_WIDTH / 5, 20,
 			std::to_string(spiralCost), Conf::SPIRAL_COLOR)));
 
+		cardObj->AdoptChild(std::move(UIFactory::NewText(
+			Conf::CARD_WIDTH / 3, 20, Conf::CARD_WIDTH / 3, 20,
+			minionStats.name)));
+
 		return cardObj;
 	}
 };

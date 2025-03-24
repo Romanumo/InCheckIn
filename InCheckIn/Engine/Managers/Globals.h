@@ -42,6 +42,7 @@ namespace Conf
 	inline const std::string PLACEHOLDER_IMAGE = "Assets/Placeholder.png";
 	inline const std::string TURNBT_IMAGE = "Assets/TableSide.png";
 	inline const std::string DESK_IMAGE = "Assets/TableSide.png";
+	inline const std::string SPIRAL_IMAGE = "Assets/TableSide.png";
 	inline const std::string FONT = "Assets/Rubik-SemiBold.ttf";
 
 	//Units Assets

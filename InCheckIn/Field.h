@@ -11,8 +11,7 @@ class Table;
 class Field : public GameObject
 {
 public:
-    Field(const std::string& name, const std::string& imagePath, Table* table, 
-        Hand* hand = nullptr, int initSpiral = 0);
+    Field(Table* table, Hand* hand = nullptr);
 
     void SetOpposingField(Field* opposing);
     Field* GetOpposingField();
@@ -21,25 +20,19 @@ public:
     void PlaceCard(std::unique_ptr<GameObject> card, int slotIndex);
 
     void PlayTurn();
-    bool SpendSpiral(int spiralCost);
     void SetEnabled(bool enabled);
 
 private:
-    Text* sanityText;
-    int spiral;
-
-    int cardQueue = 0;
-
     Field* opposingField;
     bool isEnabled = true;
     Table* table;
 
     Minion** minionPlaced = new Minion * [Conf::MAX_CARDS];
     Button** slots = new Button * [Conf::MAX_CARDS];
+    int cardQueue = 0;
 
     void QueueCardAnimation(int index);
 
     void CreateSlots(Hand* hand);
-    void CreateAvatar(const std::string& name, const std::string& imagePath);
     void AssignHand(Hand* hand, Button* button, int index);
 };

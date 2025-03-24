@@ -5,12 +5,9 @@
 #include "Hand.h"
 #include "Card.h"
 
-Field::Field(const std::string& name, const std::string& imagePath, Table* table,
-    Hand* hand, int initSpiral) : GameObject(), table(table)
+Field::Field(Table* table, Hand* hand) : GameObject(), table(table)
 {
-    spiral = initSpiral;
     CreateSlots(hand);
-    CreateAvatar(name, imagePath);
 }
 
 void Field::SetOpposingField(Field* opposing)
@@ -58,14 +55,6 @@ void Field::PlaceCard(std::unique_ptr<GameObject> card, int slotIndex)
     slots[slotIndex]->SetEnabled(false);
 }
 
-bool Field::SpendSpiral(int spiralCost)
-{
-    if (spiralCost > spiral) return false;
-    spiral -= spiralCost;
-    sanityText->SetText(std::to_string(spiral));
-    return true;
-}
-
 void Field::QueueCardAnimation(int index)
 {
     AnimationManager::GetInstance().EnqueueAnimation(Animation(
@@ -79,7 +68,7 @@ void Field::QueueCardAnimation(int index)
         }, [=] {
             const SDL_Rect* rect = minionPlaced[index]->GetParent()->GetRelTf();
             minionPlaced[index]->GetParent()->SetRelPosition(rect->x, rect->y + 15);
-        }, 500));
+        }, 250));
 }
 
 Field* Field::GetOpposingField() { return opposingField; }
@@ -107,24 +96,10 @@ void Field::CreateSlots(Hand* hand)
     }
 }
 
-void Field::CreateAvatar(const std::string& name, const std::string& imagePath)
-{
-    int w = Conf::AVATAR_WIDTH;
-    int h = Conf::AVATAR_HEIGHT;
-
-    auto avatar = std::make_unique<GameObject>(0, 0, w, h);
-    avatar->AddComponent(new Image(avatar.get(), imagePath));
-    avatar->AdoptChild(std::move(UIFactory::NewText(0, 10, w, 30, name)));
-    avatar->AdoptChild(std::move(UIFactory::NewText(10, h - 30, w / 5, 20, sanityText)));
-    sanityText->SetText(std::to_string(spiral), Conf::SPIRAL_COLOR);
-
-    GetComponent<Layout>()->AddGameObject(std::move(avatar));
-}
-
 void Field::AssignHand(Hand* hand, Button* button, int index)
 {
     button->AddOnLeftClick([this, hand, index] {
-        if (!SpendSpiral(hand->GetChosenCardSpiral())) return;
+        if (!table->SpendSpiral(hand->GetChosenCardSpiral())) return;
 
         std::unique_ptr<GameObject> cardOriginal = hand->PlaceCard();
         PlaceCard(std::move(cardOriginal), index);
