@@ -38,11 +38,10 @@ namespace Engine
 		}
 
 		static std::unique_ptr<GameObject> NewText(int x, int y, int w, int h,
-			const std::string& text)
+			const std::string& text, SDL_Color color = {0,0,0,255})
 		{
 			auto textObj = std::make_unique<GameObject>(x, y, w, h);
-			Text* textComponent = new Engine::Text(textObj.get(), text, { 0,0,0, 255 }, 30);
-			textObj->AddComponent(textComponent);
+			textObj->AddComponent(new Engine::Text(textObj.get(), text, color));
 			return textObj;
 		}
 
@@ -50,7 +49,7 @@ namespace Engine
 			Text*& textComponent)
 		{
 			auto textObj = std::make_unique<GameObject>(x, y, w, h);
-			textComponent = new Engine::Text(textObj.get(), " ", {0,0,0, 255}, 30);
+			textComponent = new Engine::Text(textObj.get(), " ", { 0,0,0, 255 });
 			textObj->AddComponent(textComponent);
 			return textObj;
 		}

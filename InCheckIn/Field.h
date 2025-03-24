@@ -10,7 +10,8 @@ class Minion;
 class Field : public GameObject
 {
 public:
-    Field(const std::string& name, const std::string& imagePath, Hand* hand = nullptr);
+    Field(const std::string& name, const std::string& imagePath, 
+        Hand* hand = nullptr, int initSpiral = 0);
 
     void SetOpposingField(Field* opposing);
 
@@ -22,7 +23,7 @@ public:
 
 private:
     Text* sanityText;
-    int sanity;
+    int spiral;
 
     Field* opposingField;
     bool isEnabled = true;

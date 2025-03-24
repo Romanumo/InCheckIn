@@ -56,12 +56,12 @@ private:
     #pragma region Init
     void CreateTable()
     {
-        auto eFieldObj = std::make_unique<Field>("Concussion", Conf::DESK_IMAGE);
+        auto eFieldObj = std::make_unique<Field>("Hobby", Conf::DESK_IMAGE);
         enemyField = eFieldObj.get();
 
         auto handObj = std::make_unique<Hand>();
 
-        auto pFieldObj = std::make_unique<Field>("You", Conf::DESK_IMAGE, handObj.get());
+        auto pFieldObj = std::make_unique<Field>("You", Conf::DESK_IMAGE, handObj.get(), 10);
         playerField = pFieldObj.get();
 
         Engine::Layout* col = new Engine::Layout(this, new Engine::Column(),

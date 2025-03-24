@@ -56,7 +56,6 @@ public:
         std::unique_ptr<GameObject> child = TransferChild(chosenCard->GetParent());
         RemoveCard(chosenCard);
 
-        chosenCard = nullptr;
         rowComponent->AlignCenter();
         return child;
     }
@@ -70,6 +69,7 @@ private:
     void RemoveCard(Card* card)
     {
         auto it = std::find(cards.begin(), cards.end(), chosenCard);
+        if (card == chosenCard) chosenCard = nullptr;
         if (it != cards.end()) cards.erase(it);
     }
 };
