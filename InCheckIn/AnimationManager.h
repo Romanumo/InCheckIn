@@ -3,6 +3,31 @@
 #include <queue>
 #include <SDL.h>
 
+struct Animation
+{
+	Animation() {}
+	Animation(std::function<void()> play, std::function<void()> end, int duration)
+	{
+		onPlayed = play;
+		onEnd = end;
+		this->duration = duration;
+	}
+
+	void Play()
+	{
+		if (onPlayed) onPlayed();
+	}
+
+	void EndAnimation()
+	{
+		if (onEnd) onEnd();
+	}
+
+	std::function<void()> onPlayed;
+	std::function<void()> onEnd;
+	int duration;
+};
+
 class AnimationManager
 {
 public:
@@ -12,7 +37,7 @@ public:
 		return animManager;
 	}
 
-	void EnqueueAnimation(std::function<void()> animation)
+	void EnqueueAnimation(Animation animation)
 	{
 		animationQueue.push(animation);
 	}
@@ -22,13 +47,15 @@ public:
 		if (isAnimating || animationQueue.empty()) return;
 
 		isAnimating = true;
-		auto animation = animationQueue.front();
+		currentAnimation = animationQueue.front();
 		animationQueue.pop();
 
-		animation();
+		currentAnimation.Play();
 
-		SDL_AddTimer(500, [](Uint32 interval, void* animManager) -> Uint32 {
+		SDL_AddTimer(currentAnimation.duration, 
+			[](Uint32 interval, void* animManager) -> Uint32 {
 			AnimationManager::GetInstance().SetAnimatingState(false);
+			AnimationManager::GetInstance().PlayCurrentEnd();
 			AnimationManager::GetInstance().PlayNextAnimation();
 			return 0;
 			}, nullptr);
@@ -40,6 +67,12 @@ private:
 	AnimationManager() {}
 	~AnimationManager() {}
 
-	std::queue<std::function<void()>> animationQueue;
+	std::queue<Animation> animationQueue;
+	Animation currentAnimation;
 	bool isAnimating = false;
+
+	void PlayCurrentEnd()
+	{
+		currentAnimation.EndAnimation();
+	}
 };

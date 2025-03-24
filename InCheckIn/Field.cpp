@@ -1,11 +1,12 @@
 #pragma once
 #include "AnimationManager.h"
+#include "Table.h"
 #include "Field.h"
 #include "Hand.h"
 #include "Card.h"
 
-Field::Field(const std::string& name, const std::string& imagePath,
-    Hand* hand, int initSpiral) : GameObject()
+Field::Field(const std::string& name, const std::string& imagePath, Table* table,
+    Hand* hand, int initSpiral) : GameObject(), table(table)
 {
     spiral = initSpiral;
     CreateSlots(hand);
@@ -33,20 +34,13 @@ void Field::TriggerCard(int index)
         if (cardQueue >= Conf::MAX_CARDS)
         {
             cardQueue = 0;
-            std::cout << "End Of Queue-----------" << std::endl;
+            table->NextTurn();
         }
         return;
     }
 
     if (!minionPlaced[index]) TriggerCard(++cardQueue);
-    else AnimationManager::GetInstance().EnqueueAnimation([=] {
-        bool isBreaker = minionPlaced[index]->Trigger(index);
-        if (isBreaker)
-        {
-            TriggerCard(++cardQueue);
-            std::cout << "Next List Card-----------" << std::endl;
-        }
-        });
+    else QueueCardAnimation(index);
 }
 
 void Field::PlaceCard(std::unique_ptr<GameObject> card, int slotIndex)
@@ -71,6 +65,24 @@ bool Field::SpendSpiral(int spiralCost)
     sanityText->SetText(std::to_string(spiral));
     return true;
 }
+
+void Field::QueueCardAnimation(int index)
+{
+    AnimationManager::GetInstance().EnqueueAnimation(Animation(
+        [=] {
+        const SDL_Rect* rect = minionPlaced[index]->GetParent()->GetRelTf();
+        minionPlaced[index]->GetParent()->SetRelPosition(rect->x, rect->y - 15);
+
+        bool isBreaker = minionPlaced[index]->Trigger(index);
+        if (isBreaker) TriggerCard(++cardQueue);
+
+        }, [=] {
+            const SDL_Rect* rect = minionPlaced[index]->GetParent()->GetRelTf();
+            minionPlaced[index]->GetParent()->SetRelPosition(rect->x, rect->y + 15);
+        }, 500));
+}
+
+Field* Field::GetOpposingField() { return opposingField; }
 
 void Field::SetEnabled(bool enabled) { isEnabled = enabled; }
 

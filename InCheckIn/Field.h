@@ -6,14 +6,16 @@ using namespace Engine;
 
 class Hand;
 class Minion;
+class Table;
 
 class Field : public GameObject
 {
 public:
-    Field(const std::string& name, const std::string& imagePath, 
+    Field(const std::string& name, const std::string& imagePath, Table* table, 
         Hand* hand = nullptr, int initSpiral = 0);
 
     void SetOpposingField(Field* opposing);
+    Field* GetOpposingField();
 
     void TriggerCard(int index);
     void PlaceCard(std::unique_ptr<GameObject> card, int slotIndex);
@@ -30,9 +32,12 @@ private:
 
     Field* opposingField;
     bool isEnabled = true;
+    Table* table;
 
     Minion** minionPlaced = new Minion * [Conf::MAX_CARDS];
     Button** slots = new Button * [Conf::MAX_CARDS];
+
+    void QueueCardAnimation(int index);
 
     void CreateSlots(Hand* hand);
     void CreateAvatar(const std::string& name, const std::string& imagePath);
