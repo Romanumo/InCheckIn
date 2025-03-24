@@ -59,6 +59,8 @@ public:
         rowComponent->AlignCenter();
         return child;
     }
+
+    int GetChosenCardSpiral() { return chosenCard->GetSpiral(); }
     
 private:
     std::vector<Card*> cards;

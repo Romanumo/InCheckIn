@@ -47,6 +47,14 @@ void Field::PlaceCard(std::unique_ptr<GameObject> card, int slotIndex)
     slots[slotIndex]->SetEnabled(false);
 }
 
+bool Field::SpendSpiral(int spiralCost)
+{
+    if (spiralCost > spiral) return false;
+    spiral -= spiralCost;
+    sanityText->SetText(std::to_string(spiral));
+    return true;
+}
+
 void Field::SetEnabled(bool enabled) { isEnabled = enabled; }
 
 #pragma region Init
@@ -61,7 +69,7 @@ void Field::CreateSlots(Hand* hand)
         Button* button = new Button(slot);
         slot->AddComponent(new Image(slot, Conf::PLACEHOLDER_IMAGE));
 
-        if (hand) AssignHand(hand, button, slot, index);
+        if (hand) AssignHand(hand, button, index);
         slot->AddComponent(button);
 
         minionPlaced[index] = nullptr;
@@ -84,9 +92,11 @@ void Field::CreateAvatar(const std::string& name, const std::string& imagePath)
     GetComponent<Layout>()->AddGameObject(std::move(avatar));
 }
 
-void Field::AssignHand(Hand* hand, Button* button, GameObject* slot, int index)
+void Field::AssignHand(Hand* hand, Button* button, int index)
 {
-    button->AddOnLeftClick([this, hand, button, slot, index] {
+    button->AddOnLeftClick([this, hand, index] {
+        if (!SpendSpiral(hand->GetChosenCardSpiral())) return;
+
         std::unique_ptr<GameObject> cardOriginal = hand->PlaceCard();
         PlaceCard(std::move(cardOriginal), index);
         });

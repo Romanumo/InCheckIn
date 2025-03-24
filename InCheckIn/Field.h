@@ -19,6 +19,7 @@ public:
     void PlaceCard(std::unique_ptr<GameObject> card, int slotIndex);
 
     void PlayTurn();
+    bool SpendSpiral(int spiralCost);
     void SetEnabled(bool enabled);
 
 private:
@@ -33,5 +34,5 @@ private:
 
     void CreateSlots(Hand* hand);
     void CreateAvatar(const std::string& name, const std::string& imagePath);
-    void AssignHand(Hand* hand, Button* button, GameObject* slot, int index);
+    void AssignHand(Hand* hand, Button* button, int index);
 };

@@ -33,6 +33,7 @@ public:
 		state = CardState::IDLE;
 	}
 
+	int GetSpiral() { return spiral; }
 	CardState GetState() { return state; }
 
 private:
