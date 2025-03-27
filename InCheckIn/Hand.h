@@ -34,6 +34,8 @@ public:
 
     void AddCard(std::unique_ptr<GameObject> cardObj)
     {
+        if (cards.size() >= 6) return;
+
         Card* card = cardObj->GetComponent<Card>();
         card->AddOnLeftClick(
             [this, card] {
@@ -49,6 +51,7 @@ public:
         rowComponent->AlignCenter();
     }
     
+    //TODO: Prevent Card from playing if not chosing
     std::unique_ptr<GameObject> PlaceCard()
     {
         if (!chosenCard) return nullptr;
@@ -60,7 +63,11 @@ public:
         return child;
     }
 
-    int GetChosenCardSpiral() { return chosenCard->GetSpiral(); }
+    int GetChosenCardSpiral()
+    {
+        if (!chosenCard) return 99999;
+        return chosenCard->GetSpiral();
+    }
     
 private:
     std::vector<Card*> cards;

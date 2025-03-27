@@ -11,7 +11,7 @@ enum GameFlow
     PLAYER, 
     ENEMY
 };
-
+//Make it a game Manager
 class Table : public Engine::GameObject
 {
 public:
@@ -30,7 +30,6 @@ public:
         case CHOOSING:
             std::cout << "Chosing Ends" << std::endl;
             turn = GameFlow::PLAYER;
-            playerField->SetEnabled(false);
             playerField->PlayTurn();
             break;
         case PLAYER:
@@ -41,28 +40,22 @@ public:
         case ENEMY:
             std::cout << "Enemy Turn Ends" << std::endl;
             turn = GameFlow::CHOOSING;
-            playerField->SetEnabled(true);
             break;
         }
     }
 
-    bool SpendSpiral(int spiralCost)
+    void ChangeSpiral(int spiralChange)
     {
-        if (spiralCost > spiral) return false;
-        spiral -= spiralCost;
+        spiral += spiralChange;
         spiralText->SetText(std::to_string(spiral));
-        return true;
     }
 
-    void AddSpiral(int spiralAdd)
-    {
-        spiral += spiralAdd;
-        spiralText->SetText(std::to_string(spiral));
-    }
+    int GetSpiral() { return spiral; }
 
 private:
     Field* enemyField = nullptr;
     Field* playerField = nullptr;
+    Hand* hand = nullptr;
     GameFlow turn = GameFlow::CHOOSING;
 
     Text* spiralText;
@@ -75,6 +68,7 @@ private:
         enemyField = eFieldObj.get();
 
         auto handObj = std::make_unique<Hand>();
+        hand = handObj.get();
 
         auto pFieldObj = std::make_unique<Field>(this, handObj.get());
         playerField = pFieldObj.get();
@@ -84,7 +78,7 @@ private:
         col->AddGameObject(std::move(
             UIFactory::NewRow(
                 std::move(eFieldObj),
-                std::move(CreateAvatar("Hobby", Conf::DESK_IMAGE)))));
+                std::move(CreateAvatar("Hobby", Conf::HOBBY_IMAGE)))));
         col->AddGameObject(std::move(
             UIFactory::NewRow(
                 std::move(pFieldObj),
@@ -100,18 +94,18 @@ private:
     {
         auto bellObj = std::make_unique<GameObject>(0, 0,
             Conf::TURNBT_WIDTH, Conf::TURNBT_HEIGHT);
-        Image* image = new Image(bellObj.get(), Conf::TURNBT_IMAGE);
-
-        bellObj->AdoptChild(std::move(UIFactory::NewText(0, 0,
-            Conf::TURNBT_WIDTH, Conf::TURNBT_HEIGHT, "End Turn")));
+        bellObj->AddComponent(new Image(bellObj.get(), Conf::TURNBT_IMAGE));
 
         Button* button = new Button(bellObj.get());
 
         button->AddOnLeftClick([this] {
-            if(turn == GameFlow::CHOOSING) NextTurn();
+            if (turn == GameFlow::CHOOSING)
+            {
+                NextTurn();
+                hand->AddCard(CardFactory::Basic());
+            }
             });
 
-        bellObj->AddComponent(image);
         bellObj->AddComponent(button);
         return bellObj;
     }
@@ -124,7 +118,8 @@ private:
 
         auto avatar = std::make_unique<GameObject>(0, 0, w, h);
         avatar->AddComponent(new Image(avatar.get(), imagePath));
-        avatar->AdoptChild(std::move(UIFactory::NewText(0, 10, w, 30, name)));
+        avatar->AdoptChild(std::move(UIFactory::NewText(0, 10, w, 30, name, 
+            {255,255,255,255})));
         return avatar;
     }
 
@@ -135,7 +130,7 @@ private:
 
         auto spiralIcon = std::make_unique<GameObject>(0, 0, w, h);
         spiralIcon->AddComponent(new Image(spiralIcon.get(), Conf::SPIRAL_IMAGE));
-        spiralIcon->AdoptChild(std::move(UIFactory::NewText(w/3, h / 2, w / 3, 20, spiralText)));
+        spiralIcon->AdoptChild(std::move(UIFactory::NewText(w * 2/3, h / 2, w / 3, 20, spiralText)));
         spiralText->SetText(std::to_string(spiral), Conf::SPIRAL_COLOR);
         return spiralIcon;
     }

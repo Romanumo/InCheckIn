@@ -20,11 +20,11 @@ public:
     void PlaceCard(std::unique_ptr<GameObject> card, int slotIndex);
 
     void PlayTurn();
-    void SetEnabled(bool enabled);
+
+    void ChangeSpiral(int amount);
 
 private:
     Field* opposingField;
-    bool isEnabled = true;
     Table* table;
 
     Minion** minionPlaced = new Minion * [Conf::MAX_CARDS];

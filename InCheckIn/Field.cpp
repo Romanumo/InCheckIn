@@ -42,7 +42,7 @@ void Field::TriggerCard(int index)
 
 void Field::PlaceCard(std::unique_ptr<GameObject> card, int slotIndex)
 {
-    if (!card || !isEnabled) return;
+    if (!card) return;
 
     Card* cardRef = card->GetComponent<Card>();
     slots[slotIndex]->GetParent()->AdoptChild(std::move(card));
@@ -68,12 +68,11 @@ void Field::QueueCardAnimation(int index)
         }, [=] {
             const SDL_Rect* rect = minionPlaced[index]->GetParent()->GetRelTf();
             minionPlaced[index]->GetParent()->SetRelPosition(rect->x, rect->y + 15);
-        }, 250));
+        }, 500));
 }
 
+void Field::ChangeSpiral(int amount) { table->ChangeSpiral(amount); }
 Field* Field::GetOpposingField() { return opposingField; }
-
-void Field::SetEnabled(bool enabled) { isEnabled = enabled; }
 
 #pragma region Init
 void Field::CreateSlots(Hand* hand)
@@ -85,7 +84,7 @@ void Field::CreateSlots(Hand* hand)
     for (const auto slot : slotsObj)
     {
         Button* button = new Button(slot);
-        slot->AddComponent(new Image(slot, Conf::PLACEHOLDER_IMAGE));
+        slot->AddComponent(new Image(slot, Conf::SLOT_IMAGE));
 
         if (hand) AssignHand(hand, button, index);
         slot->AddComponent(button);
@@ -98,11 +97,25 @@ void Field::CreateSlots(Hand* hand)
 
 void Field::AssignHand(Hand* hand, Button* button, int index)
 {
+    Image* slotImage = button->GetParent()->GetComponent<Image>();
     button->AddOnLeftClick([this, hand, index] {
-        if (!table->SpendSpiral(hand->GetChosenCardSpiral())) return;
+        int cardCost = hand->GetChosenCardSpiral();
+        if (table->GetSpiral() < cardCost) return;
 
         std::unique_ptr<GameObject> cardOriginal = hand->PlaceCard();
-        PlaceCard(std::move(cardOriginal), index);
+        if (cardOriginal)
+        {
+            table->ChangeSpiral(cardCost * -1);
+            PlaceCard(std::move(cardOriginal), index);
+        }
+        });
+
+    button->AddOnHoverEnter([slotImage] {
+        slotImage->SetImage(Conf::SLOT_SELECTED_IMAGE);
+        });
+
+    button->AddOnHoverExit([slotImage] {
+        slotImage->SetImage(Conf::SLOT_IMAGE);
         });
 }
 #pragma endregion

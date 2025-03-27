@@ -39,15 +39,18 @@ namespace Conf
 	inline constexpr SDL_Color SPIRAL_COLOR{ 100, 100, 255, 255 };
 
 	//Asset Paths
-	inline const std::string PLACEHOLDER_IMAGE = "Assets/Placeholder.png";
-	inline const std::string TURNBT_IMAGE = "Assets/TableSide.png";
-	inline const std::string DESK_IMAGE = "Assets/TableSide.png";
-	inline const std::string SPIRAL_IMAGE = "Assets/TableSide.png";
-	inline const std::string FONT = "Assets/Rubik-SemiBold.ttf";
+	inline const std::string SLOT_IMAGE = "Assets/Slot.png";
+	inline const std::string SLOT_SELECTED_IMAGE = "Assets/SlotSelected.png";
+	inline const std::string TURNBT_IMAGE = "Assets/Turn.png";
+	inline const std::string SPIRAL_IMAGE = "Assets/Spiral.png";
+	inline const std::string FONT = "Assets/Font.ttf";
 
 	//Units Assets
 	inline const std::string CARD_IMAGE_BASIC = "Assets/Basic.png";
 	inline const std::string CARD_IMAGE_LEFTY = "Assets/Lefty.png";
+
+	//Avatar Assets
+	inline const std::string HOBBY_IMAGE = "Assets/Hobby.png";
 
 	//Max Chilren
 	inline const int MAX_CHILDREN = 20;
