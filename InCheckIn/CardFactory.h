@@ -9,14 +9,15 @@ static class CardFactory
 public:
 	static std::unique_ptr<GameObject> Lefty()
 	{
-		return NewCard(Conf::CARD_IMAGE_LEFTY, 2, 
+		return NewCard(Conf::CARD_IMAGE_LEFTY, 5, 
 			MinionStats("Lefty", [](Minion* self, int index) -> bool {
-			if (index - 1 >= 0)
+			if (index - 1 >= 0 && self->GetField()->GetMinionAt(index - 1))
 			{
 				self->GetField()->TriggerCard(index - 1);
 				self->GetField()->ChangeSpiral(1);
+				return false;
 			}
-			return false;
+			return true;
 			}));
 	}
 
@@ -24,7 +25,7 @@ public:
 	{
 		return NewCard(Conf::CARD_IMAGE_BASIC, 0,
 			MinionStats("Basic", [](Minion* self, int index) -> bool {
-			self->GetField()->ChangeSpiral(1);
+			//self->GetField()->ChangeSpiral(1);
 			return true;
 			}));
 	}

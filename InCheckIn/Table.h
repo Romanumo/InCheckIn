@@ -11,7 +11,7 @@ enum GameFlow
     PLAYER, 
     ENEMY
 };
-//Make it a game Manager
+
 class Table : public Engine::GameObject
 {
 public:
@@ -20,7 +20,7 @@ public:
         CreateTable();
         playerField->SetOpposingField(enemyField);
 
-        enemyField->PlaceCard(CardFactory::Basic(), 2);
+        //enemyField->PlaceCard(CardFactory::Basic(), 2);
     }
 
     void NextTurn()
@@ -30,6 +30,7 @@ public:
         case CHOOSING:
             std::cout << "Chosing Ends" << std::endl;
             turn = GameFlow::PLAYER;
+            hand->SetEnabled(false);
             playerField->PlayTurn();
             break;
         case PLAYER:
@@ -40,6 +41,7 @@ public:
         case ENEMY:
             std::cout << "Enemy Turn Ends" << std::endl;
             turn = GameFlow::CHOOSING;
+            hand->SetEnabled(true);
             break;
         }
     }
@@ -47,7 +49,10 @@ public:
     void ChangeSpiral(int spiralChange)
     {
         spiral += spiralChange;
-        spiralText->SetText(std::to_string(spiral));
+        spiralText->SetText(std::to_string(spiral) + "/" + std::to_string(neededSpiral));
+
+        if (spiral < 0) Lose();
+        else if (spiral >= neededSpiral) Win();
     }
 
     int GetSpiral() { return spiral; }
@@ -60,6 +65,17 @@ private:
 
     Text* spiralText;
     int spiral = 10;
+    int neededSpiral = 30;
+
+    void Lose()
+    {
+        std::cout << "You Lost!" << std::endl;
+    }
+
+    void Win()
+    {
+        std::cout << "You Won!" << std::endl;
+    }
 
     #pragma region Init
     void CreateTable()
@@ -130,8 +146,9 @@ private:
 
         auto spiralIcon = std::make_unique<GameObject>(0, 0, w, h);
         spiralIcon->AddComponent(new Image(spiralIcon.get(), Conf::SPIRAL_IMAGE));
-        spiralIcon->AdoptChild(std::move(UIFactory::NewText(w * 2/3, h / 2, w / 3, 20, spiralText)));
-        spiralText->SetText(std::to_string(spiral), Conf::SPIRAL_COLOR);
+        spiralIcon->AdoptChild(std::move(UIFactory::NewText(w * 2/3 + 10, h / 2 - 10, w / 3, 20, spiralText)));
+        spiralText->SetText(std::to_string(spiral) + "/" + std::to_string(neededSpiral), 
+            Conf::SPIRAL_COLOR);
         return spiralIcon;
     }
     #pragma endregion

@@ -47,14 +47,12 @@ public:
 
         cards.push_back(card);
 
-        rowComponent->AddGameObject(std::move(cardObj));
-        rowComponent->AlignCenter();
+        rowComponent->AddGameObject(std::move(cardObj), true);
     }
     
-    //TODO: Prevent Card from playing if not chosing
     std::unique_ptr<GameObject> PlaceCard()
     {
-        if (!chosenCard) return nullptr;
+        if (!chosenCard || !isEnabled) return nullptr;
 
         std::unique_ptr<GameObject> child = TransferChild(chosenCard->GetParent());
         RemoveCard(chosenCard);
@@ -69,8 +67,11 @@ public:
         return chosenCard->GetSpiral();
     }
     
+    void SetEnabled(bool enable) { isEnabled = enable; }
+
 private:
     std::vector<Card*> cards;
+    bool isEnabled = true;
 
     Card* chosenCard = nullptr;
     Layout* rowComponent = nullptr;

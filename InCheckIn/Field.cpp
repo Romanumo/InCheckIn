@@ -71,6 +71,7 @@ void Field::QueueCardAnimation(int index)
         }, 500));
 }
 
+Minion* Field::GetMinionAt(int index) { return minionPlaced[index]; }
 void Field::ChangeSpiral(int amount) { table->ChangeSpiral(amount); }
 Field* Field::GetOpposingField() { return opposingField; }
 
@@ -103,11 +104,10 @@ void Field::AssignHand(Hand* hand, Button* button, int index)
         if (table->GetSpiral() < cardCost) return;
 
         std::unique_ptr<GameObject> cardOriginal = hand->PlaceCard();
-        if (cardOriginal)
-        {
-            table->ChangeSpiral(cardCost * -1);
-            PlaceCard(std::move(cardOriginal), index);
-        }
+        if (!cardOriginal) return;
+
+        table->ChangeSpiral(cardCost * -1);
+        PlaceCard(std::move(cardOriginal), index);
         });
 
     button->AddOnHoverEnter([slotImage] {

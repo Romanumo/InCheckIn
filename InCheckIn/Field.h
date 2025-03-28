@@ -17,6 +17,7 @@ public:
     Field* GetOpposingField();
 
     void TriggerCard(int index);
+    Minion* GetMinionAt(int index);
     void PlaceCard(std::unique_ptr<GameObject> card, int slotIndex);
 
     void PlayTurn();
