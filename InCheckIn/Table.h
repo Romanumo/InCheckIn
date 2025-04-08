@@ -2,6 +2,7 @@
 #include "Engine/UIFactory.h"
 #include "Engine/GameObject.h"
 #include "AnimationManager.h"
+#include "Deck.h"
 #include "Field.h"
 #include "Hand.h"
 
@@ -17,10 +18,12 @@ class Table : public Engine::GameObject
 public:
     Table() : Engine::GameObject(Conf::PADDING, Conf::PADDING, 0, 0)
     {
+        deck = std::make_unique<Deck>();
         CreateTable();
         playerField->SetOpposingField(enemyField);
 
-        //enemyField->PlaceCard(CardFactory::Basic(), 2);
+        //enemyField->PlaceCard(CardFactory::NewCard(CardFactory::Fun()), 2);
+        //enemyField->PlaceCard(CardFactory::NewCard(CardFactory::Fun()), 3);
     }
 
     void NextTurn()
@@ -61,15 +64,17 @@ private:
     Field* enemyField = nullptr;
     Field* playerField = nullptr;
     Hand* hand = nullptr;
-    GameFlow turn = GameFlow::CHOOSING;
+    
+    std::unique_ptr<Deck> deck;
 
+    GameFlow turn = GameFlow::CHOOSING;
     Text* spiralText;
     int spiral = 10;
     int neededSpiral = 30;
 
     void Lose()
     {
-        std::cout << "You Lost!" << std::endl;
+        std::cout << "You lost!" << std::endl;
     }
 
     void Win()
@@ -114,11 +119,11 @@ private:
 
         Button* button = new Button(bellObj.get());
 
-        button->AddOnLeftClick([this] {
+        button->AddOnLeftClick([&] {
             if (turn == GameFlow::CHOOSING)
             {
                 NextTurn();
-                hand->AddCard(CardFactory::Basic());
+                hand->AddCard(CardFactory::NewCard(deck->GetCard()));
             }
             });
 

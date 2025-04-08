@@ -11,6 +11,23 @@ enum CardState
 	CHOSEN
 };
 
+struct CardStats
+{
+	CardStats() { spiralCost = -1; }
+	CardStats(const std::string& imagePath, int spiralCost, MinionStats minionStats)
+	{
+		this->imagePath = imagePath;
+		this->spiralCost = spiralCost;
+		this->minionStats = minionStats;
+	}
+
+	std::string imagePath;
+	MinionStats minionStats;
+	int spiralCost;
+
+	bool isEmpty() { return spiralCost < 0; }
+};
+
 class Card : public Button
 {
 public:

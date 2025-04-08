@@ -13,13 +13,11 @@ public:
         rowComponent = new Layout(this, new Row(), Conf::PADDING, 0);
         AddComponent(rowComponent);
 
-        for (int i = 0;i < 3;i++)
-        {
-            AddCard(CardFactory::Lefty());
-        }
-
-        AddCard(CardFactory::Basic());
-        AddCard(CardFactory::Basic());
+        AddCard(CardFactory::NewCard(CardFactory::Lefty()));
+        AddCard(CardFactory::NewCard(CardFactory::Obsession()));
+        AddCard(CardFactory::NewCard(CardFactory::Righty()));
+        AddCard(CardFactory::NewCard(CardFactory::Basic()));
+        AddCard(CardFactory::NewCard(CardFactory::Basic()));
 
         this->SetRelSize(Conf::TABLE_WIDTH, Conf::CARD_HEIGHT);
         rowComponent->AlignCenter();
@@ -34,7 +32,7 @@ public:
 
     void AddCard(std::unique_ptr<GameObject> cardObj)
     {
-        if (cards.size() >= 6) return;
+        if (cards.size() >= 6 || !cardObj) return;
 
         Card* card = cardObj->GetComponent<Card>();
         card->AddOnLeftClick(

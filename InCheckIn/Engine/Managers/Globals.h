@@ -48,6 +48,8 @@ namespace Conf
 	//Units Assets
 	inline const std::string CARD_IMAGE_BASIC = "Assets/Basic.png";
 	inline const std::string CARD_IMAGE_LEFTY = "Assets/Lefty.png";
+	inline const std::string CARD_IMAGE_PROTOTYPE2 = "Assets/Prototype2.png";
+	inline const std::string CARD_IMAGE_PROTOTYPE = "Assets/Prototype.png";
 
 	//Avatar Assets
 	inline const std::string HOBBY_IMAGE = "Assets/Hobby.png";

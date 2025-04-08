@@ -6,6 +6,7 @@ using namespace Engine;
 
 struct MinionStats
 {
+	MinionStats() {}
 	MinionStats(const std::string& name, std::function<bool(Minion*,int)> trigger)
 	{
 		this->name = name;
