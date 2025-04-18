@@ -14,7 +14,6 @@ public:
 				if (index - 1 >= 0 && self->GetField()->GetMinionAt(index - 1))
 				{
 					self->GetField()->TriggerCard(index - 1);
-					self->GetField()->ChangeSpiral(1);
 					return false;
 				}
 				return true;
@@ -29,7 +28,6 @@ public:
 					self->GetField()->GetMinionAt(index + 1))
 				{
 					self->GetField()->TriggerCard(index + 1);
-					self->GetField()->ChangeSpiral(1);
 					return false;
 				}
 				return true;
@@ -47,7 +45,7 @@ public:
 	static CardStats Obsession()
 	{
 		auto addingSpiral = std::make_shared<int>(0);
-		return CardStats(Conf::CARD_IMAGE_PROTOTYPE2, 0,
+		return CardStats(Conf::CARD_IMAGE_PROTOTYPE2, 1,
 			MinionStats("Obsession", [addingSpiral] (Minion* self, int index) -> bool {
 				(*addingSpiral)++;
 				self->GetField()->ChangeSpiral(*addingSpiral);

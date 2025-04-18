@@ -15,8 +15,8 @@ public:
 
         AddCard(CardFactory::NewCard(CardFactory::Lefty()));
         AddCard(CardFactory::NewCard(CardFactory::Obsession()));
+        AddCard(CardFactory::NewCard(CardFactory::Obsession()));
         AddCard(CardFactory::NewCard(CardFactory::Righty()));
-        AddCard(CardFactory::NewCard(CardFactory::Basic()));
         AddCard(CardFactory::NewCard(CardFactory::Basic()));
 
         this->SetRelSize(Conf::TABLE_WIDTH, Conf::CARD_HEIGHT);
