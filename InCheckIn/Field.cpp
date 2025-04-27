@@ -8,6 +8,7 @@
 Field::Field(Table* table, Hand* hand) : GameObject(), table(table)
 {
     CreateSlots(hand);
+    CreateIndicator();
 }
 
 void Field::SetOpposingField(Field* opposing)
@@ -24,18 +25,23 @@ void Field::PlayTurn()
     AnimationManager::GetInstance().PlayNextAnimation();
 }
 
+//Check if you triggered card exists, otherwise it can break order
 void Field::TriggerCard(int index)
 {
     if (index >= Conf::MAX_CARDS)
     {
         if (cardQueue >= Conf::MAX_CARDS)
         {
-            cardQueue = 0;
-            table->NextTurn();
+            AnimationManager::GetInstance().EnqueueAnimation(Animation([=] {
+                cardQueue = 0;
+                table->ApplySpiralCombo();
+                table->NextTurn();
+                }, nullptr, 500));
         }
         return;
     }
 
+    UpdateIndicator();
     if (!minionPlaced[index]) TriggerCard(++cardQueue);
     else QueueCardAnimation(index);
 }
@@ -62,17 +68,32 @@ void Field::QueueCardAnimation(int index)
         const SDL_Rect* rect = minionPlaced[index]->GetParent()->GetRelTf();
         minionPlaced[index]->GetParent()->SetRelPosition(rect->x, rect->y - 15);
 
+        table->ChangeSpiralCombo(1);
         bool isBreaker = minionPlaced[index]->Trigger(index);
-        if (isBreaker) TriggerCard(++cardQueue);
+        if (isBreaker)
+        {
+            AnimationManager::GetInstance().EnqueueAnimation(Animation(
+                [=] {
+                    TriggerCard(++cardQueue);
+                }, [] {}, 300));
+        }
 
         }, [=] {
             const SDL_Rect* rect = minionPlaced[index]->GetParent()->GetRelTf();
             minionPlaced[index]->GetParent()->SetRelPosition(rect->x, rect->y + 15);
-        }, 500));
+        }, Conf::CARD_ANIM_T));
+
+    AnimationManager::GetInstance().EnqueuePause(Conf::PAUSE_TIME);
+}
+
+void Field::UpdateIndicator()
+{
+    const SDL_Rect* slotRect = slots[cardQueue]->GetParent()->GetRelTf();
+    queueIndicator->SetRelPosition(slotRect->x, slotRect->y);
 }
 
 Minion* Field::GetMinionAt(int index) { return minionPlaced[index]; }
-void Field::ChangeSpiral(int amount) { table->ChangeSpiral(amount); }
+void Field::ChangeSpiralCombo(int amount) { table->ChangeSpiralCombo(amount); }
 Field* Field::GetOpposingField() { return opposingField; }
 
 #pragma region Init
@@ -96,6 +117,17 @@ void Field::CreateSlots(Hand* hand)
     }
 }
 
+void Field::CreateIndicator()
+{
+    auto indicator = std::make_unique<GameObject>(0, 0, Conf::CARD_WIDTH, Conf::CARD_HEIGHT);
+    indicator->AddComponent(new Image(indicator.get(), Conf::CARD_IMAGE_INDICATOR));
+
+    queueIndicator = indicator.get();
+    this->AdoptChild(std::move(indicator));
+
+    UpdateIndicator();
+}
+
 void Field::AssignHand(Hand* hand, Button* button, int index)
 {
     Image* slotImage = button->GetParent()->GetComponent<Image>();
@@ -106,7 +138,7 @@ void Field::AssignHand(Hand* hand, Button* button, int index)
         std::unique_ptr<GameObject> cardOriginal = hand->PlaceCard();
         if (!cardOriginal) return;
 
-        table->ChangeSpiral(cardCost * -1);
+        table->ChangeSpiralCombo(cardCost * -1);
         PlaceCard(std::move(cardOriginal), index);
         });
 

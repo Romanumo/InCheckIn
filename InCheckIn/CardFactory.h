@@ -1,6 +1,7 @@
 #pragma once 
 #include "Engine/UIFactory.h"
 #include "Engine/Component.h"
+#include "Engine/Managers/Random.h"
 #include "Field.h"
 #include "Card.h"
 
@@ -9,10 +10,13 @@ static class CardFactory
 public:
 	static CardStats Lefty()
 	{
-		return CardStats(Conf::CARD_IMAGE_LEFTY, 3,
+		return CardStats(Conf::CARD_IMAGE_LEFTY, 4,
 			MinionStats("Lefty", [](Minion* self, int index) -> bool {
-				if (index - 1 >= 0 && self->GetField()->GetMinionAt(index - 1))
+				Minion* triggerMinion = self->GetField()->GetMinionAt(index - 1);
+				if (index - 1 >= 0 && triggerMinion)
 				{
+					if (triggerMinion->GetName() == "Righty" && Random::Chance(40)) return true;
+
 					self->GetField()->TriggerCard(index - 1);
 					return false;
 				}
@@ -22,14 +26,31 @@ public:
 
 	static CardStats Righty()
 	{
-		return CardStats(Conf::CARD_IMAGE_PROTOTYPE, 3,
+		return CardStats(Conf::CARD_IMAGE_RIGHTY, 4,
 			MinionStats("Righty", [](Minion* self, int index) -> bool {
-				if (index + 1 <= Conf::MAX_CARDS &&
-					self->GetField()->GetMinionAt(index + 1))
+				Minion* triggerMinion = self->GetField()->GetMinionAt(index + 1);
+				if (index + 1 <= Conf::MAX_CARDS && triggerMinion)
 				{
+					if (triggerMinion->GetName() == "Lefty" && Random::Chance(40)) return true;
+
 					self->GetField()->TriggerCard(index + 1);
 					return false;
 				}
+				return true;
+				}));
+	}
+
+	static CardStats Obsession()
+	{
+		return CardStats(Conf::CARD_IMAGE_OBSESSION, 1,
+			MinionStats("Obsession", [](Minion* self, int index) -> bool {
+				int slot = Random::Int(0, Conf::MAX_CARDS - 1);
+				if (self->GetField()->GetMinionAt(slot))
+				{
+					self->GetField()->TriggerCard(slot);
+					return false;
+				}
+
 				return true;
 				}));
 	}
@@ -42,22 +63,11 @@ public:
 			}));
 	}
 
-	static CardStats Obsession()
+	static CardStats Sun()
 	{
-		auto addingSpiral = std::make_shared<int>(0);
-		return CardStats(Conf::CARD_IMAGE_PROTOTYPE2, 1,
-			MinionStats("Obsession", [addingSpiral] (Minion* self, int index) -> bool {
-				(*addingSpiral)++;
-				self->GetField()->ChangeSpiral(*addingSpiral);
-				return true;
-				}));
-	}
-
-	static CardStats Fun()
-	{
-		return CardStats(Conf::CARD_IMAGE_PROTOTYPE, 0,
-			MinionStats("Fun", [](Minion* self, int index) -> bool {
-				self->GetField()->ChangeSpiral(-1);
+		return CardStats(Conf::CARD_IMAGE_SUN, 0,
+			MinionStats("Sun", [](Minion* self, int index) -> bool {
+				self->GetField()->ChangeSpiralCombo(-3);
 				return true;
 				}));
 	}
@@ -69,14 +79,6 @@ public:
 		auto cardObj = std::make_unique<GameObject>(0, 0, Conf::CARD_WIDTH, Conf::CARD_HEIGHT);
 		cardObj->AddComponent(new Card(cardObj.get(), stats.spiralCost, stats.minionStats));
 		cardObj->AddComponent(new Image(cardObj.get(), stats.imagePath));
-
-		/*cardObj->AdoptChild(std::move(UIFactory::NewText(
-			10, Conf::CARD_HEIGHT - 30, Conf::CARD_WIDTH / 5, 20,
-			std::to_string(spiralCost), Conf::SPIRAL_COLOR)));*/
-
-		/*cardObj->AdoptChild(std::move(UIFactory::NewText(
-			Conf::CARD_WIDTH / 3, Conf::CARD_HEIGHT * 5/6, Conf::CARD_WIDTH / 3, 20,
-			minionStats.name, {0,0,0,255}, 14)));*/
 
 		return cardObj;
 	}

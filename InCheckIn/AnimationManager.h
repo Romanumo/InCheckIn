@@ -6,6 +6,14 @@
 struct Animation
 {
 	Animation() {}
+
+	Animation(int duration) 
+	{
+		onPlayed = nullptr;
+		onEnd = nullptr;
+		this->duration = duration;
+	}
+
 	Animation(std::function<void()> play, std::function<void()> end, int duration)
 	{
 		onPlayed = play;
@@ -40,6 +48,11 @@ public:
 	void EnqueueAnimation(Animation animation)
 	{
 		animationQueue.push(animation);
+	}
+
+	void EnqueuePause(int duration)
+	{
+		animationQueue.push(Animation(duration));
 	}
 
 	void PlayNextAnimation()

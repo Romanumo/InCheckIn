@@ -22,7 +22,7 @@ public:
 
     void PlayTurn();
 
-    void ChangeSpiral(int amount);
+    void ChangeSpiralCombo(int amount);
 
 private:
     Field* opposingField;
@@ -30,10 +30,13 @@ private:
 
     Minion** minionPlaced = new Minion * [Conf::MAX_CARDS];
     Button** slots = new Button * [Conf::MAX_CARDS];
+    GameObject* queueIndicator;
     int cardQueue = 0;
 
     void QueueCardAnimation(int index);
+    void UpdateIndicator();
 
     void CreateSlots(Hand* hand);
+    void CreateIndicator();
     void AssignHand(Hand* hand, Button* button, int index);
 };

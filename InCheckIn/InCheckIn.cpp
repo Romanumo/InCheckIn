@@ -41,9 +41,6 @@ int main(int argc, char** argv)
 
     Table* table = new Table();
 
-    //Engine::GameObject* test = new Engine::GameObject(200, 200, 300, 300);
-    //test->AddComponent(new Engine::Image(test, Config::CARD_IMAGE_HEALER));
-
     while (!shouldQuit)
     {
         //Handle Input

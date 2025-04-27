@@ -22,8 +22,8 @@ public:
         CreateTable();
         playerField->SetOpposingField(enemyField);
 
-        //enemyField->PlaceCard(CardFactory::NewCard(CardFactory::Fun()), 2);
-        //enemyField->PlaceCard(CardFactory::NewCard(CardFactory::Fun()), 3);
+        enemyField->PlaceCard(CardFactory::NewCard(CardFactory::Sun()), 2);
+        enemyField->PlaceCard(CardFactory::NewCard(CardFactory::Sun()), 3);
     }
 
     void NextTurn()
@@ -49,10 +49,20 @@ public:
         }
     }
 
-    void ChangeSpiral(int spiralChange)
+    void ChangeSpiralCombo(int spiralChange)
     {
-        spiral += spiralChange;
+        spiralCombo += spiralChange;
+        std::string sign = (spiralCombo > 0) ? "+" : "";
+        spiralComboText->SetText(sign + std::to_string(spiralCombo));
+    }
+
+    void ApplySpiralCombo()
+    {
+        spiral += spiralCombo;
         spiralText->SetText(std::to_string(spiral) + "/" + std::to_string(neededSpiral));
+
+        spiralCombo = 0;
+        spiralComboText->SetText("0");
 
         if (spiral < 0) Lose();
         else if (spiral >= neededSpiral) Win();
@@ -69,7 +79,10 @@ private:
 
     GameFlow turn = GameFlow::CHOOSING;
     Text* spiralText;
+    Text* spiralComboText;
+
     int spiral = 10;
+    int spiralCombo = 0;
     int neededSpiral = 30;
 
     void Lose()
@@ -151,9 +164,13 @@ private:
 
         auto spiralIcon = std::make_unique<GameObject>(0, 0, w, h);
         spiralIcon->AddComponent(new Image(spiralIcon.get(), Conf::SPIRAL_IMAGE));
-        spiralIcon->AdoptChild(std::move(UIFactory::NewText(w * 2/3 + 10, h / 2 - 10, w / 3, 20, spiralText)));
+
+        spiralIcon->AdoptChild(std::move(UIFactory::NewText(w /2 + 25, h / 2 - 20, w / 3, 40, spiralText)));
         spiralText->SetText(std::to_string(spiral) + "/" + std::to_string(neededSpiral), 
             Conf::SPIRAL_COLOR);
+
+        spiralIcon->AdoptChild(std::move(UIFactory::NewText(w /2 + 10, h / 2 + 10, w / 3, 40, spiralComboText)));
+        spiralComboText->SetText("0", Conf::SPIRAL_COLOR);
         return spiralIcon;
     }
     #pragma endregion

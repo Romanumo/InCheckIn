@@ -9,10 +9,14 @@ class Deck
 public:
 	Deck()
 	{
+		cards.push_back(CardFactory::Obsession());
 		cards.push_back(CardFactory::Lefty());
+		cards.push_back(CardFactory::Lefty());
+		cards.push_back(CardFactory::Righty());
+		cards.push_back(CardFactory::Righty());
 		cards.push_back(CardFactory::Basic());
 		cards.push_back(CardFactory::Basic());
-		cards.push_back(CardFactory::Basic());
+		Shuffle();
 	}
 
 	CardStats GetCard()
@@ -20,6 +24,11 @@ public:
 		if (index >= cards.size()) return CardStats();
 		index++;
 		return cards.at(index - 1);
+	}
+
+	void Shuffle()
+	{
+
 	}
 
 private:

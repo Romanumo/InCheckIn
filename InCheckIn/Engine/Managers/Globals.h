@@ -17,7 +17,7 @@ namespace Conf
 	inline constexpr int CARD_WIDTH = 100;
 	inline constexpr int MAX_CARDS = 6;
 
-	inline constexpr int AVATAR_WIDTH = CARD_WIDTH * 2;
+	inline constexpr int AVATAR_WIDTH = CARD_WIDTH * 3;
 	inline constexpr int AVATAR_HEIGHT = CARD_HEIGHT;
 
 	inline constexpr int TURNBT_WIDTH = AVATAR_WIDTH;
@@ -27,7 +27,7 @@ namespace Conf
 	inline constexpr int TABLE_HEIGHT = (CARD_HEIGHT + PADDING) * 3 + PADDING;
 
 	inline constexpr int WINDOW_HEIGHT = TABLE_HEIGHT;
-	inline constexpr int WINDOW_WIDTH = TABLE_WIDTH + 300;
+	inline constexpr int WINDOW_WIDTH = TABLE_WIDTH + 400;
 
 	//Colors
 	inline constexpr SDL_Color BACKGROUND_COLOR{ 170, 170, 170, 255 };
@@ -48,7 +48,10 @@ namespace Conf
 	//Units Assets
 	inline const std::string CARD_IMAGE_BASIC = "Assets/Basic.png";
 	inline const std::string CARD_IMAGE_LEFTY = "Assets/Lefty.png";
-	inline const std::string CARD_IMAGE_PROTOTYPE2 = "Assets/Prototype2.png";
+	inline const std::string CARD_IMAGE_RIGHTY = "Assets/Righty.png";
+	inline const std::string CARD_IMAGE_SUN = "Assets/Sun.png";
+	inline const std::string CARD_IMAGE_OBSESSION = "Assets/Obsession.png";
+	inline const std::string CARD_IMAGE_INDICATOR = "Assets/Indicator.png";
 	inline const std::string CARD_IMAGE_PROTOTYPE = "Assets/Prototype.png";
 
 	//Avatar Assets
@@ -57,6 +60,10 @@ namespace Conf
 	//Max Chilren
 	inline const int MAX_CHILDREN = 20;
 	inline const int MAX_OBSERVERS = 5;
+
+	//Animation Setting
+	inline const int CARD_ANIM_T = 600;
+	inline const int PAUSE_TIME = 200;
 }
 
 namespace Utils

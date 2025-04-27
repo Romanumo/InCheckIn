@@ -13,10 +13,10 @@ public:
         rowComponent = new Layout(this, new Row(), Conf::PADDING, 0);
         AddComponent(rowComponent);
 
-        AddCard(CardFactory::NewCard(CardFactory::Lefty()));
-        AddCard(CardFactory::NewCard(CardFactory::Obsession()));
+        //Clear the hand in game testing
         AddCard(CardFactory::NewCard(CardFactory::Obsession()));
         AddCard(CardFactory::NewCard(CardFactory::Righty()));
+        AddCard(CardFactory::NewCard(CardFactory::Lefty()));
         AddCard(CardFactory::NewCard(CardFactory::Basic()));
 
         this->SetRelSize(Conf::TABLE_WIDTH, Conf::CARD_HEIGHT);
