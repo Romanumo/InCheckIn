@@ -21,7 +21,7 @@ class Minion : public Component
 {
 public:
 	Minion(GameObject* parent, Field* field, MinionStats stats) :
-		Component(parent), field(field), stats(stats) { }
+		Component(parent), field(field), stats(stats) {}
 
 	//True - Continue Card continuation; False - Wait
 	bool Trigger(int index)

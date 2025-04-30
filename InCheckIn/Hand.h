@@ -32,7 +32,7 @@ public:
 
     void AddCard(std::unique_ptr<GameObject> cardObj)
     {
-        if (cards.size() >= 6 || !cardObj) return;
+        if (cards.size() >= Conf::MAX_HAND_SIZE || !cardObj) return;
 
         Card* card = cardObj->GetComponent<Card>();
         card->AddOnLeftClick(

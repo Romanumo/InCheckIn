@@ -57,8 +57,24 @@ void Field::PlaceCard(std::unique_ptr<GameObject> card, int slotIndex)
     Minion* minion;
     cardRef->TransformToMinion(this, minion);
 
+    ConnectToField(slotIndex, minion);
+
     minionPlaced[slotIndex] = minion;
     slots[slotIndex]->SetEnabled(false);
+}
+
+void Field::RemoveCard(int index)
+{
+    for (int i = 0;i<Conf::MAX_CARDS;i++)
+    {
+        if (minionPlaced[i] && index == i)
+        {
+            slots[i]->SetEnabled(true);
+            slots[i]->GetParent()->RemoveChild(minionPlaced[i]->GetParent());
+            minionPlaced[i] = nullptr;
+            return;
+        }
+    }
 }
 
 void Field::QueueCardAnimation(int index)
@@ -75,7 +91,7 @@ void Field::QueueCardAnimation(int index)
             AnimationManager::GetInstance().EnqueueAnimation(Animation(
                 [=] {
                     TriggerCard(++cardQueue);
-                }, [] {}, 300));
+                }, [] {}, Conf::NEW_CARD_T));
         }
 
         }, [=] {
@@ -84,6 +100,21 @@ void Field::QueueCardAnimation(int index)
         }, Conf::CARD_ANIM_T));
 
     AnimationManager::GetInstance().EnqueuePause(Conf::PAUSE_TIME);
+}
+
+void Field::ConnectToField(int index, Minion* minion)
+{
+    if (!isPlayer) return;
+
+    Button* button = new Button(minion->GetParent());
+    button->AddOnLeftClick([&, index] {
+        if (table->GetHammerMode())
+        {
+            table->SetHammerMode(false);
+            RemoveCard(index);
+        }
+        });
+    minion->GetParent()->AddComponent(button);
 }
 
 void Field::UpdateIndicator()
@@ -99,6 +130,7 @@ Field* Field::GetOpposingField() { return opposingField; }
 #pragma region Init
 void Field::CreateSlots(Hand* hand)
 {
+    minionPlaced = new Minion * [Conf::MAX_CARDS](); 
     auto slotsObj = UIFactory::GetLayout<GameObject>(this, new Row(), Conf::MAX_CARDS,
         0, 0, Conf::CARD_WIDTH, Conf::CARD_HEIGHT);
 
@@ -111,7 +143,6 @@ void Field::CreateSlots(Hand* hand)
         if (hand) AssignHand(hand, button, index);
         slot->AddComponent(button);
 
-        minionPlaced[index] = nullptr;
         slots[index] = button;
         index++;
     }
@@ -149,5 +180,7 @@ void Field::AssignHand(Hand* hand, Button* button, int index)
     button->AddOnHoverExit([slotImage] {
         slotImage->SetImage(Conf::SLOT_IMAGE);
         });
+
+    isPlayer = true;
 }
 #pragma endregion

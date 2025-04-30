@@ -9,7 +9,6 @@
 #include "Engine/Managers/Globals.h"
 #include "Engine/GameObject.h"
 #include "Engine/UIFactory.h"
-
 #include "Table.h"
 using namespace std;
 
@@ -43,7 +42,6 @@ int main(int argc, char** argv)
 
     while (!shouldQuit)
     {
-        //Handle Input
         while (SDL_PollEvent(&event))
         {
             if (event.type == SDL_QUIT)
@@ -53,9 +51,6 @@ int main(int argc, char** argv)
             table->HandleEvent(event);
         }
 
-        //Update Objects
-
-        //Render Frame (DOnt forget to put render after window render)
         window.Render();
         table->Render(window.GetSurface());
         window.UpdateFrame();

@@ -16,25 +16,27 @@ public:
     void SetOpposingField(Field* opposing);
     Field* GetOpposingField();
 
-    void TriggerCard(int index);
     Minion* GetMinionAt(int index);
-    void PlaceCard(std::unique_ptr<GameObject> card, int slotIndex);
+    void ChangeSpiralCombo(int amount);
 
     void PlayTurn();
-
-    void ChangeSpiralCombo(int amount);
+    void TriggerCard(int index);
+    void RemoveCard(int index);
+    void PlaceCard(std::unique_ptr<GameObject> card, int slotIndex);
 
 private:
     Field* opposingField;
     Table* table;
 
-    Minion** minionPlaced = new Minion * [Conf::MAX_CARDS];
+    Minion** minionPlaced;
     Button** slots = new Button * [Conf::MAX_CARDS];
     GameObject* queueIndicator;
     int cardQueue = 0;
+    bool isPlayer = false;
 
     void QueueCardAnimation(int index);
     void UpdateIndicator();
+    void ConnectToField(int index, Minion* minion);
 
     void CreateSlots(Hand* hand);
     void CreateIndicator();

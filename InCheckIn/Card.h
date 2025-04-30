@@ -81,6 +81,10 @@ private:
 			}
 			});
 
+		AddOnRightClick([this] {
+			
+			});
+
 		AddOnHoverExit([this] {
 			if (state == CardState::HOVERED)
 			{

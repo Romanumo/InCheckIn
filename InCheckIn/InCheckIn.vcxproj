@@ -136,6 +136,7 @@
     <ClCompile Include="Engine\GameObject.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="InCheckIn.cpp" />
+    <ClCompile Include="Table.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationManager.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Engine\TextSurface.h" />
     <ClInclude Include="Engine\UIFactory.h" />
     <ClInclude Include="Field.h" />
+    <ClInclude Include="HintManager.h" />
     <ClInclude Include="Minion.h" />
     <ClInclude Include="Table.h" />
   </ItemGroup>

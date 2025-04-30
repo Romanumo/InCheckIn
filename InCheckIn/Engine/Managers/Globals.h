@@ -9,7 +9,8 @@
 namespace Conf
 {
 	//Game Settings
-	inline const std::string GAME_NAME = "InCheckIn";
+	inline const std::string GAME_NAME = "The Loop";
+	inline constexpr int MAX_HAND_SIZE = 4;
 
 	//Size and Positioning
 	inline constexpr int PADDING = 5;
@@ -53,17 +54,16 @@ namespace Conf
 	inline const std::string CARD_IMAGE_OBSESSION = "Assets/Obsession.png";
 	inline const std::string CARD_IMAGE_INDICATOR = "Assets/Indicator.png";
 	inline const std::string CARD_IMAGE_PROTOTYPE = "Assets/Prototype.png";
-
-	//Avatar Assets
 	inline const std::string HOBBY_IMAGE = "Assets/Hobby.png";
 
 	//Max Chilren
-	inline const int MAX_CHILDREN = 20;
-	inline const int MAX_OBSERVERS = 5;
+	inline constexpr int MAX_CHILDREN = 20;
+	inline constexpr int MAX_OBSERVERS = 5;
 
 	//Animation Setting
-	inline const int CARD_ANIM_T = 600;
-	inline const int PAUSE_TIME = 200;
+	inline constexpr int NEW_CARD_T = 300;
+	inline constexpr int CARD_ANIM_T = 300;
+	inline constexpr int PAUSE_TIME = 100;
 }
 
 namespace Utils

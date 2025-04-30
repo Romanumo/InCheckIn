@@ -44,6 +44,8 @@ public:
 	{
 		return CardStats(Conf::CARD_IMAGE_OBSESSION, 1,
 			MinionStats("Obsession", [](Minion* self, int index) -> bool {
+				if (Random::Chance(30)) return true;
+
 				int slot = Random::Int(0, Conf::MAX_CARDS - 1);
 				if (self->GetField()->GetMinionAt(slot))
 				{
