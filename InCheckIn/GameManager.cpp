@@ -1,20 +1,19 @@
 #pragma once
-#include "Table.h"
-#include "Deck.h"
-#include "Field.h"
-#include "Hand.h"
+#include "GameManager.h"
 
-Table::Table() : Engine::GameObject(Conf::PADDING, Conf::PADDING, 0, 0)
+void GameManager::Init()
 {
-    deck = std::make_unique<Deck>();
+    scene = std::make_unique<GameObject>(Conf::PADDING, Conf::PADDING, 0, 0);
+
     CreateTable();
+    deck = std::make_unique<Deck>();
     playerField->SetOpposingField(enemyField);
 
     enemyField->PlaceCard(CardFactory::NewCard(CardFactory::Sun()), 2);
     enemyField->PlaceCard(CardFactory::NewCard(CardFactory::Sun()), 3);
 }
 
-void Table::NextTurn()
+void GameManager::NextTurn()
 {
     switch (turn)
     {
@@ -38,14 +37,14 @@ void Table::NextTurn()
     }
 }
 
-void Table::ChangeSpiralCombo(int spiralChange)
+void GameManager::ChangeSpiralCombo(int spiralChange)
 {
     spiralCombo += spiralChange;
     std::string sign = (spiralCombo > 0) ? "+" : "";
     spiralComboText->SetText(sign + std::to_string(spiralCombo));
 }
 
-void Table::ApplySpiralCombo()
+void GameManager::ApplySpiralCombo()
 {
     spiral += spiralCombo;
     spiralText->SetText(std::to_string(spiral) + "/" + std::to_string(neededSpiral));
@@ -57,39 +56,46 @@ void Table::ApplySpiralCombo()
     else if (spiral >= neededSpiral) Win();
 }
 
-void Table::SetHammerMode(bool hammerMode)
+void GameManager::SetHammerMode(bool hammerMode)
 {
     isHammer = hammerMode;
     if (isHammer) hammerImage->SetImage(Conf::CARD_IMAGE_PROTOTYPE);
     else hammerImage->SetImage(Conf::HOBBY_IMAGE);
 }
 
-int Table::GetSpiral() { return spiral; }
-bool Table::GetHammerMode() { return isHammer; }
+void GameManager::CallHint(int x, int y)
+{
+    hint->SetRelPosition(x, y);
+}
 
-void Table::Lose()
+int GameManager::GetSpiral() { return spiral; }
+bool GameManager::GetHammerMode() { return isHammer; }
+
+void GameManager::Lose()
 {
     std::cout << "You lost!" << std::endl;
 }
 
-void Table::Win()
+void GameManager::Win()
 {
     std::cout << "You Won!" << std::endl;
 }
 
+const GameObject* GameManager::GetScene() { return scene.get(); }
+
 #pragma region Init
-void Table::CreateTable()
+void GameManager::CreateTable()
 {
-    auto eFieldObj = std::make_unique<Field>(this);
+    auto eFieldObj = std::make_unique<Field>();
     enemyField = eFieldObj.get();
 
     auto handObj = std::make_unique<Hand>();
     hand = handObj.get();
 
-    auto pFieldObj = std::make_unique<Field>(this, handObj.get());
+    auto pFieldObj = std::make_unique<Field>(handObj.get());
     playerField = pFieldObj.get();
 
-    Engine::Layout* col = new Engine::Layout(this, new Engine::Column(),
+    Engine::Layout* col = new Engine::Layout(scene.get(), new Engine::Column(),
         Conf::PADDING, 0);
     col->AddGameObject(std::move(
         UIFactory::NewRow(
@@ -103,10 +109,14 @@ void Table::CreateTable()
         UIFactory::NewRow(
             std::move(handObj),
             std::move(CreateTurnBell()))));
-    AddComponent(col);
+    scene->AddComponent(col);
+
+    auto hintWindow = CreateHint();
+    hint = hintWindow.get();
+    scene->AdoptChild(std::move(hintWindow));
 }
 
-std::unique_ptr<GameObject> Table::CreateTurnBell()
+std::unique_ptr<GameObject> GameManager::CreateTurnBell()
 {
     auto bellObj = std::make_unique<GameObject>(0, 0,
         Conf::TURNBT_WIDTH, Conf::TURNBT_HEIGHT);
@@ -126,7 +136,7 @@ std::unique_ptr<GameObject> Table::CreateTurnBell()
     return bellObj;
 }
 
-std::unique_ptr<GameObject> Table::CreateHammer()
+std::unique_ptr<GameObject> GameManager::CreateHammer()
 {
     int w = Conf::AVATAR_WIDTH;
     int h = Conf::AVATAR_HEIGHT;
@@ -145,7 +155,7 @@ std::unique_ptr<GameObject> Table::CreateHammer()
     return hammer;
 }
 
-std::unique_ptr<GameObject> Table::CreateSpiralResource()
+std::unique_ptr<GameObject> GameManager::CreateSpiralResource()
 {
     int w = Conf::AVATAR_WIDTH;
     int h = Conf::AVATAR_HEIGHT;
@@ -161,4 +171,31 @@ std::unique_ptr<GameObject> Table::CreateSpiralResource()
     spiralComboText->SetText("0", Conf::SPIRAL_COLOR);
     return spiralIcon;
 }
+
+std::unique_ptr<GameObject> GameManager::CreateHint()
+{
+    auto hintWindow = std::make_unique<GameObject>(0, 0, 150, 100);
+    hintWindow->AddComponent(new Image(hintWindow.get(), Conf::CARD_IMAGE_PROTOTYPE));
+
+    hintWindow->AddComponent(new Text(hintWindow.get(), "Spiral"));
+
+    return hintWindow;
+}
+
+GameFlow GameManager::turn = GameFlow::CHOOSING;
+Field* GameManager::enemyField = nullptr;
+Field* GameManager::playerField = nullptr;
+Hand* GameManager::hand = nullptr;
+GameObject* GameManager::hint = nullptr;
+std::unique_ptr<GameObject> GameManager::scene = nullptr;
+std::unique_ptr<Deck> GameManager::deck = nullptr;
+
+bool GameManager::isHammer = false;
+Image* GameManager::hammerImage = nullptr;
+
+Text* GameManager::spiralText = nullptr;
+Text* GameManager::spiralComboText = nullptr;
+int GameManager::spiral = 10;
+int GameManager::spiralCombo = 0;
+int GameManager::neededSpiral = 30;
 #pragma endregion

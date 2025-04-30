@@ -33,8 +33,8 @@ namespace Engine
 		bool AdoptChild(std::unique_ptr<GameObject> child);
 		std::unique_ptr<GameObject> TransferChild(GameObject* child);
 
-		void HandleEvent(const SDL_Event& event);
-		void Render(SDL_Surface* surface);
+		void HandleEvent(const SDL_Event& event) const;
+		void Render(SDL_Surface* surface) const;
 
 		virtual ~GameObject() = default;
 		GameObject(const GameObject&) = delete;

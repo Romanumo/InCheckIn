@@ -191,7 +191,7 @@ void GameObject::AddComponent(Component* component)
 	components.push_back(std::unique_ptr<Component>(component));
 }
 
-void GameObject::HandleEvent(const SDL_Event& event)
+void GameObject::HandleEvent(const SDL_Event& event) const
 {
 	for (auto& component : components)
 	{
@@ -206,7 +206,7 @@ void GameObject::HandleEvent(const SDL_Event& event)
 	}
 }
 
-void GameObject::Render(SDL_Surface* surface)
+void GameObject::Render(SDL_Surface* surface) const
 {
 	for (auto& component : components)
 	{

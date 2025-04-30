@@ -9,7 +9,7 @@
 #include "Engine/Managers/Globals.h"
 #include "Engine/GameObject.h"
 #include "Engine/UIFactory.h"
-#include "Table.h"
+#include "GameManager.h"
 using namespace std;
 
 int main(int argc, char** argv)
@@ -38,7 +38,8 @@ int main(int argc, char** argv)
 
     //SoundManager::GetInstance().PlayMusic(Config::BCG_MUSIC);
 
-    Table* table = new Table();
+    GameManager::Init();
+    const GameObject* mainScene = GameManager::GetScene();
 
     while (!shouldQuit)
     {
@@ -48,11 +49,11 @@ int main(int argc, char** argv)
             {
                 shouldQuit = true;
             }
-            table->HandleEvent(event);
+            mainScene->HandleEvent(event);
         }
 
         window.Render();
-        table->Render(window.GetSurface());
+        mainScene->Render(window.GetSurface());
         window.UpdateFrame();
     }
 

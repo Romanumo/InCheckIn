@@ -1,11 +1,11 @@
 #pragma once
 #include "AnimationManager.h"
-#include "Table.h"
+#include "GameManager.h"
 #include "Field.h"
 #include "Hand.h"
 #include "Card.h"
 
-Field::Field(Table* table, Hand* hand) : GameObject(), table(table)
+Field::Field(Hand* hand) : GameObject()
 {
     CreateSlots(hand);
     CreateIndicator();
@@ -34,8 +34,8 @@ void Field::TriggerCard(int index)
         {
             AnimationManager::GetInstance().EnqueueAnimation(Animation([=] {
                 cardQueue = 0;
-                table->ApplySpiralCombo();
-                table->NextTurn();
+                GameManager::ApplySpiralCombo();
+                GameManager::NextTurn();
                 }, nullptr, 500));
         }
         return;
@@ -84,7 +84,7 @@ void Field::QueueCardAnimation(int index)
         const SDL_Rect* rect = minionPlaced[index]->GetParent()->GetRelTf();
         minionPlaced[index]->GetParent()->SetRelPosition(rect->x, rect->y - 15);
 
-        table->ChangeSpiralCombo(1);
+        GameManager::ChangeSpiralCombo(1);
         bool isBreaker = minionPlaced[index]->Trigger(index);
         if (isBreaker)
         {
@@ -108,9 +108,9 @@ void Field::ConnectToField(int index, Minion* minion)
 
     Button* button = new Button(minion->GetParent());
     button->AddOnLeftClick([&, index] {
-        if (table->GetHammerMode())
+        if (GameManager::GetHammerMode())
         {
-            table->SetHammerMode(false);
+            GameManager::SetHammerMode(false);
             RemoveCard(index);
         }
         });
@@ -124,7 +124,7 @@ void Field::UpdateIndicator()
 }
 
 Minion* Field::GetMinionAt(int index) { return minionPlaced[index]; }
-void Field::ChangeSpiralCombo(int amount) { table->ChangeSpiralCombo(amount); }
+void Field::ChangeSpiralCombo(int amount) { GameManager::ChangeSpiralCombo(amount); }
 Field* Field::GetOpposingField() { return opposingField; }
 
 #pragma region Init
@@ -164,12 +164,12 @@ void Field::AssignHand(Hand* hand, Button* button, int index)
     Image* slotImage = button->GetParent()->GetComponent<Image>();
     button->AddOnLeftClick([this, hand, index] {
         int cardCost = hand->GetChosenCardSpiral();
-        if (table->GetSpiral() < cardCost) return;
+        if (GameManager::GetSpiral() < cardCost) return;
 
         std::unique_ptr<GameObject> cardOriginal = hand->PlaceCard();
         if (!cardOriginal) return;
 
-        table->ChangeSpiralCombo(cardCost * -1);
+        GameManager::ChangeSpiralCombo(cardCost * -1);
         PlaceCard(std::move(cardOriginal), index);
         });
 

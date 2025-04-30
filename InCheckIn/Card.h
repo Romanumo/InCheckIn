@@ -81,8 +81,8 @@ private:
 			}
 			});
 
-		AddOnRightClick([this] {
-			
+		AddOnRightClick([this, relTF] {
+
 			});
 
 		AddOnHoverExit([this] {
