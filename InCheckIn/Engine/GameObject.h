@@ -21,6 +21,7 @@ namespace Engine
 		const SDL_Rect* GetRelTf() const;
 
 		void SetRelSize(int w, int h);
+		void SetActive(bool isActive);
 		void SetRelPosition(int x, int y);
 		bool IsWithinBounds(int x, int y) const;
 
@@ -78,6 +79,7 @@ namespace Engine
 	private:
 		SDL_Rect absTf{ 0,0,0,0 };
 		SDL_Rect relTf = absTf;
+		bool isActive = true;
 
 		GameObject* parent = nullptr;
 		std::vector<std::unique_ptr<GameObject>> children;

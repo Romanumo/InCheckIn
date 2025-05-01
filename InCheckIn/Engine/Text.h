@@ -34,7 +34,8 @@ namespace Engine
 		{
 			textColor = color;
 
-			textSurface = textFactory->GetSurface(text, font.get(), color);
+			textSurface = textFactory->GetSurface(text, font.get(), color, 
+				parent->GetAbsTf()->w * 5/6);
 
 			UpdateTextPosition();
 		}

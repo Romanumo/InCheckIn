@@ -11,11 +11,12 @@ public:
 	static CardStats Lefty()
 	{
 		return CardStats(Conf::CARD_IMAGE_LEFTY, 4,
-			MinionStats("Lefty", [](Minion* self, int index) -> bool {
+			MinionStats("Rumination", "Triggers card to the left (Compulsion with 70%)",
+				[](Minion* self, int index) -> bool {
 				Minion* triggerMinion = self->GetField()->GetMinionAt(index - 1);
 				if (index - 1 >= 0 && triggerMinion)
 				{
-					if (triggerMinion->GetName() == "Righty" && Random::Chance(40)) return true;
+					if (triggerMinion->GetName() == "Compulsion" && Random::Chance(30)) return true;
 
 					self->GetField()->TriggerCard(index - 1);
 					return false;
@@ -27,11 +28,12 @@ public:
 	static CardStats Righty()
 	{
 		return CardStats(Conf::CARD_IMAGE_RIGHTY, 4,
-			MinionStats("Righty", [](Minion* self, int index) -> bool {
+			MinionStats("Compulsion", "Triggers card to the right (Rumination with 70%)", 
+				[](Minion* self, int index) -> bool {
 				Minion* triggerMinion = self->GetField()->GetMinionAt(index + 1);
 				if (index + 1 <= Conf::MAX_CARDS && triggerMinion)
 				{
-					if (triggerMinion->GetName() == "Lefty" && Random::Chance(40)) return true;
+					if (triggerMinion->GetName() == "Rumination" && Random::Chance(30)) return true;
 
 					self->GetField()->TriggerCard(index + 1);
 					return false;
@@ -40,10 +42,11 @@ public:
 				}));
 	}
 
-	static CardStats Obsession()
+	static CardStats Repeater()
 	{
 		return CardStats(Conf::CARD_IMAGE_OBSESSION, 1,
-			MinionStats("Obsession", [](Minion* self, int index) -> bool {
+			MinionStats("Mental Check", "Triggers random card with 70%", 
+				[](Minion* self, int index) -> bool {
 				if (Random::Chance(30)) return true;
 
 				int slot = Random::Int(0, Conf::MAX_CARDS - 1);
@@ -60,7 +63,8 @@ public:
 	static CardStats Basic()
 	{
 		return CardStats(Conf::CARD_IMAGE_BASIC, 0,
-			MinionStats("Basic", [](Minion* self, int index) -> bool {
+			MinionStats("Thought", "Does Nothing",
+				[](Minion* self, int index) -> bool {
 				return true;
 			}));
 	}
@@ -68,7 +72,8 @@ public:
 	static CardStats Sun()
 	{
 		return CardStats(Conf::CARD_IMAGE_SUN, 0,
-			MinionStats("Sun", [](Minion* self, int index) -> bool {
+			MinionStats("Sun", "Deducts 2 spiral",
+				[](Minion* self, int index) -> bool {
 				self->GetField()->ChangeSpiralCombo(-3);
 				return true;
 				}));

@@ -7,13 +7,16 @@ using namespace Engine;
 struct MinionStats
 {
 	MinionStats() {}
-	MinionStats(const std::string& name, std::function<bool(Minion*,int)> trigger)
+	MinionStats(const std::string& name, const std::string& desc, 
+		std::function<bool(Minion*,int)> trigger)
 	{
 		this->name = name;
+		this->desc = desc;
 		if (trigger) this->onTrigger = trigger;
 	}
 
 	std::string name;
+	std::string desc;
 	std::function<bool(Minion*, int)> onTrigger;
 };
 

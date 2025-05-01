@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/GameObject.h"
 #include "Engine/UIFactory.h"
+#include "HintManager.h"
 #include "Minion.h"
 using namespace Engine;
 
@@ -78,17 +79,22 @@ private:
 			{
 				GetParent()->SetRelPosition(relTF->x, relTF->y - 15);
 				state = CardState::CHOSEN;
+				HintManager::GetInstance().HideHint();
 			}
 			});
 
-		AddOnRightClick([this, relTF] {
-
+		AddOnRightClick([this] {
+			const SDL_Rect* absTF = GetParent()->GetAbsTf();
+			HintManager::GetInstance().CallHint(absTF->x + absTF->w, absTF->y, 
+				minionStats.name, minionStats.desc);
 			});
 
 		AddOnHoverExit([this] {
 			if (state == CardState::HOVERED)
 			{
 				Deselect();
+				HintManager::GetInstance().HideHint();
+
 			}
 			});
 	}

@@ -14,7 +14,7 @@ public:
         AddComponent(rowComponent);
 
         //Clear the hand in game testing
-        AddCard(CardFactory::NewCard(CardFactory::Obsession()));
+        AddCard(CardFactory::NewCard(CardFactory::Repeater()));
         AddCard(CardFactory::NewCard(CardFactory::Righty()));
         AddCard(CardFactory::NewCard(CardFactory::Lefty()));
         AddCard(CardFactory::NewCard(CardFactory::Basic()));

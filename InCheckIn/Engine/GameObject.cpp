@@ -167,6 +167,7 @@ void GameObject::ReserveChildrenSize(int reserve) { children.reserve(reserve); }
 
 #pragma region GettersSetters
 
+void GameObject::SetActive(bool isActive) { this->isActive = isActive; }
 std::string GameObject::GetName() const { return typeid(*this).name(); }
 GameObject* GameObject::GetParent() const { return parent; }
 const std::vector<std::unique_ptr<GameObject>>& GameObject::GetChildren() const { return children; }
@@ -193,6 +194,8 @@ void GameObject::AddComponent(Component* component)
 
 void GameObject::HandleEvent(const SDL_Event& event) const
 {
+	if (!isActive) return;
+
 	for (auto& component : components)
 	{
 		component->HandleEvent(event);
@@ -208,6 +211,8 @@ void GameObject::HandleEvent(const SDL_Event& event) const
 
 void GameObject::Render(SDL_Surface* surface) const
 {
+	if (!isActive) return;
+
 	for (auto& component : components)
 	{
 		component->Render(surface);

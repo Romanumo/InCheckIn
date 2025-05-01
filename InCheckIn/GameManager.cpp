@@ -1,5 +1,6 @@
 #pragma once
 #include "GameManager.h"
+#include "HintManager.h"
 
 void GameManager::Init()
 {
@@ -8,6 +9,7 @@ void GameManager::Init()
     CreateTable();
     deck = std::make_unique<Deck>();
     playerField->SetOpposingField(enemyField);
+    HintManager::GetInstance().Init(scene.get());
 
     enemyField->PlaceCard(CardFactory::NewCard(CardFactory::Sun()), 2);
     enemyField->PlaceCard(CardFactory::NewCard(CardFactory::Sun()), 3);
@@ -63,13 +65,9 @@ void GameManager::SetHammerMode(bool hammerMode)
     else hammerImage->SetImage(Conf::HOBBY_IMAGE);
 }
 
-void GameManager::CallHint(int x, int y)
-{
-    hint->SetRelPosition(x, y);
-}
-
 int GameManager::GetSpiral() { return spiral; }
 bool GameManager::GetHammerMode() { return isHammer; }
+const GameObject* GameManager::GetScene() { return scene.get(); }
 
 void GameManager::Lose()
 {
@@ -81,7 +79,6 @@ void GameManager::Win()
     std::cout << "You Won!" << std::endl;
 }
 
-const GameObject* GameManager::GetScene() { return scene.get(); }
 
 #pragma region Init
 void GameManager::CreateTable()
@@ -110,10 +107,6 @@ void GameManager::CreateTable()
             std::move(handObj),
             std::move(CreateTurnBell()))));
     scene->AddComponent(col);
-
-    auto hintWindow = CreateHint();
-    hint = hintWindow.get();
-    scene->AdoptChild(std::move(hintWindow));
 }
 
 std::unique_ptr<GameObject> GameManager::CreateTurnBell()
@@ -163,30 +156,19 @@ std::unique_ptr<GameObject> GameManager::CreateSpiralResource()
     auto spiralIcon = std::make_unique<GameObject>(0, 0, w, h);
     spiralIcon->AddComponent(new Image(spiralIcon.get(), Conf::SPIRAL_IMAGE));
 
-    spiralIcon->AdoptChild(std::move(UIFactory::NewText(w / 2 + 25, h / 2 - 20, w / 3, 40, spiralText)));
+    spiralIcon->AdoptChild(std::move(UIFactory::NewText(w / 2, h / 2 - 20, w / 2, 40, spiralText)));
     spiralText->SetText(std::to_string(spiral) + "/" + std::to_string(neededSpiral),
         Conf::SPIRAL_COLOR);
 
-    spiralIcon->AdoptChild(std::move(UIFactory::NewText(w / 2 + 10, h / 2 + 10, w / 3, 40, spiralComboText)));
+    spiralIcon->AdoptChild(std::move(UIFactory::NewText(w / 2, h / 2 + 10, w / 2, 40, spiralComboText)));
     spiralComboText->SetText("0", Conf::SPIRAL_COLOR);
     return spiralIcon;
-}
-
-std::unique_ptr<GameObject> GameManager::CreateHint()
-{
-    auto hintWindow = std::make_unique<GameObject>(0, 0, 150, 100);
-    hintWindow->AddComponent(new Image(hintWindow.get(), Conf::CARD_IMAGE_PROTOTYPE));
-
-    hintWindow->AddComponent(new Text(hintWindow.get(), "Spiral"));
-
-    return hintWindow;
 }
 
 GameFlow GameManager::turn = GameFlow::CHOOSING;
 Field* GameManager::enemyField = nullptr;
 Field* GameManager::playerField = nullptr;
 Hand* GameManager::hand = nullptr;
-GameObject* GameManager::hint = nullptr;
 std::unique_ptr<GameObject> GameManager::scene = nullptr;
 std::unique_ptr<Deck> GameManager::deck = nullptr;
 

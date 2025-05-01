@@ -161,6 +161,7 @@
     <ClInclude Include="Engine\TextSurface.h" />
     <ClInclude Include="Engine\UIFactory.h" />
     <ClInclude Include="Field.h" />
+    <ClInclude Include="HintManager.h" />
     <ClInclude Include="Minion.h" />
     <ClInclude Include="GameManager.h" />
   </ItemGroup>

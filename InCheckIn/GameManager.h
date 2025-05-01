@@ -31,8 +31,6 @@ public:
     static bool GetHammerMode();
     static const GameObject* GetScene();
 
-    static void CallHint(int x, int y);
-
     GameManager() = delete;
 private:
     //Game Flow
@@ -55,15 +53,11 @@ private:
     static int spiralCombo;
     static int neededSpiral;
 
-    //Hint
-    static GameObject* hint;
-
     static void Lose();
     static void Win();
 
     static void CreateTable();
     static std::unique_ptr<GameObject> CreateTurnBell();
     static std::unique_ptr<GameObject> CreateHammer();
-    static std::unique_ptr<GameObject> CreateHint();
     static std::unique_ptr<GameObject> CreateSpiralResource();
 };

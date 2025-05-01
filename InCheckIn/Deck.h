@@ -9,7 +9,7 @@ class Deck
 public:
 	Deck()
 	{
-		cards.push_back(CardFactory::Obsession());
+		cards.push_back(CardFactory::Repeater());
 		cards.push_back(CardFactory::Lefty());
 		cards.push_back(CardFactory::Lefty());
 		cards.push_back(CardFactory::Righty());

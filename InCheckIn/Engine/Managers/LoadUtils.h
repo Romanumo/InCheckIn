@@ -7,9 +7,9 @@
 
 namespace LoadUtils
 {
-	static std::shared_ptr<SDL_Surface> LoadText(const std::string& text, TTF_Font* font, SDL_Color color)
+	static std::shared_ptr<SDL_Surface> LoadText(const std::string& text, TTF_Font* font, SDL_Color color, int width)
 	{
-		SDL_Surface* rawSurface = TTF_RenderUTF8_Blended(font, text.c_str(), color);
+		SDL_Surface* rawSurface = TTF_RenderText_Blended_Wrapped(font, text.c_str(), color, width);
 		if (!rawSurface)
 		{
 			#ifdef SHOW_DEBUG_HELPERS
