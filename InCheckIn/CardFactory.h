@@ -16,7 +16,7 @@ public:
 				Minion* triggerMinion = self->GetField()->GetMinionAt(index - 1);
 				if (index - 1 >= 0 && triggerMinion)
 				{
-					if (triggerMinion->GetName() == "Compulsion" && Random::Chance(30)) return true;
+					if (triggerMinion->GetName() == "Compulsion" && Random::Chance(25)) return true;
 
 					self->GetField()->TriggerCard(index - 1);
 					return false;
@@ -33,7 +33,7 @@ public:
 				Minion* triggerMinion = self->GetField()->GetMinionAt(index + 1);
 				if (index + 1 <= Conf::MAX_CARDS && triggerMinion)
 				{
-					if (triggerMinion->GetName() == "Rumination" && Random::Chance(30)) return true;
+					if (triggerMinion->GetName() == "Rumination" && Random::Chance(25)) return true;
 
 					self->GetField()->TriggerCard(index + 1);
 					return false;

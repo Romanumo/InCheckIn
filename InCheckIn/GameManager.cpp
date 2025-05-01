@@ -61,8 +61,8 @@ void GameManager::ApplySpiralCombo()
 void GameManager::SetHammerMode(bool hammerMode)
 {
     isHammer = hammerMode;
-    if (isHammer) hammerImage->SetImage(Conf::CARD_IMAGE_PROTOTYPE);
-    else hammerImage->SetImage(Conf::HOBBY_IMAGE);
+    if (isHammer) hammerImage->SetImage(Conf::HAMMER_ON_IMAGE);
+    else hammerImage->SetImage(Conf::HAMMER_OFF_IMAGE);
 }
 
 int GameManager::GetSpiral() { return spiral; }
@@ -135,7 +135,7 @@ std::unique_ptr<GameObject> GameManager::CreateHammer()
     int h = Conf::AVATAR_HEIGHT;
 
     auto hammer = std::make_unique<GameObject>(0, 0, w, h);
-    hammerImage = new Image(hammer.get(), Conf::HOBBY_IMAGE);
+    hammerImage = new Image(hammer.get(), Conf::HAMMER_OFF_IMAGE);
     hammer->AddComponent(hammerImage);
 
     Button* button = new Button(hammer.get());

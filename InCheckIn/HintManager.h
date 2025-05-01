@@ -18,7 +18,7 @@ public:
 		int h = 100;
 
 		auto hintWindow = std::make_unique<GameObject>(0, 0, w, h);
-		hintWindow->AddComponent(new Rectangle(hintWindow.get(), {255,255,255,255}));
+		hintWindow->AddComponent(new Image(hintWindow.get(), Conf::FRAME_IMAGE));
 
 		hintWindow->AdoptChild(std::move(UIFactory::NewText(0, 0, 300, h/2, textName, 20)));
 		textName->SetText("Spiral", {0,0,0,255});

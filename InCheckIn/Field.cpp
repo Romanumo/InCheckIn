@@ -34,6 +34,7 @@ void Field::TriggerCard(int index)
         {
             AnimationManager::GetInstance().EnqueueAnimation(Animation([=] {
                 cardQueue = 0;
+                UpdateIndicator();
                 GameManager::ApplySpiralCombo();
                 GameManager::NextTurn();
                 }, nullptr, 500));

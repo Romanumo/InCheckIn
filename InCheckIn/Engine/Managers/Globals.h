@@ -40,11 +40,16 @@ namespace Conf
 	inline constexpr SDL_Color SPIRAL_COLOR{ 100, 100, 255, 255 };
 
 	//Asset Paths
+	inline const std::string FONT = "Assets/Font.ttf";
+
 	inline const std::string SLOT_IMAGE = "Assets/Slot.png";
 	inline const std::string SLOT_SELECTED_IMAGE = "Assets/SlotSelected.png";
 	inline const std::string TURNBT_IMAGE = "Assets/Turn.png";
+	inline const std::string FRAME_IMAGE = "Assets/Frame.png";
 	inline const std::string SPIRAL_IMAGE = "Assets/Spiral.png";
-	inline const std::string FONT = "Assets/Font.ttf";
+
+	inline const std::string HAMMER_ON_IMAGE = "Assets/HammerUse.png";
+	inline const std::string HAMMER_OFF_IMAGE = "Assets/Hammer.png";
 
 	//Units Assets
 	inline const std::string CARD_IMAGE_BASIC = "Assets/Basic.png";
@@ -54,7 +59,6 @@ namespace Conf
 	inline const std::string CARD_IMAGE_OBSESSION = "Assets/Obsession.png";
 	inline const std::string CARD_IMAGE_INDICATOR = "Assets/Indicator.png";
 	inline const std::string CARD_IMAGE_PROTOTYPE = "Assets/Prototype.png";
-	inline const std::string HOBBY_IMAGE = "Assets/Hobby.png";
 
 	//Max Chilren
 	inline constexpr int MAX_CHILDREN = 20;
