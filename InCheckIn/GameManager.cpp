@@ -89,7 +89,7 @@ void GameManager::CreateTable()
     auto handObj = std::make_unique<Hand>();
     hand = handObj.get();
 
-    auto pFieldObj = std::make_unique<Field>(handObj.get());
+    auto pFieldObj = std::make_unique<Field>(1, handObj.get());
     playerField = pFieldObj.get();
 
     Engine::Layout* col = new Engine::Layout(scene.get(), new Engine::Column(),

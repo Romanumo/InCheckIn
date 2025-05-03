@@ -11,7 +11,7 @@ class GameManager;
 class Field : public GameObject
 {
 public:
-    Field(Hand* hand = nullptr);
+    Field(int comboAdd = 0, Hand* hand = nullptr);
 
     void SetOpposingField(Field* opposing);
     Field* GetOpposingField();
@@ -31,6 +31,7 @@ private:
     Button** slots = new Button * [Conf::MAX_CARDS];
     GameObject* queueIndicator;
     int cardQueue = 0;
+    int comboAdd = 0;
     bool isPlayer = false;
 
     void QueueCardAnimation(int index);

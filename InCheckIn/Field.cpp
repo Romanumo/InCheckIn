@@ -5,7 +5,7 @@
 #include "Hand.h"
 #include "Card.h"
 
-Field::Field(Hand* hand) : GameObject()
+Field::Field(int comboAdd, Hand* hand) : GameObject(), comboAdd(comboAdd)
 {
     CreateSlots(hand);
     CreateIndicator();
@@ -85,7 +85,7 @@ void Field::QueueCardAnimation(int index)
         const SDL_Rect* rect = minionPlaced[index]->GetParent()->GetRelTf();
         minionPlaced[index]->GetParent()->SetRelPosition(rect->x, rect->y - 15);
 
-        GameManager::ChangeSpiralCombo(1);
+        GameManager::ChangeSpiralCombo(comboAdd);
         bool isBreaker = minionPlaced[index]->Trigger(index);
         if (isBreaker)
         {

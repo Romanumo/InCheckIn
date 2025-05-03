@@ -71,9 +71,15 @@ public:
 
 	static CardStats Sun()
 	{
+		std::shared_ptr<int> turns = std::make_shared<int>(0);
 		return CardStats(Conf::CARD_IMAGE_SUN, 0,
 			MinionStats("Sun", "Deducts 2 spiral",
-				[](Minion* self, int index) -> bool {
+				[turns](Minion* self, int index) -> bool {
+
+				(*turns)++;
+				std::cout << "Turns Made " << (*turns) << std::endl;
+				if(*turns <= 1) return true;
+
 				self->GetField()->ChangeSpiralCombo(-3);
 				return true;
 				}));

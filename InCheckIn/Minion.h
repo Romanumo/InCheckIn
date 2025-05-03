@@ -23,8 +23,8 @@ struct MinionStats
 class Minion : public Component
 {
 public:
-	Minion(GameObject* parent, Field* field, MinionStats stats) :
-		Component(parent), field(field), stats(stats) {}
+	Minion(GameObject* parentCard, Field* field, MinionStats stats) :
+		Component(parentCard), field(field), stats(stats) {}
 
 	//True - Continue Card continuation; False - Wait
 	bool Trigger(int index)

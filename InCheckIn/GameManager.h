@@ -22,6 +22,7 @@ class GameManager
 public:
     static void Init();
     static void NextTurn();
+    static const GameObject* GetScene();
 
     static void ChangeSpiralCombo(int spiralChange);
     static void ApplySpiralCombo();
@@ -29,7 +30,7 @@ public:
     static void SetHammerMode(bool hammerMode);
     static int GetSpiral();
     static bool GetHammerMode();
-    static const GameObject* GetScene();
+
 
     GameManager() = delete;
 private:
