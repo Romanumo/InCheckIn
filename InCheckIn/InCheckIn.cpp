@@ -9,8 +9,7 @@
 #include "Engine/Managers/Globals.h"
 #include "Engine/GameObject.h"
 #include "Engine/UIFactory.h"
-
-#include "Table.h"
+#include "GameManager.h"
 using namespace std;
 
 int main(int argc, char** argv)
@@ -39,28 +38,22 @@ int main(int argc, char** argv)
 
     //SoundManager::GetInstance().PlayMusic(Config::BCG_MUSIC);
 
-    Table* table = new Table();
-
-    //Engine::GameObject* test = new Engine::GameObject(200, 200, 300, 300);
-    //test->AddComponent(new Engine::Image(test, Config::CARD_IMAGE_HEALER));
+    GameManager::Init();
+    const GameObject* mainScene = GameManager::GetScene();
 
     while (!shouldQuit)
     {
-        //Handle Input
         while (SDL_PollEvent(&event))
         {
             if (event.type == SDL_QUIT)
             {
                 shouldQuit = true;
             }
-            table->HandleEvent(event);
+            mainScene->HandleEvent(event);
         }
 
-        //Update Objects
-
-        //Render Frame (DOnt forget to put render after window render)
         window.Render();
-        table->Render(window.GetSurface());
+        mainScene->Render(window.GetSurface());
         window.UpdateFrame();
     }
 

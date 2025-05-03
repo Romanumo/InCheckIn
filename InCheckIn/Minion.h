@@ -6,13 +6,17 @@ using namespace Engine;
 
 struct MinionStats
 {
-	MinionStats(const std::string& name, std::function<bool(Minion*,int)> trigger)
+	MinionStats() {}
+	MinionStats(const std::string& name, const std::string& desc, 
+		std::function<bool(Minion*,int)> trigger)
 	{
 		this->name = name;
+		this->desc = desc;
 		if (trigger) this->onTrigger = trigger;
 	}
 
 	std::string name;
+	std::string desc;
 	std::function<bool(Minion*, int)> onTrigger;
 };
 
@@ -20,7 +24,7 @@ class Minion : public Component
 {
 public:
 	Minion(GameObject* parent, Field* field, MinionStats stats) :
-		Component(parent), field(field), stats(stats) { }
+		Component(parent), field(field), stats(stats) {}
 
 	//True - Continue Card continuation; False - Wait
 	bool Trigger(int index)

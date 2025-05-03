@@ -10,7 +10,6 @@ namespace Engine
 {
 	class Component;
 
-	//AddComponenet? with args
 	class GameObject
 	{
 	public:
@@ -22,6 +21,7 @@ namespace Engine
 		const SDL_Rect* GetRelTf() const;
 
 		void SetRelSize(int w, int h);
+		void SetActive(bool isActive);
 		void SetRelPosition(int x, int y);
 		bool IsWithinBounds(int x, int y) const;
 
@@ -34,8 +34,8 @@ namespace Engine
 		bool AdoptChild(std::unique_ptr<GameObject> child);
 		std::unique_ptr<GameObject> TransferChild(GameObject* child);
 
-		void HandleEvent(const SDL_Event& event);
-		void Render(SDL_Surface* surface);
+		void HandleEvent(const SDL_Event& event) const;
+		void Render(SDL_Surface* surface) const;
 
 		virtual ~GameObject() = default;
 		GameObject(const GameObject&) = delete;
@@ -79,6 +79,7 @@ namespace Engine
 	private:
 		SDL_Rect absTf{ 0,0,0,0 };
 		SDL_Rect relTf = absTf;
+		bool isActive = true;
 
 		GameObject* parent = nullptr;
 		std::vector<std::unique_ptr<GameObject>> children;

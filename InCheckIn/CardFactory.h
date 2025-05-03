@@ -1,42 +1,91 @@
 #pragma once 
 #include "Engine/UIFactory.h"
 #include "Engine/Component.h"
+#include "Engine/Managers/Random.h"
 #include "Field.h"
 #include "Card.h"
 
 static class CardFactory
 {
 public:
-	static std::unique_ptr<GameObject> Lefty()
+	static CardStats Lefty()
 	{
-		return NewCard(Conf::CARD_IMAGE_LEFTY, 2, 
-			MinionStats("Lefty", [](Minion* self, int index) -> bool {
-			std::cout << self->GetName() << " " << index << ": Repeating Left" << std::endl;
-			if (index - 1 >= 0) self->GetField()->TriggerCard(index - 1);
-			return false;
+		return CardStats(Conf::CARD_IMAGE_LEFTY, 4,
+			MinionStats("Rumination", "Triggers card to the left (Compulsion with 70%)",
+				[](Minion* self, int index) -> bool {
+				Minion* triggerMinion = self->GetField()->GetMinionAt(index - 1);
+				if (index - 1 >= 0 && triggerMinion)
+				{
+					if (triggerMinion->GetName() == "Compulsion" && Random::Chance(30)) return true;
+
+					self->GetField()->TriggerCard(index - 1);
+					return false;
+				}
+				return true;
 			}));
 	}
 
-	static std::unique_ptr<GameObject> Basic()
+	static CardStats Righty()
 	{
-		return NewCard(Conf::CARD_IMAGE_BASIC, 0,
-			MinionStats("Basic", [](Minion* self, int index) -> bool {
-			std::cout << self->GetName() << " " << index << ": Do Something" << std::endl;
-			return true;
+		return CardStats(Conf::CARD_IMAGE_RIGHTY, 4,
+			MinionStats("Compulsion", "Triggers card to the right (Rumination with 70%)", 
+				[](Minion* self, int index) -> bool {
+				Minion* triggerMinion = self->GetField()->GetMinionAt(index + 1);
+				if (index + 1 <= Conf::MAX_CARDS && triggerMinion)
+				{
+					if (triggerMinion->GetName() == "Rumination" && Random::Chance(30)) return true;
+
+					self->GetField()->TriggerCard(index + 1);
+					return false;
+				}
+				return true;
+				}));
+	}
+
+	static CardStats Repeater()
+	{
+		return CardStats(Conf::CARD_IMAGE_OBSESSION, 1,
+			MinionStats("Mental Check", "Triggers random card with 70%", 
+				[](Minion* self, int index) -> bool {
+				if (Random::Chance(30)) return true;
+
+				int slot = Random::Int(0, Conf::MAX_CARDS - 1);
+				if (self->GetField()->GetMinionAt(slot))
+				{
+					self->GetField()->TriggerCard(slot);
+					return false;
+				}
+
+				return true;
+				}));
+	}
+
+	static CardStats Basic()
+	{
+		return CardStats(Conf::CARD_IMAGE_BASIC, 0,
+			MinionStats("Thought", "Does Nothing",
+				[](Minion* self, int index) -> bool {
+				return true;
 			}));
 	}
 
-private:
-	static std::unique_ptr<GameObject> NewCard(
-		const std::string& imagePath, int spiralCost, MinionStats minionStats)
+	static CardStats Sun()
 	{
+		return CardStats(Conf::CARD_IMAGE_SUN, 0,
+			MinionStats("Sun", "Deducts 2 spiral",
+				[](Minion* self, int index) -> bool {
+				self->GetField()->ChangeSpiralCombo(-3);
+				return true;
+				}));
+	}
+
+	static std::unique_ptr<GameObject> NewCard(CardStats stats)
+	{
+		if (stats.isEmpty()) return nullptr;
+
 		auto cardObj = std::make_unique<GameObject>(0, 0, Conf::CARD_WIDTH, Conf::CARD_HEIGHT);
-		cardObj->AddComponent(new Card(cardObj.get(), spiralCost, minionStats));
-		cardObj->AddComponent(new Image(cardObj.get(), imagePath));
-
-		cardObj->AdoptChild(std::move(UIFactory::NewText(
-			10, Conf::CARD_HEIGHT - 30, Conf::CARD_WIDTH / 5, 20,
-			std::to_string(spiralCost), Conf::SPIRAL_COLOR)));
+		cardObj->AddComponent(new Card(cardObj.get(), stats.spiralCost, stats.minionStats));
+		cardObj->AddComponent(new Image(cardObj.get(), stats.imagePath));
 
 		return cardObj;
 	}

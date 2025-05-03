@@ -6,40 +6,38 @@ using namespace Engine;
 
 class Hand;
 class Minion;
-class Table;
+class GameManager;
 
 class Field : public GameObject
 {
 public:
-    Field(const std::string& name, const std::string& imagePath, Table* table, 
-        Hand* hand = nullptr, int initSpiral = 0);
+    Field(Hand* hand = nullptr);
 
     void SetOpposingField(Field* opposing);
     Field* GetOpposingField();
 
-    void TriggerCard(int index);
-    void PlaceCard(std::unique_ptr<GameObject> card, int slotIndex);
+    Minion* GetMinionAt(int index);
+    void ChangeSpiralCombo(int amount);
 
     void PlayTurn();
-    bool SpendSpiral(int spiralCost);
-    void SetEnabled(bool enabled);
+    void TriggerCard(int index);
+    void RemoveCard(int index);
+    void PlaceCard(std::unique_ptr<GameObject> card, int slotIndex);
 
 private:
-    Text* sanityText;
-    int spiral;
-
-    int cardQueue = 0;
-
     Field* opposingField;
-    bool isEnabled = true;
-    Table* table;
 
-    Minion** minionPlaced = new Minion * [Conf::MAX_CARDS];
+    Minion** minionPlaced;
     Button** slots = new Button * [Conf::MAX_CARDS];
+    GameObject* queueIndicator;
+    int cardQueue = 0;
+    bool isPlayer = false;
 
     void QueueCardAnimation(int index);
+    void UpdateIndicator();
+    void ConnectToField(int index, Minion* minion);
 
     void CreateSlots(Hand* hand);
-    void CreateAvatar(const std::string& name, const std::string& imagePath);
+    void CreateIndicator();
     void AssignHand(Hand* hand, Button* button, int index);
 };
