@@ -7,8 +7,8 @@ void GameManager::Init()
     scene = std::make_unique<GameObject>(Conf::PADDING, Conf::PADDING, 0, 0);
 
     CreateTable();
-    deck = std::make_unique<Deck>();
     playerField->SetOpposingField(enemyField);
+    enemyAI = EnemyAI(enemyField);
 
     enemyField->PlaceCard(CardFactory::NewCard(CardFactory::Sun()), 2);
     enemyField->PlaceCard(CardFactory::NewCard(CardFactory::Sun()), 3);
@@ -33,6 +33,7 @@ void GameManager::NextTurn()
     case ENEMY:
         std::cout << "Enemy Turn Ends" << std::endl;
         turn = GameFlow::CHOOSING;
+        enemyAI.PlaceCard();
         hand->SetEnabled(true);
         break;
     }
@@ -120,7 +121,7 @@ std::unique_ptr<GameObject> GameManager::CreateTurnBell()
         if (turn == GameFlow::CHOOSING)
         {
             NextTurn();
-            hand->AddCard(CardFactory::NewCard(deck->GetCard()));
+            hand->AddCard(CardFactory::NewCard(deck.GetCard()));
         }
         });
 
@@ -169,7 +170,9 @@ Field* GameManager::enemyField = nullptr;
 Field* GameManager::playerField = nullptr;
 Hand* GameManager::hand = nullptr;
 std::unique_ptr<GameObject> GameManager::scene = nullptr;
-std::unique_ptr<Deck> GameManager::deck = nullptr;
+
+EnemyAI GameManager::enemyAI = NULL;
+Deck GameManager::deck = Deck();
 
 bool GameManager::isHammer = false;
 Image* GameManager::hammerImage = nullptr;

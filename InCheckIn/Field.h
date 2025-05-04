@@ -18,6 +18,7 @@ public:
 
     Minion* GetMinionAt(int index);
     void ChangeSpiralCombo(int amount);
+    bool IsFull();
 
     void PlayTurn();
     void TriggerCard(int index);
@@ -36,6 +37,7 @@ private:
 
     void QueueCardAnimation(int index);
     void UpdateIndicator();
+    void ClearInactive();
     void ConnectToField(int index, Minion* minion);
 
     void CreateSlots(Hand* hand);

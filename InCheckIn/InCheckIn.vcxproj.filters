@@ -104,6 +104,9 @@
     <ClInclude Include="HintManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EnemyAI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Assets\AssetsRef.txt" />

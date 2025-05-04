@@ -25,6 +25,7 @@ namespace Engine
 		void SetRelPosition(int x, int y);
 		bool IsWithinBounds(int x, int y) const;
 
+		bool IsActive() const;
 		std::string GetName() const;
 		GameObject* GetParent() const; 
 		const std::vector<std::unique_ptr<GameObject>>& GetChildren() const;

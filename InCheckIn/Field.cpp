@@ -35,6 +35,7 @@ void Field::TriggerCard(int index)
             AnimationManager::GetInstance().EnqueueAnimation(Animation([=] {
                 cardQueue = 0;
                 UpdateIndicator();
+                ClearInactive();
                 GameManager::ApplySpiralCombo();
                 GameManager::NextTurn();
                 }, nullptr, 500));
@@ -43,7 +44,8 @@ void Field::TriggerCard(int index)
     }
 
     UpdateIndicator();
-    if (!minionPlaced[index]) TriggerCard(++cardQueue);
+    if (!minionPlaced[index] || !minionPlaced[index]->GetParent()->IsActive()) 
+        TriggerCard(++cardQueue);
     else QueueCardAnimation(index);
 }
 
@@ -122,6 +124,24 @@ void Field::UpdateIndicator()
 {
     const SDL_Rect* slotRect = slots[cardQueue]->GetParent()->GetRelTf();
     queueIndicator->SetRelPosition(slotRect->x, slotRect->y);
+}
+
+void Field::ClearInactive()
+{
+    for (int i = 0;i < Conf::MAX_CARDS;i++)
+    {
+        if (minionPlaced[i] && !minionPlaced[i]->GetParent()->IsActive()) RemoveCard(i);
+    }
+}
+
+bool Field::IsFull()
+{
+    for (int i = 0;i < Conf::MAX_CARDS;i++)
+    {
+        if (!minionPlaced[i]) return false;
+    }
+
+    return true;
 }
 
 Minion* Field::GetMinionAt(int index) { return minionPlaced[index]; }

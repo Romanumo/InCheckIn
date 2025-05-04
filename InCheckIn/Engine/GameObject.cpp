@@ -167,11 +167,12 @@ void GameObject::ReserveChildrenSize(int reserve) { children.reserve(reserve); }
 
 #pragma region GettersSetters
 
-void GameObject::SetActive(bool isActive) { this->isActive = isActive; }
+bool GameObject::IsActive() const { return isActive; }
 std::string GameObject::GetName() const { return typeid(*this).name(); }
 GameObject* GameObject::GetParent() const { return parent; }
 const std::vector<std::unique_ptr<GameObject>>& GameObject::GetChildren() const { return children; }
 
+void GameObject::SetActive(bool isActive) { this->isActive = isActive; }
 const SDL_Rect* GameObject::GetAbsTf() const { return &absTf; }
 SDL_Rect* GameObject::GetAbsTf() { return &absTf; }
 const SDL_Rect* GameObject::GetRelTf() const { return &relTf; }

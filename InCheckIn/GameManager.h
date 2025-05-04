@@ -2,6 +2,7 @@
 #include "Engine/UIFactory.h"
 #include "Engine/GameObject.h"
 #include "AnimationManager.h"
+#include "EnemyAI.h"
 #include "Deck.h"
 #include "Field.h"
 #include "Hand.h"
@@ -25,10 +26,10 @@ public:
     static GameObject* GetScene();
 
     static void ChangeSpiralCombo(int spiralChange);
+    static int GetSpiral();
     static void ApplySpiralCombo();
 
     static void SetHammerMode(bool hammerMode);
-    static int GetSpiral();
     static bool GetHammerMode();
 
     GameManager() = delete;
@@ -36,11 +37,13 @@ private:
     //Game Flow
     static std::unique_ptr<GameObject> scene;
 
-    static GameFlow turn;
     static Field* enemyField;
     static Field* playerField;
     static Hand* hand;
-    static std::unique_ptr<Deck> deck;
+
+    static GameFlow turn;
+    static EnemyAI enemyAI;
+    static Deck deck;
     
     //Hammer
     static bool isHammer;
