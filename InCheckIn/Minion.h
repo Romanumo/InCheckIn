@@ -20,11 +20,22 @@ struct MinionStats
 	std::function<bool(Minion*, int)> onTrigger;
 };
 
-class Minion : public Component
+class Minion : public Button
 {
 public:
 	Minion(GameObject* parentCard, Field* field, MinionStats stats) :
-		Component(parentCard), field(field), stats(stats) {}
+		Button(parentCard), field(field), stats(stats) 
+	{
+		AddOnRightClick([this] {
+			const SDL_Rect* absTF = GetParent()->GetAbsTf();
+			HintManager::GetInstance().CallHint(absTF->x + absTF->w, absTF->y,
+				GetName(), GetDesc());
+			});
+
+		AddOnHoverExit([=] {
+			HintManager::GetInstance().HideHint();
+			});
+	}
 
 	//True - Continue Card continuation; False - Wait
 	bool Trigger(int index)
@@ -34,10 +45,9 @@ public:
 	}
 
 	std::string GetName() { return stats.name; }
+	std::string GetDesc() { return stats.desc; }
+	void ChangeDesc(const std::string& desc) { stats.desc = desc; }
 	Field* GetField() { return field; }
-
-	virtual void Render(SDL_Surface* surface) {}
-	virtual void HandleEvent(const SDL_Event& event) {}
 
 private:
 	MinionStats stats;

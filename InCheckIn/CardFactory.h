@@ -72,14 +72,23 @@ public:
 
 	static CardStats Sun()
 	{
-		std::shared_ptr<int> turns = std::make_shared<int>(0);
+		std::shared_ptr<int> turns = std::make_shared<int>(1);
 		return CardStats(Conf::CARD_IMAGE_SUN, 0,
-			MinionStats("Sun", "Deducts 2 spiral",
+			MinionStats("Sun", "Activated after " + std::to_string(*turns) + " turn. Deducts 3 spiral",
 				[turns](Minion* self, int index) -> bool {
 
-				(*turns)++;
-				if(*turns <= 1) return true;
-
+				(*turns)--;
+				if (*turns > 0)
+				{
+					self->ChangeDesc("Activated after " + std::to_string(*turns) + " turn. Deducts 3 spiral");
+					return true;
+				}
+				else if (*turns == 0)
+				{
+					self->ChangeDesc("Activated. Deducts 3 spiral");
+					return true;
+				}
+				
 				self->GetField()->ChangeSpiralCombo(-3);
 				return true;
 				}));
