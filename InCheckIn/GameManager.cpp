@@ -9,7 +9,6 @@ void GameManager::Init()
     CreateTable();
     deck = std::make_unique<Deck>();
     playerField->SetOpposingField(enemyField);
-    HintManager::GetInstance().Init(scene.get());
 
     enemyField->PlaceCard(CardFactory::NewCard(CardFactory::Sun()), 2);
     enemyField->PlaceCard(CardFactory::NewCard(CardFactory::Sun()), 3);
@@ -67,7 +66,7 @@ void GameManager::SetHammerMode(bool hammerMode)
 
 int GameManager::GetSpiral() { return spiral; }
 bool GameManager::GetHammerMode() { return isHammer; }
-const GameObject* GameManager::GetScene() { return scene.get(); }
+GameObject* GameManager::GetScene() { return scene.get(); }
 
 void GameManager::Lose()
 {

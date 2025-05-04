@@ -45,6 +45,26 @@ public:
 		return animManager;
 	}
 
+	void PlaySingleAnimation(Animation animation)
+	{
+		Animation* anim = &animation;
+
+		SDL_AddTimer(1,
+			[](Uint32 interval, void* animation) -> Uint32 {
+				Animation* anim = static_cast<Animation*>(animation);
+				anim->Play();
+
+				SDL_AddTimer(anim->duration, 
+					[](Uint32 interval, void* animation) -> Uint32 {
+						static_cast<Animation*>(animation)->onEnd();
+						delete animation;
+						return 0;
+					}, &animation);
+
+				return 0;
+			}, anim);
+	}
+
 	void EnqueueAnimation(Animation animation)
 	{
 		animationQueue.push(animation);

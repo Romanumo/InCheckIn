@@ -3,6 +3,7 @@
 #include "Engine/Component.h"
 #include "Engine/Managers/Random.h"
 #include "Field.h"
+#include "HintManager.h"
 #include "Card.h"
 
 static class CardFactory
@@ -77,7 +78,6 @@ public:
 				[turns](Minion* self, int index) -> bool {
 
 				(*turns)++;
-				std::cout << "Turns Made " << (*turns) << std::endl;
 				if(*turns <= 1) return true;
 
 				self->GetField()->ChangeSpiralCombo(-3);

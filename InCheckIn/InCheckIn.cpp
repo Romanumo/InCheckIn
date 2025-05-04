@@ -39,7 +39,9 @@ int main(int argc, char** argv)
     //SoundManager::GetInstance().PlayMusic(Config::BCG_MUSIC);
 
     GameManager::Init();
-    const GameObject* mainScene = GameManager::GetScene();
+    GameObject* mainScene = GameManager::GetScene();
+
+    HintManager::GetInstance().Init(mainScene);
 
     while (!shouldQuit)
     {
