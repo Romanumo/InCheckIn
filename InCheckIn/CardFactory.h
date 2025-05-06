@@ -11,13 +11,13 @@ static class CardFactory
 public:
 	static CardStats Lefty()
 	{
-		return CardStats(Conf::CARD_IMAGE_LEFTY, 4,
-			MinionStats("Rumination", "Triggers card to the left (Compulsion with 75%)",
+		return CardStats(Conf::CARD_IMAGE_LEFTY, 10,
+			MinionStats("Rumination", "Triggers card to the left (Compulsion with 70%)",
 				[](Minion* self, int index) -> bool {
 				Minion* triggerMinion = self->GetField()->GetMinionAt(index - 1);
 				if (index - 1 >= 0 && triggerMinion)
 				{
-					if (triggerMinion->GetName() == "Compulsion" && Random::Chance(25)) return true;
+					if (triggerMinion->GetName() == "Compulsion" && Random::Chance(30)) return true;
 
 					self->GetField()->TriggerCard(index - 1);
 					return false;
@@ -28,13 +28,13 @@ public:
 
 	static CardStats Righty()
 	{
-		return CardStats(Conf::CARD_IMAGE_RIGHTY, 4,
-			MinionStats("Compulsion", "Triggers card to the right (Rumination with 75%)", 
+		return CardStats(Conf::CARD_IMAGE_RIGHTY, 10,
+			MinionStats("Compulsion", "Triggers card to the right (Rumination with 70%)", 
 				[](Minion* self, int index) -> bool {
 				Minion* triggerMinion = self->GetField()->GetMinionAt(index + 1);
 				if (index + 1 <= Conf::MAX_CARDS && triggerMinion)
 				{
-					if (triggerMinion->GetName() == "Rumination" && Random::Chance(25)) return true;
+					if (triggerMinion->GetName() == "Rumination" && Random::Chance(30)) return true;
 
 					self->GetField()->TriggerCard(index + 1);
 					return false;
@@ -45,29 +45,55 @@ public:
 
 	static CardStats Repeater()
 	{
-		return CardStats(Conf::CARD_IMAGE_OBSESSION, 5,
-			MinionStats("Mental Check", "Triggers random card with 60%", 
+		return CardStats(Conf::CARD_IMAGE_OBSESSION, 10,
+			MinionStats("Mental Check", "Triggers random card (Itself with 50%)", 
 				[](Minion* self, int index) -> bool {
-				if (Random::Chance(40)) return true;
-
 				int slot = Random::Int(0, Conf::MAX_CARDS - 1);
 				while (!self->GetField()->GetMinionAt(slot))
 				{
 					slot = Random::Int(0, Conf::MAX_CARDS - 1);
 				}
+
+				if (slot == index && Random::Chance(50)) return true;
 				
 				self->GetField()->TriggerCard(slot);
 				return false;
 				}));
 	}
 
+	static CardStats Dread()
+	{
+		return CardStats(Conf::CARD_IMAGE_PROTOTYPE, 0,
+			MinionStats("Dread", "Gives 5 Spiral and then Dies",
+				[](Minion* self, int index) -> bool {
+					self->GetField()->ChangeSpiralCombo(4);
+					self->GetParent()->SetActive(false);
+					return true;
+				}));
+	}
+
+	static CardStats Firstly()
+	{
+		return CardStats(Conf::CARD_IMAGE_PROTOTYPE, 5,
+			MinionStats("Firstly", "Triggers first card (Compulsion with 50%. Cant Trigger itself)",
+				[](Minion* self, int index) -> bool {
+					Minion* triggerMinion = self->GetField()->GetMinionAt(0);
+					if (triggerMinion && index != 0)
+					{
+						if (triggerMinion->GetName() == "Compulsion" && Random::Chance(50)) return true;
+
+						self->GetField()->TriggerCard(0);
+						return false;
+					}
+					return true;
+				}));
+	}
+
 	static CardStats Basic()
 	{
-		return CardStats(Conf::CARD_IMAGE_BASIC, 0,
-			MinionStats("Thought", "Gives 5 Spiral and then Dies",
+		return CardStats(Conf::CARD_IMAGE_BASIC, 2,
+			MinionStats("Thought", "Gives 1 spiral ",
 				[](Minion* self, int index) -> bool {
-				self->GetField()->ChangeSpiralCombo(4);
-				self->GetParent()->SetActive(false);
 				return true;
 			}));
 	}
@@ -127,9 +153,9 @@ public:
 		cardObj->AddComponent(new Image(cardObj.get(), stats.imagePath));
 
 		auto priceText = std::make_unique<GameObject>(
-			Conf::PADDING, Conf::CARD_HEIGHT - Conf::PADDING - 25, 30, 30);
+			Conf::PADDING, Conf::CARD_HEIGHT - Conf::PADDING - 25, 35, 30);
 		priceText->AddComponent(new Rectangle(priceText.get()));
-		priceText->AddComponent(new Text(priceText.get(), std::to_string(stats.spiralCost), Conf::SPIRAL_COLOR));
+		priceText->AddComponent(new Text(priceText.get(), std::to_string(stats.spiralCost), Conf::SPIRAL_COLOR, 25));
 		cardObj->AdoptChild(std::move(priceText));
 
 		return cardObj;

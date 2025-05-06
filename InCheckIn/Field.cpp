@@ -68,15 +68,12 @@ void Field::PlaceCard(std::unique_ptr<GameObject> card, int slotIndex)
 
 void Field::RemoveCard(int index)
 {
-    for (int i = 0;i<Conf::MAX_CARDS;i++)
+    if (minionPlaced[index])
     {
-        if (minionPlaced[i] && index == i)
-        {
-            slots[i]->SetEnabled(true);
-            slots[i]->GetParent()->RemoveChild(minionPlaced[i]->GetParent());
-            minionPlaced[i] = nullptr;
-            return;
-        }
+        slots[index]->SetEnabled(true);
+        slots[index]->GetParent()->RemoveChild(minionPlaced[index]->GetParent());
+        minionPlaced[index] = nullptr;
+        return;
     }
 }
 
@@ -185,7 +182,12 @@ void Field::AssignHand(Hand* hand, Button* button, int index)
     Image* slotImage = button->GetParent()->GetComponent<Image>();
     button->AddOnLeftClick([this, hand, index] {
         int cardCost = hand->GetChosenCardSpiral();
-        if (GameManager::GetSpiral() < cardCost) return;
+        if (GameManager::GetSpiral() < cardCost)
+        {
+            const SDL_Rect* absTF = this->GetAbsTf();
+            HintManager::GetInstance().CallHint(absTF->x, absTF->y, "Not enough Spiral", " ");
+            return;
+        }
 
         std::unique_ptr<GameObject> cardOriginal = hand->PlaceCard();
         if (!cardOriginal) return;
@@ -200,6 +202,7 @@ void Field::AssignHand(Hand* hand, Button* button, int index)
 
     button->AddOnHoverExit([slotImage] {
         slotImage->SetImage(Conf::SLOT_IMAGE);
+        HintManager::GetInstance().HideHint();
         });
 
     isPlayer = true;

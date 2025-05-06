@@ -9,9 +9,6 @@ void GameManager::Init()
     CreateTable();
     playerField->SetOpposingField(enemyField);
     enemyAI = EnemyAI(enemyField);
-
-    enemyField->PlaceCard(CardFactory::NewCard(CardFactory::Sun()), 2);
-    enemyField->PlaceCard(CardFactory::NewCard(CardFactory::Sun()), 3);
 }
 
 void GameManager::NextTurn()

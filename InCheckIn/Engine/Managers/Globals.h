@@ -10,7 +10,7 @@ namespace Conf
 {
 	//Game Settings
 	inline const std::string GAME_NAME = "The Loop";
-	inline constexpr int MAX_HAND_SIZE = 4;
+	inline constexpr int MAX_HAND_SIZE = 6;
 
 	//Size and Positioning
 	inline constexpr int PADDING = 5;
