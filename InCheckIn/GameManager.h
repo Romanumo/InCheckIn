@@ -3,6 +3,7 @@
 #include "Engine/GameObject.h"
 #include "AnimationManager.h"
 #include "EnemyAI.h"
+#include "Shop.h"
 #include "Deck.h"
 #include "Field.h"
 #include "Hand.h"
@@ -24,6 +25,7 @@ public:
     static void Init();
     static void NextTurn();
     static GameObject* GetScene();
+    static void SwitchToGame();
 
     static void ChangeSpiralCombo(int spiralChange);
     static int GetSpiral();
@@ -32,13 +34,22 @@ public:
     static void SetHammerMode(bool hammerMode);
     static bool GetHammerMode();
 
+    static void Render(SDL_Surface* surface);
+    static void HandleInput(const SDL_Event& event);
+
+    static Deck* GetDeck();
+
     GameManager() = delete;
 private:
     //Game Flow
-    static std::unique_ptr<GameObject> scene;
+    static GameObject* mainScene;
+    static std::unique_ptr<GameObject> globalUI;
+    static std::unique_ptr<GameObject> gameScene;
+    static std::unique_ptr<GameObject> shopScene;
 
     static Field* enemyField;
     static Field* playerField;
+    static Shop* shop;
     static Hand* hand;
 
     static GameFlow turn;
@@ -63,4 +74,6 @@ private:
     static std::unique_ptr<GameObject> CreateTurnBell();
     static std::unique_ptr<GameObject> CreateHammer();
     static std::unique_ptr<GameObject> CreateSpiralResource();
+
+    static void CreateShop();
 };

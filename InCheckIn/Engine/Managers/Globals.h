@@ -32,15 +32,12 @@ namespace Conf
 
 	//Colors
 	inline constexpr SDL_Color BACKGROUND_COLOR{ 170, 170, 170, 255 };
-	inline constexpr SDL_Color BUTTON_COLOR{ 200, 200, 200, 255 };
-	inline constexpr SDL_Color BUTTON_HOVER_COLOR{ 220, 220, 220, 255 };
-	inline constexpr SDL_Color BUTTON_CLEARED_COLOR{ 240, 240, 240, 255 };
-	inline constexpr SDL_Color BUTTON_SUCCESS_COLOR{ 210, 235, 210, 255 };
-	inline constexpr SDL_Color BUTTON_FAILURE_COLOR{ 235, 210, 210, 255 };
 	inline constexpr SDL_Color SPIRAL_COLOR{ 100, 100, 255, 255 };
 
 	//Asset Paths
 	inline const std::string FONT = "Assets/Font.ttf";
+	inline const std::string BUTTON_IMAGE = "Assets/Prototype.png";
+	inline const std::string BUTTON_HOVERED = "Assets/Slot.png";
 
 	inline const std::string SLOT_IMAGE = "Assets/Slot.png";
 	inline const std::string SLOT_SELECTED_IMAGE = "Assets/SlotSelected.png";
@@ -65,9 +62,10 @@ namespace Conf
 	inline constexpr int MAX_OBSERVERS = 5;
 
 	//Animation Setting
-	inline constexpr int NEW_CARD_T = 300;
-	inline constexpr int CARD_ANIM_T = 300;
+	inline constexpr int NEW_CARD_T = 200;
+	inline constexpr int CARD_ANIM_T = 200;
 	inline constexpr int PAUSE_TIME = 100;
+	//300-300-100
 }
 
 namespace Utils

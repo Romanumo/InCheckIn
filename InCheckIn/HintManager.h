@@ -30,7 +30,6 @@ public:
 		hint->SetActive(false);
 
 		scene->AdoptChild(std::move(hintWindow));
-		mainScene = scene;
 	}
 
 	void CallHint(int x, int y, const std::string& name, const std::string& desc)
@@ -50,6 +49,4 @@ private:
 	GameObject* hint;
 	Text* textName;
 	Text* textDesc;
-
-	GameObject* mainScene;
 };

@@ -21,15 +21,14 @@ namespace Engine
 		{
 			auto button = std::make_unique<GameObject>(x, y, w, h);
 			Button* controller = new Button(button.get());
-			Rectangle* visual = new Rectangle(button.get());
-			visual->SetColor(Conf::BUTTON_COLOR);
+			Image* visual = new Image(button.get(), Conf::BUTTON_IMAGE);
 
 			controller->AddOnHoverEnter([visual] {
-				visual->SetColor(Conf::BUTTON_HOVER_COLOR);
+				visual->SetImage(Conf::BUTTON_HOVERED);
 				});
 
 			controller->AddOnHoverExit([visual] {
-				visual->SetColor(Conf::BUTTON_COLOR);
+				visual->SetImage(Conf::BUTTON_IMAGE);
 				});
 
 			button->AddComponent(controller);
@@ -83,6 +82,13 @@ namespace Engine
 		static std::unique_ptr<GameObject> NewRow(Args&&... args)
 		{
 			return GetLayoutObj(new Row(), std::forward<Args>(args)...);
+		}
+
+		template<typename T, typename... Args>
+		static std::unique_ptr<GameObject> MakeGameObject(Args&&... args) 
+		{
+			static_assert(std::is_base_of<GameObject, T>::value, "T must inherit GameObject");
+			return std::unique_ptr<GameObject>(new T(std::forward<Args>(args)...));
 		}
 
 	private:

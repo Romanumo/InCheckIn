@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClInclude Include="AnimationManager.h" />
     <ClInclude Include="Card.h" />
+    <ClInclude Include="Shop.h" />
     <ClInclude Include="CardFactory.h" />
     <ClInclude Include="Deck.h" />
     <ClInclude Include="EnemyAI.h" />

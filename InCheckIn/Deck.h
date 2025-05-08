@@ -35,6 +35,11 @@ public:
 		}
 	}
 
+	void AddCard(CardStats stats)
+	{
+		cards.push_back(stats);
+	}
+
 private:
 	std::vector<CardStats> cards;
 	unsigned int index = 0;

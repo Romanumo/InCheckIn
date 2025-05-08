@@ -4,9 +4,16 @@
 
 void GameManager::Init()
 {
-    scene = std::make_unique<GameObject>(Conf::PADDING, Conf::PADDING, 0, 0);
+    gameScene = std::make_unique<GameObject>(Conf::PADDING, Conf::PADDING, 0, 0);
+    shopScene = std::make_unique<GameObject>(Conf::WINDOW_WIDTH / 3, Conf::WINDOW_HEIGHT / 3, 0, 0);
+    globalUI = std::make_unique<GameObject>(0,0, 0, 0);
+    mainScene = shopScene.get();
+
+    HintManager::GetInstance().Init(globalUI.get());
 
     CreateTable();
+    CreateShop();
+
     playerField->SetOpposingField(enemyField);
     enemyAI = EnemyAI(enemyField);
 }
@@ -16,24 +23,32 @@ void GameManager::NextTurn()
     switch (turn)
     {
     case CHOOSING:
-        std::cout << "Chosing Ends" << std::endl;
         turn = GameFlow::PLAYER;
         hand->SetEnabled(false);
-        isHammer = false;
+        SetHammerMode(false);
         playerField->PlayTurn();
         break;
     case PLAYER:
-        std::cout << "Player Turn Ends" << std::endl;
         turn = GameFlow::ENEMY;
         enemyField->PlayTurn();
         break;
     case ENEMY:
-        std::cout << "Enemy Turn Ends" << std::endl;
         turn = GameFlow::CHOOSING;
         enemyAI.PlaceCard();
         hand->SetEnabled(true);
         break;
     }
+}
+
+void GameManager::SwitchToGame()
+{
+    mainScene = gameScene.get();
+    deck.Shuffle();
+
+    hand->AddCard(CardFactory::NewCard(deck.GetCard()));
+    hand->AddCard(CardFactory::NewCard(deck.GetCard()));
+    hand->AddCard(CardFactory::NewCard(deck.GetCard()));
+    hand->AddCard(CardFactory::NewCard(deck.GetCard()));
 }
 
 void GameManager::ChangeSpiralCombo(int spiralChange)
@@ -64,7 +79,20 @@ void GameManager::SetHammerMode(bool hammerMode)
 
 int GameManager::GetSpiral() { return spiral; }
 bool GameManager::GetHammerMode() { return isHammer; }
-GameObject* GameManager::GetScene() { return scene.get(); }
+GameObject* GameManager::GetScene() { return mainScene;}
+Deck* GameManager::GetDeck() { return &deck; }
+
+void GameManager::Render(SDL_Surface* surface)
+{
+    mainScene->Render(surface);
+    globalUI->Render(surface);
+}
+
+void GameManager::HandleInput(const SDL_Event& event)
+{
+    mainScene->HandleEvent(event);
+    globalUI->HandleEvent(event);
+}
 
 void GameManager::Lose()
 {
@@ -74,8 +102,8 @@ void GameManager::Lose()
 void GameManager::Win()
 {
     std::cout << "You Won!" << std::endl;
+    mainScene = shopScene.get();
 }
-
 
 #pragma region Init
 void GameManager::CreateTable()
@@ -89,7 +117,7 @@ void GameManager::CreateTable()
     auto pFieldObj = std::make_unique<Field>(1, handObj.get());
     playerField = pFieldObj.get();
 
-    Engine::Layout* col = new Engine::Layout(scene.get(), new Engine::Column(),
+    Engine::Layout* col = new Engine::Layout(gameScene.get(), new Engine::Column(),
         Conf::PADDING, 0);
     col->AddGameObject(std::move(
         UIFactory::NewRow(
@@ -103,7 +131,7 @@ void GameManager::CreateTable()
         UIFactory::NewRow(
             std::move(handObj),
             std::move(CreateTurnBell()))));
-    scene->AddComponent(col);
+    gameScene->AddComponent(col);
 }
 
 std::unique_ptr<GameObject> GameManager::CreateTurnBell()
@@ -162,13 +190,32 @@ std::unique_ptr<GameObject> GameManager::CreateSpiralResource()
     return spiralIcon;
 }
 
+void GameManager::CreateShop()
+{
+    auto title = UIFactory::NewText(0,0, (Conf::PADDING + Conf::CARD_WIDTH) * 3, 100,
+        "Choose A Card", {0,0,0, 255}, 25);
+
+    auto shopObj = std::make_unique<Shop>();
+    shop = shopObj.get();
+
+    Layout* col = new Layout(shopScene.get(), new Engine::Column(),Conf::PADDING, 0);
+    col->AddGameObject(std::move(title));
+    col->AddGameObject(std::move(shopObj));//SHop
+    shopScene->AddComponent(col);
+}
+
 GameFlow GameManager::turn = GameFlow::CHOOSING;
 Field* GameManager::enemyField = nullptr;
 Field* GameManager::playerField = nullptr;
 Hand* GameManager::hand = nullptr;
-std::unique_ptr<GameObject> GameManager::scene = nullptr;
+
+GameObject* GameManager::mainScene = nullptr;
+std::unique_ptr<GameObject> GameManager::globalUI = nullptr;
+std::unique_ptr<GameObject> GameManager::gameScene = nullptr;
+std::unique_ptr<GameObject> GameManager::shopScene = nullptr;
 
 EnemyAI GameManager::enemyAI = NULL;
+Shop* GameManager::shop = nullptr;
 Deck GameManager::deck = Deck();
 
 bool GameManager::isHammer = false;

@@ -41,21 +41,22 @@ int main(int argc, char** argv)
     GameManager::Init();
     GameObject* mainScene = GameManager::GetScene();
 
-    HintManager::GetInstance().Init(mainScene);
-
     while (!shouldQuit)
     {
+        mainScene = GameManager::GetScene();
+
         while (SDL_PollEvent(&event))
         {
             if (event.type == SDL_QUIT)
             {
                 shouldQuit = true;
             }
-            mainScene->HandleEvent(event);
+
+            GameManager::HandleInput(event);
         }
 
         window.Render();
-        mainScene->Render(window.GetSurface());
+        GameManager::Render(window.GetSurface());
         window.UpdateFrame();
     }
 
