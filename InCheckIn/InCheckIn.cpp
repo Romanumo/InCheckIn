@@ -7,9 +7,11 @@
 #include "Engine/Managers/Window.h"
 #include "Engine/Managers/SoundManager.h"
 #include "Engine/Managers/Globals.h"
+
 #include "Engine/GameObject.h"
 #include "Engine/UIFactory.h"
-#include "GameManager.h"
+
+#include "SceneManager.h"
 using namespace std;
 
 int main(int argc, char** argv)
@@ -29,22 +31,17 @@ int main(int argc, char** argv)
     Utils::CheckSDLErrors("TTF_Init");
 #endif 
 
-    SoundManager::OpenAudio();
-
-    Engine::Window window;
-
     SDL_Event event;
+    Engine::Window window;
     bool shouldQuit = false;
+
+    //SoundManager::OpenAudio(); // This create delay in game opening
+    SceneManager SM = SceneManager();
 
     //SoundManager::GetInstance().PlayMusic(Config::BCG_MUSIC);
 
-    GameManager::Init();
-    GameObject* mainScene = GameManager::GetScene();
-
     while (!shouldQuit)
     {
-        mainScene = GameManager::GetScene();
-
         while (SDL_PollEvent(&event))
         {
             if (event.type == SDL_QUIT)
@@ -52,11 +49,11 @@ int main(int argc, char** argv)
                 shouldQuit = true;
             }
 
-            GameManager::HandleInput(event);
+            SM.HandleInput(event);
         }
 
         window.Render();
-        GameManager::Render(window.GetSurface());
+        SM.Render(window.GetSurface());
         window.UpdateFrame();
     }
 

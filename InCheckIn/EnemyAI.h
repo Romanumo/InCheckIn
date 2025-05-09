@@ -2,15 +2,20 @@
 #include "Engine/Managers/Random.h"
 #include "Engine/GameObject.h"
 #include "Engine/UIFactory.h"
+#include "GameManager.h"
 #include "CardFactory.h"
 #include "Field.h"
 
 class EnemyAI
 {
 public:
-	EnemyAI(Field* field)
+	EnemyAI(GameManager& GM, Field* field)
 	{
 		this->field = field;
+
+		GM.AddOnTurnChange([this] (GameFlow turn){
+			if (turn == GameFlow::CHOOSING) PlaceCard();
+		});
 	}
 
 	void PlaceCard()

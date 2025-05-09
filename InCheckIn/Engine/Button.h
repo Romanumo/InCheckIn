@@ -8,6 +8,7 @@
 
 namespace Engine
 {
+	//TODO: Make this event a template with null specialization
 	class Event
 	{
 	public:

@@ -29,6 +29,8 @@ struct CardStats
 	bool isEmpty() { return spiralCost < 0; }
 };
 
+class Hammer;
+
 class Card : public Button
 {
 public:
@@ -38,9 +40,9 @@ public:
 		AssignButton();
 	}
 
-	void TransformToMinion(Field* field, Minion*& minion)
+	void TransformToMinion(Field* field, Minion*& minion, Hammer* hammer)
 	{
-		minion = new Minion(GetParent(), field, minionStats);
+		minion = new Minion(GetParent(), field, minionStats, hammer);
 		GetParent()->AddComponent(minion);
 		GetParent()->RemoveComponent<Card>();
 	}

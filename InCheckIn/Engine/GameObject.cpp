@@ -26,6 +26,12 @@ void GameObject::SetRelPosition(int x, int y)
 	UpdateTransform();
 }
 
+void GameObject::SetAbsPosition(int x, int y)
+{
+	absTf.x = x;
+	absTf.y = y;
+}
+
 void GameObject::SetRelSize(int w, int h)
 {
 	relTf.w = w;
@@ -170,7 +176,17 @@ void GameObject::ReserveChildrenSize(int reserve) { children.reserve(reserve); }
 bool GameObject::IsActive() const { return isActive; }
 std::string GameObject::GetName() const { return typeid(*this).name(); }
 GameObject* GameObject::GetParent() const { return parent; }
-const std::vector<std::unique_ptr<GameObject>>& GameObject::GetChildren() const { return children; }
+
+const std::vector<GameObject*> GameObject::GetChildren() const 
+{ 
+	std::vector<GameObject*> rawList;
+	for (const auto& ptr : children) 
+	{
+		rawList.push_back(ptr.get());
+	}
+
+	return rawList;
+}
 
 void GameObject::SetActive(bool isActive) { this->isActive = isActive; }
 const SDL_Rect* GameObject::GetAbsTf() const { return &absTf; }

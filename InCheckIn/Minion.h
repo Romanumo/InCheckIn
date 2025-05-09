@@ -4,6 +4,8 @@
 #include "Field.h"
 using namespace Engine;
 
+class Minion;
+
 struct MinionStats
 {
 	MinionStats() {}
@@ -23,7 +25,7 @@ struct MinionStats
 class Minion : public Button
 {
 public:
-	Minion(GameObject* parentCard, Field* field, MinionStats stats) :
+	Minion(GameObject* parentCard, Field* field, MinionStats stats, Hammer* hammer = nullptr) :
 		Button(parentCard), field(field), stats(stats) 
 	{
 		AddOnRightClick([this] {
@@ -35,6 +37,8 @@ public:
 		AddOnHoverExit([=] {
 			HintManager::GetInstance().HideHint();
 			});
+
+		AddHammerEvents(hammer);
 	}
 
 	//True - Continue Card continuation; False - Wait
@@ -52,4 +56,17 @@ public:
 private:
 	MinionStats stats;
 	Field* field;
+
+	void AddHammerEvents(Hammer* hammer)
+	{
+		if (!hammer) return;
+
+		AddOnLeftClick([&, hammer] {
+			if (hammer->GetHammerMode())
+			{
+				hammer->SetHammerMode(false);
+				field->RemoveCard(this);
+			}
+			});
+	}
 };

@@ -1,12 +1,8 @@
 #pragma once
+#include <cassert>
 #include "Engine/UIFactory.h"
 #include "Engine/GameObject.h"
-#include "AnimationManager.h"
-#include "EnemyAI.h"
-#include "Shop.h"
-#include "Deck.h"
-#include "Field.h"
-#include "Hand.h"
+using namespace Engine;
 
 enum GameFlow
 {
@@ -15,65 +11,60 @@ enum GameFlow
     ENEMY
 };
 
-class Hand;
-class Field;
-class Deck;
-
 class GameManager
 {
 public:
-    static void Init();
-    static void NextTurn();
-    static GameObject* GetScene();
-    static void SwitchToGame();
+    GameManager()
+    {
+        if (isInstantiated) throw std::runtime_error("GameManager already exists");
+        isInstantiated = true;
+    }
 
-    static void ChangeSpiralCombo(int spiralChange);
-    static int GetSpiral();
-    static void ApplySpiralCombo();
+    ~GameManager() { isInstantiated = false; }
 
-    static void SetHammerMode(bool hammerMode);
-    static bool GetHammerMode();
+    void NextTurn()
+    {
+        switch (turn)
+        {
+        case CHOOSING:
+            turn = GameFlow::PLAYER;
+            break;
+        case PLAYER:
+            turn = GameFlow::ENEMY;
+            break;
+        case ENEMY:
+            turn = GameFlow::CHOOSING;
+            break;
+        }
 
-    static void Render(SDL_Surface* surface);
-    static void HandleInput(const SDL_Event& event);
+        for(auto event : onTurnChange) event(turn);
+        CheckGoal();
+    }
 
-    static Deck* GetDeck();
+    void SetMeasureRef(int* measure) { this->measure = measure; }
+    void NewGame() { for (auto event : onNewGame) event(); }
 
-    GameManager() = delete;
+    void AddOnTurnChange(std::function<void(GameFlow)> event) { onTurnChange.push_back(event); }
+    void AddOnNewGame(std::function<void()> event) { onNewGame.push_back(event); }
+
+    void AddOnWin(std::function<void()> event) { onWin = event; }
+
+    int GetReq() { return goal; }
+    GameFlow GetState() { return turn; }
 private:
-    //Game Flow
-    static GameObject* mainScene;
-    static std::unique_ptr<GameObject> globalUI;
-    static std::unique_ptr<GameObject> gameScene;
-    static std::unique_ptr<GameObject> shopScene;
+    inline static bool isInstantiated = false;
+    GameFlow turn = GameFlow::CHOOSING;
 
-    static Field* enemyField;
-    static Field* playerField;
-    static Shop* shop;
-    static Hand* hand;
+    int goal = 15;
+    int* measure = nullptr;
 
-    static GameFlow turn;
-    static EnemyAI enemyAI;
-    static Deck deck;
-    
-    //Hammer
-    static bool isHammer;
-    static Image* hammerImage;
+    std::vector<std::function<void(GameFlow)>> onTurnChange;
+    std::vector<std::function<void()>> onNewGame;
+    std::function<void()> onWin;
 
-    //Spiral
-    static Text* spiralText;
-    static Text* spiralComboText;
-    static int spiral;
-    static int spiralCombo;
-    static int neededSpiral;
-
-    static void Lose();
-    static void Win();
-
-    static void CreateTable();
-    static std::unique_ptr<GameObject> CreateTurnBell();
-    static std::unique_ptr<GameObject> CreateHammer();
-    static std::unique_ptr<GameObject> CreateSpiralResource();
-
-    static void CreateShop();
+    void CheckGoal()
+    {
+        if (*measure < 0) std::cout << "Loser!" << std::endl;
+        if (*measure > goal && onWin) onWin();
+    }
 };

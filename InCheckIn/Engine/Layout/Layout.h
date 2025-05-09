@@ -18,9 +18,6 @@ namespace Engine
 
 		void AddGameObject(std::unique_ptr<GameObject> child, bool isCentered = false)
 		{
-			const SDL_Rect* objRect = child->GetAbsTf();
-			const SDL_Rect* myRect = parent->GetAbsTf();
-
 			if (!parent->AdoptChild(std::move(child))) return;
 
 			(isCentered) ? AlignCenter() : type->HandleChildPosition(parent, padding, margin);
