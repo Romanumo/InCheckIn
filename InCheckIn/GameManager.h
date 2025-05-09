@@ -1,10 +1,8 @@
 #pragma once
+#include <cassert>
 #include "Engine/UIFactory.h"
 #include "Engine/GameObject.h"
-#include "AnimationManager.h"
-#include "Deck.h"
-#include "Field.h"
-#include "Hand.h"
+using namespace Engine;
 
 enum GameFlow
 {
@@ -13,51 +11,65 @@ enum GameFlow
     ENEMY
 };
 
-class Hand;
-class Field;
-class Deck;
-
+//Add Unsubscribe
 class GameManager
 {
 public:
-    static void Init();
-    static void NextTurn();
+    GameManager()
+    {
+        if (isInstantiated) throw std::runtime_error("GameManager already exists");
+        isInstantiated = true;
+    }
 
-    static void ChangeSpiralCombo(int spiralChange);
-    static void ApplySpiralCombo();
+    ~GameManager() { isInstantiated = false; }
 
-    static void SetHammerMode(bool hammerMode);
-    static int GetSpiral();
-    static bool GetHammerMode();
-    static const GameObject* GetScene();
+    void NextTurn()
+    {
+        switch (turn)
+        {
+        case CHOOSING:
+            turn = GameFlow::PLAYER;
+            break;
+        case PLAYER:
+            turn = GameFlow::ENEMY;
+            break;
+        case ENEMY:
+            turn = GameFlow::CHOOSING;
+            break;
+        }
 
-    GameManager() = delete;
+        for(auto event : onTurnChange) event(turn);
+        if (turn == GameFlow::CHOOSING) CheckGoal();
+    }
+
+    void SetMeasureRef(int* measure) { this->measure = measure; }
+    void NewGame() { for (auto event : onNewGame) event(); }
+
+    void AddOnTurnChange(std::function<void(GameFlow)> event) { onTurnChange.push_back(event); }
+    void AddOnNewGame(std::function<void()> event) { onNewGame.push_back(event); }
+
+    void AddOnWin(std::function<void()> event) { onWin = event; }
+
+    int GetReq() { return goal; }
+    GameFlow GetState() { return turn; }
 private:
-    //Game Flow
-    static std::unique_ptr<GameObject> scene;
+    inline static bool isInstantiated = false;
+    GameFlow turn = GameFlow::CHOOSING;
 
-    static GameFlow turn;
-    static Field* enemyField;
-    static Field* playerField;
-    static Hand* hand;
-    static std::unique_ptr<Deck> deck;
-    
-    //Hammer
-    static bool isHammer;
-    static Image* hammerImage;
+    int goal = 15;
+    int* measure = nullptr;
 
-    //Spiral
-    static Text* spiralText;
-    static Text* spiralComboText;
-    static int spiral;
-    static int spiralCombo;
-    static int neededSpiral;
+    std::vector<std::function<void(GameFlow)>> onTurnChange;
+    std::vector<std::function<void()>> onNewGame;
+    std::function<void()> onWin;
 
-    static void Lose();
-    static void Win();
-
-    static void CreateTable();
-    static std::unique_ptr<GameObject> CreateTurnBell();
-    static std::unique_ptr<GameObject> CreateHammer();
-    static std::unique_ptr<GameObject> CreateSpiralResource();
+    void CheckGoal()
+    {
+        if (*measure < 0) std::cout << "Loser!" << std::endl;
+        if (*measure > goal)
+        {
+            if(onWin) onWin();
+            NewGame();
+        }
+    }
 };

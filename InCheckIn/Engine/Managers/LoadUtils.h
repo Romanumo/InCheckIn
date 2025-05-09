@@ -7,8 +7,14 @@
 
 namespace LoadUtils
 {
-	static std::shared_ptr<SDL_Surface> LoadText(const std::string& text, TTF_Font* font, SDL_Color color, int width)
+	static std::shared_ptr<SDL_Surface> LoadText(std::string text, TTF_Font* font, SDL_Color color, int width)
 	{
+		if (text.empty())
+		{
+			std::cout << "Empty Text is Loaded" << std::endl;
+			text = " ";
+		}
+
 		SDL_Surface* rawSurface = TTF_RenderText_Blended_Wrapped(font, text.c_str(), color, width);
 		if (!rawSurface)
 		{

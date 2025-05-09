@@ -1,22 +1,24 @@
 #pragma once
-#include "AnimationManager.h"
-#include "GameManager.h"
 #include "Field.h"
+
+#include "AnimationManager.h"
 #include "Hand.h"
 #include "Card.h"
 
-Field::Field(Hand* hand) : GameObject()
+Field::Field(FieldContext context, int comboAdd, Hand* hand) :
+    GameObject(), comboAdd(comboAdd), context(context)
 {
     CreateSlots(hand);
     CreateIndicator();
-}
 
-void Field::SetOpposingField(Field* opposing)
-{
-    if (opposingField) return;
+    context.GM->AddOnTurnChange([this, hand](GameFlow turn) {
+        if (hand && turn == GameFlow::PLAYER) PlayTurn();
+        else if (!hand && turn == GameFlow::ENEMY) PlayTurn();
+        });
 
-    opposingField = opposing;
-    opposing->SetOpposingField(this);
+    context.GM->AddOnNewGame([this]() {
+        EmptyField();
+        });
 }
 
 void Field::PlayTurn()
@@ -35,15 +37,16 @@ void Field::TriggerCard(int index)
             AnimationManager::GetInstance().EnqueueAnimation(Animation([=] {
                 cardQueue = 0;
                 UpdateIndicator();
-                GameManager::ApplySpiralCombo();
-                GameManager::NextTurn();
+                ClearInactive();
+                context.GM->NextTurn();
                 }, nullptr, 500));
         }
         return;
     }
 
     UpdateIndicator();
-    if (!minionPlaced[index]) TriggerCard(++cardQueue);
+    if (!minionPlaced[index] || !minionPlaced[index]->GetParent()->IsActive()) 
+        TriggerCard(++cardQueue);
     else QueueCardAnimation(index);
 }
 
@@ -56,22 +59,20 @@ void Field::PlaceCard(std::unique_ptr<GameObject> card, int slotIndex)
     cardRef->GetParent()->SetRelPosition(0, 0);
 
     Minion* minion;
-    cardRef->TransformToMinion(this, minion);
-
-    ConnectToField(slotIndex, minion);
+    cardRef->TransformToMinion(this, minion, context.hammer);
 
     minionPlaced[slotIndex] = minion;
     slots[slotIndex]->SetEnabled(false);
 }
 
-void Field::RemoveCard(int index)
+void Field::RemoveCard(Minion* minion)
 {
-    for (int i = 0;i<Conf::MAX_CARDS;i++)
+    for (int i = 0;i < Conf::MAX_CARDS;i++)
     {
-        if (minionPlaced[i] && index == i)
+        if (minionPlaced[i] == minion)
         {
             slots[i]->SetEnabled(true);
-            slots[i]->GetParent()->RemoveChild(minionPlaced[i]->GetParent());
+            slots[i]->GetParent()->RemoveChild(minion->GetParent());
             minionPlaced[i] = nullptr;
             return;
         }
@@ -85,7 +86,7 @@ void Field::QueueCardAnimation(int index)
         const SDL_Rect* rect = minionPlaced[index]->GetParent()->GetRelTf();
         minionPlaced[index]->GetParent()->SetRelPosition(rect->x, rect->y - 15);
 
-        GameManager::ChangeSpiralCombo(1);
+        context.spiral->ChangeSpiralCombo(comboAdd);
         bool isBreaker = minionPlaced[index]->Trigger(index);
         if (isBreaker)
         {
@@ -103,30 +104,40 @@ void Field::QueueCardAnimation(int index)
     AnimationManager::GetInstance().EnqueuePause(Conf::PAUSE_TIME);
 }
 
-void Field::ConnectToField(int index, Minion* minion)
-{
-    if (!isPlayer) return;
-
-    Button* button = new Button(minion->GetParent());
-    button->AddOnLeftClick([&, index] {
-        if (GameManager::GetHammerMode())
-        {
-            GameManager::SetHammerMode(false);
-            RemoveCard(index);
-        }
-        });
-    minion->GetParent()->AddComponent(button);
-}
-
 void Field::UpdateIndicator()
 {
     const SDL_Rect* slotRect = slots[cardQueue]->GetParent()->GetRelTf();
     queueIndicator->SetRelPosition(slotRect->x, slotRect->y);
 }
 
+void Field::ClearInactive()
+{
+    for (int i = 0;i < Conf::MAX_CARDS;i++)
+    {
+        if (minionPlaced[i] && !minionPlaced[i]->GetParent()->IsActive()) RemoveCard(minionPlaced[i]);
+    }
+}
+
+void Field::EmptyField()
+{
+    for (int i = 0;i < Conf::MAX_CARDS;i++)
+    {
+        if (minionPlaced[i]) RemoveCard(minionPlaced[i]);
+    }
+}
+
+bool Field::IsFull()
+{
+    for (int i = 0;i < Conf::MAX_CARDS;i++)
+    {
+        if (!minionPlaced[i]) return false;
+    }
+
+    return true;
+}
+
 Minion* Field::GetMinionAt(int index) { return minionPlaced[index]; }
-void Field::ChangeSpiralCombo(int amount) { GameManager::ChangeSpiralCombo(amount); }
-Field* Field::GetOpposingField() { return opposingField; }
+void Field::ChangeSpiralCombo(int amount) { context.spiral->ChangeSpiralCombo(amount); }
 
 #pragma region Init
 void Field::CreateSlots(Hand* hand)
@@ -165,12 +176,17 @@ void Field::AssignHand(Hand* hand, Button* button, int index)
     Image* slotImage = button->GetParent()->GetComponent<Image>();
     button->AddOnLeftClick([this, hand, index] {
         int cardCost = hand->GetChosenCardSpiral();
-        if (GameManager::GetSpiral() < cardCost) return;
+        if (context.spiral->GetSpiral() < cardCost)
+        {
+            const SDL_Rect* absTF = this->GetAbsTf();
+            HintManager::GetInstance().CallHint(absTF->x, absTF->y, "Not enough Spiral", " ");
+            return;
+        }
 
         std::unique_ptr<GameObject> cardOriginal = hand->PlaceCard();
         if (!cardOriginal) return;
 
-        GameManager::ChangeSpiralCombo(cardCost * -1);
+        context.spiral->ChangeSpiralCombo(cardCost * -1);
         PlaceCard(std::move(cardOriginal), index);
         });
 
@@ -180,8 +196,7 @@ void Field::AssignHand(Hand* hand, Button* button, int index)
 
     button->AddOnHoverExit([slotImage] {
         slotImage->SetImage(Conf::SLOT_IMAGE);
+        HintManager::GetInstance().HideHint();
         });
-
-    isPlayer = true;
 }
 #pragma endregion

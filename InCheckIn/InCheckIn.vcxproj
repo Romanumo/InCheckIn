@@ -136,13 +136,17 @@
     <ClCompile Include="Engine\GameObject.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="InCheckIn.cpp" />
-    <ClCompile Include="GameManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationManager.h" />
     <ClInclude Include="Card.h" />
+    <ClInclude Include="GameUIBuilder.h" />
+    <ClInclude Include="Hammer.h" />
+    <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="Shop.h" />
     <ClInclude Include="CardFactory.h" />
     <ClInclude Include="Deck.h" />
+    <ClInclude Include="EnemyAI.h" />
     <ClInclude Include="Hand.h" />
     <ClInclude Include="Engine\Component.h" />
     <ClInclude Include="Engine\Button.h" />
@@ -164,6 +168,7 @@
     <ClInclude Include="HintManager.h" />
     <ClInclude Include="Minion.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Spiral.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Assets\AssetsRef.txt" />

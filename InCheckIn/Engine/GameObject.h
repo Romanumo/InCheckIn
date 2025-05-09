@@ -23,11 +23,13 @@ namespace Engine
 		void SetRelSize(int w, int h);
 		void SetActive(bool isActive);
 		void SetRelPosition(int x, int y);
+		void SetAbsPosition(int x, int y);
 		bool IsWithinBounds(int x, int y) const;
 
+		bool IsActive() const;
 		std::string GetName() const;
 		GameObject* GetParent() const; 
-		const std::vector<std::unique_ptr<GameObject>>& GetChildren() const;
+		const std::vector<GameObject*> GetChildren() const;
 
 		void PrintFamilyTree(int spacing = 0);
 		void RemoveChild(GameObject* child);

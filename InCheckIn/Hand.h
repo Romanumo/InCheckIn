@@ -2,25 +2,33 @@
 #include "Engine/UIFactory.h"
 #include "Engine/Button.h"
 #include "Engine/GameObject.h"
+#include "GameManager.h"
 #include "CardFactory.h"
 #include "Card.h"
+#include "Deck.h"
 
 class Hand : public GameObject
 {
 public:
-    Hand() : GameObject()
+    Hand(GameManager& GM, Deck& deck) : GameObject()
 	{
         rowComponent = new Layout(this, new Row(), Conf::PADDING, 0);
         AddComponent(rowComponent);
 
-        //Clear the hand in game testing
-        AddCard(CardFactory::NewCard(CardFactory::Repeater()));
-        AddCard(CardFactory::NewCard(CardFactory::Righty()));
-        AddCard(CardFactory::NewCard(CardFactory::Lefty()));
-        AddCard(CardFactory::NewCard(CardFactory::Basic()));
-
         this->SetRelSize(Conf::TABLE_WIDTH, Conf::CARD_HEIGHT);
         rowComponent->AlignCenter();
+
+        GM.AddOnTurnChange([this](GameFlow turn) {
+            isEnabled = (turn == GameFlow::CHOOSING);
+        });
+
+        GM.AddOnNewGame([this, &deck]() {
+            EmptyHand();
+
+            AddCard(CardFactory::NewCard(deck.GetCard()));
+            AddCard(CardFactory::NewCard(deck.GetCard()));
+            AddCard(CardFactory::NewCard(deck.GetCard()));
+            });
     }
 
     void ChooseCard(Card* card)
@@ -64,8 +72,6 @@ public:
         if (!chosenCard) return 99999;
         return chosenCard->GetSpiral();
     }
-    
-    void SetEnabled(bool enable) { isEnabled = enable; }
 
 private:
     std::vector<Card*> cards;
@@ -79,5 +85,14 @@ private:
         auto it = std::find(cards.begin(), cards.end(), chosenCard);
         if (card == chosenCard) chosenCard = nullptr;
         if (it != cards.end()) cards.erase(it);
+    }
+
+    void EmptyHand()
+    {
+        for (auto card : cards)
+        {
+            RemoveCard(card);
+            RemoveChild(card->GetParent());
+        }
     }
 };
