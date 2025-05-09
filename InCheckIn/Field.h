@@ -52,6 +52,7 @@ private:
     void UpdateIndicator();
     void ClearInactive();
     void QueueCardAnimation(int index);
+    void EmptyField();
 
     void CreateSlots(Hand* hand);
     void CreateIndicator();

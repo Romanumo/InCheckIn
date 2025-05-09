@@ -4,19 +4,23 @@
 #include "Engine/GameObject.h"
 #include "Engine/UIFactory.h"
 #include "CardFactory.h"
+#include "GameManager.h"
 
 class Deck
 {
 public:
 	Deck()
 	{
-		cards.push_back(CardFactory::Repeater());
-		cards.push_back(CardFactory::Lefty());
-		cards.push_back(CardFactory::Righty());
 		cards.push_back(CardFactory::Basic());
-		cards.push_back(CardFactory::Basic());
-		cards.push_back(CardFactory::Basic());
-		Shuffle();
+		cards.push_back(CardFactory::Dread());
+	}
+
+	void ConnectToGM(GameManager& GM)
+	{
+		GM.AddOnNewGame([this] {
+			Shuffle();
+			this->index = 0;
+			});
 	}
 
 	CardStats GetCard()

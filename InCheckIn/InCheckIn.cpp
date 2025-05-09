@@ -11,6 +11,7 @@
 #include "Engine/GameObject.h"
 #include "Engine/UIFactory.h"
 
+#include "GameUIBuilder.h"
 #include "SceneManager.h"
 using namespace std;
 

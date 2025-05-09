@@ -15,13 +15,14 @@ using namespace Engine;
 //Creates Scenes & Bind them
 class GameUIBuilder
 {
-public:
+public:    
     static void CreateTable(GameObject* scene, std::function<void()> onWin)
     {
         auto spiral = std::make_unique<Spiral>(GM);
         auto hammer = std::make_unique<Hammer>(GM);
         GM.SetMeasureRef(spiral->GetSpiralRef());
         GM.AddOnWin(onWin);
+        deck.ConnectToGM(GM);
 
         auto handObj = std::make_unique<Hand>(GM, deck);
         Hand* hand = handObj.get();

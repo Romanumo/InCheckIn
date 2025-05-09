@@ -24,6 +24,12 @@ public:
         GM.AddOnTurnChange([this](GameFlow turn) {
            if(turn == GameFlow::CHOOSING) ApplySpiralCombo();
         });
+
+        GM.AddOnNewGame([this]() {
+            spiralCombo = 0;
+            spiral = 10;
+            ApplySpiralCombo();
+        });
 	}
 
     void ChangeSpiralCombo(int spiralChange)
@@ -40,9 +46,6 @@ public:
 
         spiralCombo = 0;
         spiralComboText->SetText("0");
-
-        //if (spiral < 0) Lose();
-        //else if (spiral >= neededSpiral) Win();
     }
 
     int GetSpiral() { return spiral; }

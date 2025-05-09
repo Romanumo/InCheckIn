@@ -15,6 +15,10 @@ Field::Field(FieldContext context, int comboAdd, Hand* hand) :
         if (hand && turn == GameFlow::PLAYER) PlayTurn();
         else if (!hand && turn == GameFlow::ENEMY) PlayTurn();
         });
+
+    context.GM->AddOnNewGame([this]() {
+        EmptyField();
+        });
 }
 
 void Field::PlayTurn()
@@ -111,6 +115,14 @@ void Field::ClearInactive()
     for (int i = 0;i < Conf::MAX_CARDS;i++)
     {
         if (minionPlaced[i] && !minionPlaced[i]->GetParent()->IsActive()) RemoveCard(minionPlaced[i]);
+    }
+}
+
+void Field::EmptyField()
+{
+    for (int i = 0;i < Conf::MAX_CARDS;i++)
+    {
+        if (minionPlaced[i]) RemoveCard(minionPlaced[i]);
     }
 }
 

@@ -115,12 +115,12 @@ std::unique_ptr<GameObject> GameObject::TransferChild(GameObject* child)
 
 void GameObject::RemoveChild(GameObject* child)
 {
+	child->parent = nullptr;
 	auto it = std::find_if(children.begin(), children.end(),
 		[child](const std::unique_ptr<GameObject>& p) {
 			return p.get() == child;
 		});
 
-	child->parent = nullptr;
 	children.erase(it);
 }
 

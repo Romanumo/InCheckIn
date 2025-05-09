@@ -11,6 +11,7 @@ enum GameFlow
     ENEMY
 };
 
+//Add Unsubscribe
 class GameManager
 {
 public:
@@ -38,7 +39,7 @@ public:
         }
 
         for(auto event : onTurnChange) event(turn);
-        CheckGoal();
+        if (turn == GameFlow::CHOOSING) CheckGoal();
     }
 
     void SetMeasureRef(int* measure) { this->measure = measure; }
@@ -65,6 +66,10 @@ private:
     void CheckGoal()
     {
         if (*measure < 0) std::cout << "Loser!" << std::endl;
-        if (*measure > goal && onWin) onWin();
+        if (*measure > goal)
+        {
+            if(onWin) onWin();
+            NewGame();
+        }
     }
 };

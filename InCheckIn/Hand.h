@@ -23,6 +23,8 @@ public:
         });
 
         GM.AddOnNewGame([this, &deck]() {
+            EmptyHand();
+
             AddCard(CardFactory::NewCard(deck.GetCard()));
             AddCard(CardFactory::NewCard(deck.GetCard()));
             AddCard(CardFactory::NewCard(deck.GetCard()));
@@ -83,5 +85,14 @@ private:
         auto it = std::find(cards.begin(), cards.end(), chosenCard);
         if (card == chosenCard) chosenCard = nullptr;
         if (it != cards.end()) cards.erase(it);
+    }
+
+    void EmptyHand()
+    {
+        for (auto card : cards)
+        {
+            RemoveCard(card);
+            RemoveChild(card->GetParent());
+        }
     }
 };

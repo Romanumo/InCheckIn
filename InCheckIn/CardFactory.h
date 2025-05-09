@@ -12,12 +12,12 @@ public:
 	static CardStats Lefty()
 	{
 		return CardStats(Conf::CARD_IMAGE_LEFTY, 10,
-			MinionStats("Rumination", "Triggers card to the left (Compulsion with 70%)",
+			MinionStats("Rumination", "Triggers card to the left (Compulsion with 75%)",
 				[](Minion* self, int index) -> bool {
 				Minion* triggerMinion = self->GetField()->GetMinionAt(index - 1);
 				if (index - 1 >= 0 && triggerMinion)
 				{
-					if (triggerMinion->GetName() == "Compulsion" && Random::Chance(30)) return true;
+					if (triggerMinion->GetName() == "Compulsion" && Random::Chance(25)) return true;
 
 					self->GetField()->TriggerCard(index - 1);
 					return false;
@@ -29,12 +29,12 @@ public:
 	static CardStats Righty()
 	{
 		return CardStats(Conf::CARD_IMAGE_RIGHTY, 10,
-			MinionStats("Compulsion", "Triggers card to the right (Rumination with 70%)", 
+			MinionStats("Compulsion", "Triggers card to the right (Rumination with 75%)", 
 				[](Minion* self, int index) -> bool {
 				Minion* triggerMinion = self->GetField()->GetMinionAt(index + 1);
 				if (index + 1 <= Conf::MAX_CARDS && triggerMinion)
 				{
-					if (triggerMinion->GetName() == "Rumination" && Random::Chance(30)) return true;
+					if (triggerMinion->GetName() == "Rumination" && Random::Chance(25)) return true;
 
 					self->GetField()->TriggerCard(index + 1);
 					return false;
@@ -91,7 +91,7 @@ public:
 
 	static CardStats Basic()
 	{
-		return CardStats(Conf::CARD_IMAGE_BASIC, 2,
+		return CardStats(Conf::CARD_IMAGE_BASIC, 0,
 			MinionStats("Thought", "Gives 1 spiral ",
 				[](Minion* self, int index) -> bool {
 				return true;
