@@ -196,6 +196,7 @@ const std::vector<GameObject*> GameObject::GetChildren() const
 }
 
 void GameObject::SetActive(bool isActive) { this->isActive = isActive; }
+void GameObject::SetInteractable(bool isInteractable) { this->isInteractable = isInteractable; }
 const SDL_Rect* GameObject::GetAbsTf() const { return &absTf; }
 SDL_Rect* GameObject::GetAbsTf() { return &absTf; }
 const SDL_Rect* GameObject::GetRelTf() const { return &relTf; }
@@ -220,7 +221,7 @@ void GameObject::AddComponent(Component* component)
 
 void GameObject::HandleEvent(const SDL_Event& event) const
 {
-	if (!isActive) return;
+	if (!isActive || !isInteractable) return;
 
 	for (auto& component : components)
 	{
@@ -238,10 +239,16 @@ void GameObject::HandleEvent(const SDL_Event& event) const
 void GameObject::Render(SDL_Surface* surface) const
 {
 	//Persistent Bug here, With Dread
+	//Probaby proeblme with unsubscribe
 	if (!isActive) return;
 
 	for (auto& component : components)
 	{
+		if (!component.get())
+		{
+			std::cout << "No Component Rendered" << std::endl;
+			continue;
+		}
 		component->Render(surface);
 	}
 

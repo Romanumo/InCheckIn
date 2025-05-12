@@ -30,12 +30,12 @@ public:
 	{
 		AddOnRightClick([this] {
 			const SDL_Rect* absTF = GetParent()->GetAbsTf();
-			HintManager::GetInstance().CallHint(absTF->x + absTF->w, absTF->y,
+			PopUpManager::GetInstance().CallHint(absTF->x + absTF->w, absTF->y,
 				GetName(), GetDesc());
 			});
 
 		AddOnHoverExit([=] {
-			HintManager::GetInstance().HideHint();
+			PopUpManager::GetInstance().HideHint();
 			});
 
 		AddHammerEvents(hammer);

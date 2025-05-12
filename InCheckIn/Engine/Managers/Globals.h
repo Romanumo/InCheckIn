@@ -59,7 +59,7 @@ namespace Conf
 
 	//Max Chilren
 	inline constexpr int MAX_CHILDREN = 20;
-	inline constexpr int MAX_OBSERVERS = 5;
+	inline constexpr int MAX_OBSERVERS = 10;
 
 	//Animation Setting
 	inline constexpr int NEW_CARD_T = 200;

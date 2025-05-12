@@ -45,9 +45,13 @@ public:
 	void AddCard(CardStats stats)
 	{
 		cards.push_back(stats);
+		onNewCard.Invoke();
 	}
+
+	void AddOnNewCard(std::function<void()> event) { onNewCard.AddEvent(event); }
 
 private:
 	std::vector<CardStats> cards;
+	Event onNewCard = Event();
 	unsigned int index = 0;
 };

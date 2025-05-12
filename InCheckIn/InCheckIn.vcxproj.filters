@@ -98,7 +98,7 @@
     <ClInclude Include="Deck.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HintManager.h">
+    <ClInclude Include="PopUpManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EnemyAI.h">
@@ -117,6 +117,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Spiral.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TutorialManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

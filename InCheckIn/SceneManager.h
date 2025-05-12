@@ -3,7 +3,7 @@
 #include "Engine/UIFactory.h"
 #include "Engine/GameObject.h"
 #include "GameUIBuilder.h"
-#include "HintManager.h"
+#include "PopUpManager.h"
 using namespace Engine;
 
 class SceneManager
@@ -46,10 +46,9 @@ private:
         globalUI = std::make_unique<GameObject>(0, 0, 0, 0);
         mainScene = gameScene.get();
 
+        GameUIBuilder::CreateUI(globalUI.get(), gameScene.get());
         GameUIBuilder::CreateTable(gameScene.get(), [this] {GoToShop();});
         GameUIBuilder::CreateShop(shopScene.get(), [this] {GoToGame();});
-
-        HintManager::GetInstance().Init(globalUI.get());
     }
 
     void GoToShop()

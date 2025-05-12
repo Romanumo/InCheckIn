@@ -16,7 +16,7 @@ Field::Field(FieldContext context, int comboAdd, Hand* hand) :
         else if (!hand && turn == GameFlow::ENEMY) PlayTurn();
         });
 
-    context.GM->AddOnNewGame([this]() {
+    context.GM->AddOnNewGame([this] {
         EmptyField();
         });
 }
@@ -34,7 +34,7 @@ void Field::TriggerCard(int index)
     {
         if (cardQueue >= Conf::MAX_CARDS)
         {
-            AnimationManager::GetInstance().EnqueueAnimation(Animation([=] {
+            AnimationManager::GetInstance().EnqueueAnimation(Animation([&] {
                 cardQueue = 0;
                 UpdateIndicator();
                 ClearInactive();
@@ -63,16 +63,15 @@ void Field::PlaceCard(std::unique_ptr<GameObject> card, int slotIndex)
 
     minionPlaced[slotIndex] = minion;
     slots[slotIndex]->SetEnabled(false);
+
+    onCardPlaced.Invoke();
 }
 
 void Field::RemoveCard(Minion* minion)
 {
     for (int i = 0;i < Conf::MAX_CARDS;i++)
     {
-        if (minionPlaced[i] == minion)
-        {
-            RemoveCard(i);
-        }
+        if (minionPlaced[i] == minion) RemoveCard(i);
     }
 }
 
@@ -144,6 +143,7 @@ bool Field::IsFull()
     return true;
 }
 
+void Field::AddOnCardPlaced(std::function<void()> event) { onCardPlaced.AddEvent(event); }
 Minion* Field::GetMinionAt(int index) { return minionPlaced[index]; }
 void Field::ChangeSpiralCombo(int amount) { context.spiral->ChangeSpiralCombo(amount); }
 
@@ -187,7 +187,7 @@ void Field::AssignHand(Hand* hand, Button* button, int index)
         if (context.spiral->GetSpiral() < cardCost)
         {
             const SDL_Rect* absTF = this->GetAbsTf();
-            HintManager::GetInstance().CallHint(absTF->x, absTF->y, "Not enough Spiral", " ");
+            PopUpManager::GetInstance().CallHint(absTF->x, absTF->y, "Not enough Spiral", " ");
             return;
         }
 
@@ -204,7 +204,7 @@ void Field::AssignHand(Hand* hand, Button* button, int index)
 
     button->AddOnHoverExit([slotImage] {
         slotImage->SetImage(Conf::SLOT_IMAGE);
-        HintManager::GetInstance().HideHint();
+        PopUpManager::GetInstance().HideHint();
         });
 }
 #pragma endregion

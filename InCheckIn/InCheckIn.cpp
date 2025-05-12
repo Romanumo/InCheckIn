@@ -37,7 +37,7 @@ int main(int argc, char** argv)
     Engine::Window window;
     bool shouldQuit = false;
 
-    //SoundManager::OpenAudio(); // This create delay in game opening
+    SoundManager::OpenAudio(); // This create delay in game opening
     CardFactory::Init();
     SceneManager SM = SceneManager();
 

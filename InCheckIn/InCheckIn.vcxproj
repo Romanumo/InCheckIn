@@ -165,10 +165,11 @@
     <ClInclude Include="Engine\TextSurface.h" />
     <ClInclude Include="Engine\UIFactory.h" />
     <ClInclude Include="Field.h" />
-    <ClInclude Include="HintManager.h" />
+    <ClInclude Include="PopUpManager.h" />
     <ClInclude Include="Minion.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Spiral.h" />
+    <ClInclude Include="TutorialManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Assets\AssetsRef.txt" />

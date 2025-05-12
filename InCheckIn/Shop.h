@@ -3,7 +3,7 @@
 #include "Engine/UIFactory.h"
 #include "GameManager.h"
 #include "CardFactory.h"
-#include "HintManager.h"
+#include "PopUpManager.h"
 #include "Deck.h"
 #include "Card.h"
 using namespace Engine;
@@ -37,7 +37,7 @@ public:
 
 			card.button->AddOnRightClick([this, stats, cr = card.image->GetParent()] {
 				const SDL_Rect* absTF = cr->GetAbsTf();
-				HintManager::GetInstance().CallHint(absTF->x + absTF->w, absTF->y,
+				PopUpManager::GetInstance().CallHint(absTF->x + absTF->w, absTF->y,
 					stats.minionStats.name, stats.minionStats.desc);
 				});
 
@@ -72,13 +72,13 @@ private:
 
 		button->AddOnRightClick([this, stats, cr = card.get()] {
 			const SDL_Rect* absTF = cr->GetAbsTf();
-			HintManager::GetInstance().CallHint(absTF->x + absTF->w, absTF->y,
+			PopUpManager::GetInstance().CallHint(absTF->x + absTF->w, absTF->y,
 				stats.minionStats.name, stats.minionStats.desc);
 			});
 
 		button->AddOnHoverExit([this, relTF, cr = card.get()] {
 			cr->SetRelPosition(relTF->x, relTF->y + 5);
-			HintManager::GetInstance().HideHint();
+			PopUpManager::GetInstance().HideHint();
 			});
 
 		button->AddOnLeftClick([this, stats] {

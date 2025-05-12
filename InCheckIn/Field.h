@@ -34,6 +34,8 @@ public:
     void ChangeSpiralCombo(int amount);
     bool IsFull();
 
+    void AddOnCardPlaced(std::function<void()> event);
+
     void PlayTurn();
     void TriggerCard(int index);
     void RemoveCard(Minion* minion);
@@ -43,9 +45,9 @@ private:
     Minion** minionPlaced;
     Button** slots = new Button * [Conf::MAX_CARDS];
     GameObject* queueIndicator;
+    Event onCardPlaced = Event();
 
     FieldContext context;
-
     int cardQueue = 0;
     int comboAdd = 0;
 

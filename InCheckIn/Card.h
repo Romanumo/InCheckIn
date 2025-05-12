@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine/GameObject.h"
 #include "Engine/UIFactory.h"
-#include "HintManager.h"
+#include "PopUpManager.h"
 #include "Minion.h"
 using namespace Engine;
 
@@ -26,7 +26,7 @@ struct CardStats
 	MinionStats minionStats;
 	int spiralCost;
 
-	bool isEmpty() { return spiralCost < 0; }
+	bool isValid() { return spiralCost >= 0; }
 };
 
 class Hammer;
@@ -81,13 +81,13 @@ private:
 			{
 				GetParent()->SetRelPosition(relTF->x, relTF->y - 15);
 				state = CardState::CHOSEN;
-				HintManager::GetInstance().HideHint();
+				PopUpManager::GetInstance().HideHint();
 			}
 			});
 
 		AddOnRightClick([this] {
 			const SDL_Rect* absTF = GetParent()->GetAbsTf();
-			HintManager::GetInstance().CallHint(absTF->x + absTF->w, absTF->y, 
+			PopUpManager::GetInstance().CallHint(absTF->x + absTF->w, absTF->y, 
 				minionStats.name, minionStats.desc);
 			});
 
@@ -95,7 +95,7 @@ private:
 			if (state == CardState::HOVERED)
 			{
 				Deselect();
-				HintManager::GetInstance().HideHint();
+				PopUpManager::GetInstance().HideHint();
 			}
 			});
 	}

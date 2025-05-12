@@ -45,24 +45,16 @@ public:
 		return animManager;
 	}
 
-	void PlaySingleAnimation(Animation animation)
+	void PlayDelayedAnimation(std::function<void()> onPlay, int delay)
 	{
-		Animation* anim = &animation;
+		auto* heapFunc = new std::function<void()>(std::move(onPlay));
 
-		SDL_AddTimer(1,
-			[](Uint32 interval, void* animation) -> Uint32 {
-				Animation* anim = static_cast<Animation*>(animation);
-				anim->Play();
-
-				SDL_AddTimer(anim->duration, 
-					[](Uint32 interval, void* animation) -> Uint32 {
-						static_cast<Animation*>(animation)->onEnd();
-						delete animation;
-						return 0;
-					}, &animation);
-
+		SDL_AddTimer(delay, [](Uint32 interval, void* onPlay) -> Uint32 {
+				auto* anim = static_cast<std::function<void()>*>(onPlay);
+				(*anim)();
+				delete anim;
 				return 0;
-			}, anim);
+			}, heapFunc);
 	}
 
 	void EnqueueAnimation(Animation animation)

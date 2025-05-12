@@ -4,7 +4,7 @@
 #include "Engine/UIFactory.h"
 #include "Engine/Component.h"
 #include "Engine/Managers/Random.h"
-#include "HintManager.h"
+#include "PopUpManager.h"
 #include "Field.h"
 #include "Card.h"
 
@@ -37,10 +37,6 @@ public:
 		playerCards[Firstly] = 20;
 		playerCards[Dread] = 20;
 		playerCards[Basic] = 20;
-
-		enemyCards[Sun] = 50;
-		enemyCards[Hobby] = 30;
-		enemyCards[Friends] = 20;
 	}
 
 	static CardStats GetPlayerCard()
@@ -59,24 +55,6 @@ public:
 		
 		std::cout << "No Chance card was given. Return Basic" << std::endl;
 		return Basic();
-	}
-
-	static CardStats GetEnemyCard()
-	{
-		int totalChance = 0;
-		for (auto card : enemyCards) totalChance += card.second;
-
-		int roll = Random::Int(0, totalChance);
-		int cumulative = 0;
-
-		for (auto card : enemyCards)
-		{
-			cumulative += card.second;
-			if (cumulative > roll) return card.first();
-		}
-
-		std::cout << "No Chance card was given. Return Sun" << std::endl;
-		return Sun();
 	}
 
 	static CardStats Lefty()
@@ -196,9 +174,11 @@ public:
 			));
 	}
 
+	static CardStats Null() { return CardStats(); }
+
 	static std::unique_ptr<GameObject> NewCard(CardStats stats, CardUI* cardUI = nullptr)
 	{
-		if (stats.isEmpty()) return nullptr;
+		if (!stats.isValid()) return nullptr;
 
 		auto cardObj = std::make_unique<GameObject>(0, 0, Conf::CARD_WIDTH, Conf::CARD_HEIGHT);
 		Card* card = new Card(cardObj.get(), stats.spiralCost, stats.minionStats);
@@ -228,7 +208,6 @@ public:
 
 private:
 	inline static std::unordered_map<CardStats(*)(), int> playerCards;
-	inline static std::unordered_map<CardStats(*)(), int> enemyCards;
 
 	static bool EnemyFunctions(Minion* self, int index, std::shared_ptr<int> turns, int spiralDecrease)
 	{
