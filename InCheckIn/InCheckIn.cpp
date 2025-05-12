@@ -11,6 +11,7 @@
 #include "Engine/GameObject.h"
 #include "Engine/UIFactory.h"
 
+#include "CardFactory.h"
 #include "GameUIBuilder.h"
 #include "SceneManager.h"
 using namespace std;
@@ -37,6 +38,7 @@ int main(int argc, char** argv)
     bool shouldQuit = false;
 
     //SoundManager::OpenAudio(); // This create delay in game opening
+    CardFactory::Init();
     SceneManager SM = SceneManager();
 
     //SoundManager::GetInstance().PlayMusic(Config::BCG_MUSIC);

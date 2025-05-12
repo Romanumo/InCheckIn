@@ -96,7 +96,6 @@ private:
 			{
 				Deselect();
 				HintManager::GetInstance().HideHint();
-
 			}
 			});
 	}

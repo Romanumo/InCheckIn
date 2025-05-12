@@ -29,6 +29,11 @@ namespace Engine
 			for (auto& function : onInvoke) function();
 		}
 
+		void Clear()
+		{
+			onInvoke.clear();
+		}
+
 	private:
 		std::vector<std::function<void()>> onInvoke;
 	};
@@ -42,6 +47,9 @@ namespace Engine
 		void AddOnRightClick(std::function<void()> rightClick) { onRightClick.AddEvent(rightClick); }
 		void AddOnHoverEnter(std::function<void()> hoverEnter) { onHoverEnter.AddEvent(hoverEnter); }
 		void AddOnHoverExit(std::function<void()> hoverExit) { onHoverExit.AddEvent(hoverExit); }
+
+		void ClearLeftClick() { onLeftClick.Clear(); }
+		void ClearRightClick() { onRightClick.Clear(); }
 		void SetEnabled(bool state) { isEnabled = state; }
 
 		void HandleEvent(const SDL_Event& event) override

@@ -28,9 +28,7 @@ public:
 			slot = Random::Int(0, Conf::MAX_CARDS - 1);
 		}
 
-		if (Random::Chance(20)) field->PlaceCard(CardFactory::NewCard(CardFactory::Hobby()), slot);
-		else if (Random::Chance(10)) field->PlaceCard(CardFactory::NewCard(CardFactory::Friends()), slot);
-		else if (Random::Chance(50)) field->PlaceCard(CardFactory::NewCard(CardFactory::Sun()), slot);
+		if (Random::Chance(80)) field->PlaceCard(CardFactory::NewCard(CardFactory::GetEnemyCard()), slot);
 		else return;
 	}
 

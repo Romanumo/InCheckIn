@@ -12,6 +12,9 @@ public:
 	Deck()
 	{
 		cards.push_back(CardFactory::Basic());
+		cards.push_back(CardFactory::Basic());
+		cards.push_back(CardFactory::Basic());
+		cards.push_back(CardFactory::Dread());
 		cards.push_back(CardFactory::Dread());
 	}
 

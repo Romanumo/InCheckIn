@@ -53,6 +53,7 @@ private:
     void ClearInactive();
     void QueueCardAnimation(int index);
     void EmptyField();
+    void RemoveCard(int index);
 
     void CreateSlots(Hand* hand);
     void CreateIndicator();

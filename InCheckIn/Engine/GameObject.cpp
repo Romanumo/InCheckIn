@@ -115,13 +115,20 @@ std::unique_ptr<GameObject> GameObject::TransferChild(GameObject* child)
 
 void GameObject::RemoveChild(GameObject* child)
 {
-	child->parent = nullptr;
 	auto it = std::find_if(children.begin(), children.end(),
 		[child](const std::unique_ptr<GameObject>& p) {
 			return p.get() == child;
 		});
 
-	children.erase(it);
+	if (it != children.end())
+	{
+		child->parent = nullptr;
+		children.erase(it);
+	}
+	else
+	{
+		std::cerr << "Warning: Attempted to remove a child that wasn't found.\n";
+	}
 }
 
 bool GameObject::IsMyChild(const GameObject& child) const
@@ -197,6 +204,8 @@ const SDL_Rect* GameObject::GetRelTf() const { return &relTf; }
 
 void GameObject::AddComponent(Component* component)
 {
+	if (!component) return;
+
 	for (const auto& comp : components)
 	{
 		if (typeid(*component) == typeid(*comp))
@@ -228,6 +237,7 @@ void GameObject::HandleEvent(const SDL_Event& event) const
 
 void GameObject::Render(SDL_Surface* surface) const
 {
+	//Persistent Bug here, With Dread
 	if (!isActive) return;
 
 	for (auto& component : components)

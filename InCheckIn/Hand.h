@@ -89,10 +89,8 @@ private:
 
     void EmptyHand()
     {
-        for (auto card : cards)
-        {
-            RemoveCard(card);
-            RemoveChild(card->GetParent());
-        }
+        for (auto card : cards) RemoveChild(card->GetParent());
+
+        cards.clear();
     }
 };

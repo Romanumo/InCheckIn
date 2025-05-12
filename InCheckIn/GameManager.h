@@ -19,6 +19,10 @@ public:
     {
         if (isInstantiated) throw std::runtime_error("GameManager already exists");
         isInstantiated = true;
+
+        onNewGame.push_back([this] {
+            goal += 5;
+            });
     }
 
     ~GameManager() { isInstantiated = false; }
@@ -56,7 +60,7 @@ private:
     inline static bool isInstantiated = false;
     GameFlow turn = GameFlow::CHOOSING;
 
-    int goal = 15;
+    int goal = 10;
     int* measure = nullptr;
 
     std::vector<std::function<void(GameFlow)>> onTurnChange;

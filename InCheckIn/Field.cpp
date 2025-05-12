@@ -71,11 +71,19 @@ void Field::RemoveCard(Minion* minion)
     {
         if (minionPlaced[i] == minion)
         {
-            slots[i]->SetEnabled(true);
-            slots[i]->GetParent()->RemoveChild(minion->GetParent());
-            minionPlaced[i] = nullptr;
-            return;
+            RemoveCard(i);
         }
+    }
+}
+
+void Field::RemoveCard(int index)
+{
+    if (minionPlaced[index])
+    {
+        slots[index]->SetEnabled(true);
+        slots[index]->GetParent()->RemoveChild(minionPlaced[index]->GetParent());
+        minionPlaced[index] = nullptr;
+        return;
     }
 }
 
@@ -114,7 +122,7 @@ void Field::ClearInactive()
 {
     for (int i = 0;i < Conf::MAX_CARDS;i++)
     {
-        if (minionPlaced[i] && !minionPlaced[i]->GetParent()->IsActive()) RemoveCard(minionPlaced[i]);
+        if (minionPlaced[i] && !minionPlaced[i]->GetParent()->IsActive()) RemoveCard(i);
     }
 }
 
@@ -122,7 +130,7 @@ void Field::EmptyField()
 {
     for (int i = 0;i < Conf::MAX_CARDS;i++)
     {
-        if (minionPlaced[i]) RemoveCard(minionPlaced[i]);
+        if (minionPlaced[i]) RemoveCard(i);
     }
 }
 
