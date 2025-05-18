@@ -238,18 +238,16 @@ void GameObject::HandleEvent(const SDL_Event& event) const
 
 void GameObject::Render(SDL_Surface* surface) const
 {
-	//Persistent Bug here, With Dread
+	//Persistent Bug here, Field Clearing
 	//Probaby proeblme with unsubscribe
 	if (!isActive) return;
 
 	for (auto& component : components)
 	{
-		if (!component.get())
-		{
-			std::cout << "No Component Rendered" << std::endl;
-			continue;
+		try { component->Render(surface);}
+		catch (const std::exception& e) {
+			std::cout << "Exception during render: " << e.what() << std::endl;
 		}
-		component->Render(surface);
 	}
 
 	if (children.size() < 1) return;

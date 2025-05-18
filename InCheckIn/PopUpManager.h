@@ -1,7 +1,6 @@
 #pragma once
 #include "Engine/UIFactory.h"
 #include "Engine/GameObject.h"
-#include "TutorialManager.h"
 using namespace Engine;
 
 class PopUpManager
@@ -16,6 +15,7 @@ public:
 	void Init(GameObject* scene)
 	{
 		CreateHint(scene);
+		CreateWindow(scene);
 	}
 
 	void CallHint(int x, int y, const std::string& name, const std::string& desc)
@@ -26,12 +26,22 @@ public:
 		hintDesc->SetText(desc);
 	}
 
+	void CallWindow(const std::string& text)
+	{
+		globalWindow->SetActive(true);
+		globalText->SetText(text);
+	}
+
+	void HideWindow() { globalWindow->SetActive(false); }
 	void HideHint() { hint->SetActive(false); }
 
 private:
 	GameObject* hint;
 	Text* hintName;
 	Text* hintDesc;
+
+	GameObject* globalWindow;
+	Text* globalText;
 
 	void CreateHint(GameObject* scene)
 	{
@@ -51,5 +61,25 @@ private:
 		hint->SetActive(false);
 
 		scene->AdoptChild(std::move(hintWindow));
+	}
+
+	void CreateWindow(GameObject* scene)
+	{
+		int w = 250;
+		int h = 100;
+
+		int xCenter = (Conf::WINDOW_WIDTH - w) / 2;
+		int yCenter = (Conf::WINDOW_HEIGHT - h) / 2;
+
+		auto globalWindowObj = std::make_unique<GameObject>(xCenter, yCenter, w, h);
+		globalWindowObj->AddComponent(new Image(globalWindowObj.get(), Conf::FRAME_IMAGE));
+
+		globalText = new Text(globalWindowObj.get(), " ");
+		globalWindowObj->AddComponent(globalText);
+
+		globalWindow = globalWindowObj.get();
+		globalWindow->SetActive(false);
+
+		scene->AdoptChild(std::move(globalWindowObj));
 	}
 };

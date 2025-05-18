@@ -14,8 +14,20 @@ public:
 	{
 		this->field = field;
 
+		enemyCards[CardFactory::Null] = 100;
+		enemyCards[CardFactory::Sun] = 0;
+		enemyCards[CardFactory::Hobby] = 0;
+		enemyCards[CardFactory::Friends] = 0;
+
 		GM.AddOnNewGame([this, GM](int level) {
-			IncreaseDifficulty(level);
+			if (level == 0) return;
+			else if (level == 1)
+			{
+				enemyCards[CardFactory::Sun] = 70;
+				enemyCards[CardFactory::Hobby] = 25;
+				enemyCards[CardFactory::Friends] = 3;
+			}
+			else if(level > 1) IncreaseDifficulty(level);
 		});
 
 		GM.AddOnTurnChange([this] (GameFlow turn){
@@ -33,8 +45,22 @@ public:
 			slot = Random::Int(0, Conf::MAX_CARDS - 1);
 		}
 
-		CardStats stats = GetEnemy();
-		if(stats.isValid())field->PlaceCard(CardFactory::NewCard(stats), slot);
+		//CardStats stats = GetEnemy();
+		//if(stats.isValid())field->PlaceCard(CardFactory::NewCard(stats), slot);
+
+		field->PlaceCard(CardFactory::NewCard(CardFactory::Sun()), slot);
+
+		while (field->GetMinionAt(slot))
+		{
+			slot = Random::Int(0, Conf::MAX_CARDS - 1);
+		}
+		field->PlaceCard(CardFactory::NewCard(CardFactory::Hobby()), slot);
+
+		while (field->GetMinionAt(slot))
+		{
+			slot = Random::Int(0, Conf::MAX_CARDS - 1);
+		}
+		field->PlaceCard(CardFactory::NewCard(CardFactory::Friends()), slot);
 	}
 
 private:
@@ -43,20 +69,10 @@ private:
 
 	void IncreaseDifficulty(int level)
 	{
-		if (level < 1)
-		{
-			enemyCards[CardFactory::Null] = 100;
-			enemyCards[CardFactory::Sun] = 0;
-			enemyCards[CardFactory::Hobby] = 0;
-			enemyCards[CardFactory::Friends] = 0;
-		}
-		else if (level >= 1)
-		{
-			enemyCards[CardFactory::Null] = 20;
-			enemyCards[CardFactory::Sun] = 50;
-			enemyCards[CardFactory::Hobby] = 10;
-			enemyCards[CardFactory::Friends] = 10;
-		}
+		if(enemyCards[CardFactory::Null] > 25) enemyCards[CardFactory::Null] -= 5;
+		enemyCards[CardFactory::Sun] += 3;
+		enemyCards[CardFactory::Hobby] += 4;
+		enemyCards[CardFactory::Friends] += 5;
 	}
 
 	CardStats GetEnemy()
@@ -73,7 +89,7 @@ private:
 			if (cumulative > roll) return card.first();
 		}
 
-		std::cout << "No Chance card was given. Return Sun" << std::endl;
-		return CardFactory::Sun();
+		std::cout << "No Chance card was given. Return Null" << std::endl;
+		return CardFactory::Null();
 	}
 };

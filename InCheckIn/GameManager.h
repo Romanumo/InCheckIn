@@ -2,6 +2,7 @@
 #include <cassert>
 #include "Engine/UIFactory.h"
 #include "Engine/GameObject.h"
+#include "AnimationManager.h"
 #include "PopUpManager.h"
 using namespace Engine;
 
@@ -12,7 +13,6 @@ enum GameFlow
     ENEMY
 };
 
-//Add Unsubscribe
 class GameManager
 {
 public:
@@ -22,6 +22,7 @@ public:
         isInstantiated = true;
 
         onNewGame.push_back([this](int level) {
+            isActive = true;
             goal += 5;
             levelsCompleted++;
             });
@@ -31,6 +32,8 @@ public:
 
     void NextTurn()
     {
+        if (!isActive) return;
+
         switch (turn)
         {
         case CHOOSING:
@@ -56,7 +59,7 @@ public:
     void AddOnNewGame(std::function<void()> event) { onNewGame.push_back([event](int level) {event();}); }
     void AddOnNewGame(std::function<void(int)> event) { onNewGame.push_back(event); }
 
-    void AddOnWin(std::function<void()> event) { onWin = event; }
+    void AddOnWin(std::function<void()> event) { onWinNextScene = event; }
 
     int GetReq() { return goal; }
     int GetLevel() { return levelsCompleted; }
@@ -64,6 +67,7 @@ public:
 private:
     inline static bool isInstantiated = false;
     GameFlow turn = GameFlow::CHOOSING;
+    bool isActive = true;
 
     int levelsCompleted = -1;
     int goal = 10;
@@ -71,15 +75,29 @@ private:
 
     std::vector<std::function<void(GameFlow)>> onTurnChange;
     std::vector<std::function<void(int)>> onNewGame;
-    std::function<void()> onWin;
+    std::function<void()> onWinNextScene;
 
     void CheckGoal()
     {
-        if (*measure < 0) std::cout << "Loser!" << std::endl;
-        if (*measure > goal)
+        if (*measure < 0)
         {
-            if(onWin) onWin();
-            NewGame();
+            isActive = false;
+            PopUpManager::GetInstance().CallWindow("You Lost!");
+            AnimationManager::GetInstance().PlayDelayedAnimation([this] {
+                SDL_Event quitEvent{ SDL_QUIT };
+                SDL_PushEvent(&quitEvent);
+            }, 2000);
+        }
+        else if (*measure > goal)
+        {
+            isActive = false;
+            PopUpManager::GetInstance().CallWindow("You Won!");
+
+            AnimationManager::GetInstance().PlayDelayedAnimation([this] {
+                PopUpManager::GetInstance().HideWindow();
+                if (onWinNextScene) onWinNextScene();
+                NewGame();
+            }, 2000);
         }
     }
 };

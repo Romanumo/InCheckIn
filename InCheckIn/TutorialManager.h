@@ -46,7 +46,8 @@ public:
 		case CardPlace:
 			CallTutorialDelayed("This card will give you spiral", 200,
 			[this] {CallTutorial("To spiral out this day, you need to get 15 of them",
-			[this] {CallTutorial("Right Click objects to understand how they work");});});
+			[this] {CallTutorial("Right Click objects to understand how they work", 
+			[this] {CallTutorial("To start your turn you need to start your cycle");});});});
 			break;
 		case EnemyPlace:
 			CallTutorialDelayed("Oh yeah, by the way, world is still spinning around", 200);
@@ -55,8 +56,8 @@ public:
 			CallTutorialDelayed("After you loop yourself. You learn new ways to obsess", 200);
 			break;
 		case DeckAdd:
-			CallTutorialDelayed( "Your ways to obsess are now in your mind", 200, 
-			[this] {CallTutorial("You are on your own now. Right Click Objects to get info on them");});
+			CallTutorialDelayed("Your ways to obsess are now in your mind", 200, 
+			[this] {CallTutorial("You are on your own now");});
 			break;
 		default:
 			break;

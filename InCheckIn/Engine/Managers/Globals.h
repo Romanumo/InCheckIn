@@ -52,8 +52,14 @@ namespace Conf
 	inline const std::string CARD_IMAGE_BASIC = "Assets/Basic.png";
 	inline const std::string CARD_IMAGE_LEFTY = "Assets/Lefty.png";
 	inline const std::string CARD_IMAGE_RIGHTY = "Assets/Righty.png";
-	inline const std::string CARD_IMAGE_SUN = "Assets/Sun.png";
+	inline const std::string CARD_IMAGE_FIRSTLY = "Assets/Firstly.png";
+	inline const std::string CARD_IMAGE_DREAD = "Assets/Dread.png";
 	inline const std::string CARD_IMAGE_OBSESSION = "Assets/Obsession.png";
+
+	inline const std::string CARD_IMAGE_SUN = "Assets/Sun.png";
+	inline const std::string CARD_IMAGE_HOBBY = "Assets/Hobby.png";
+	inline const std::string CARD_IMAGE_FRIENDS = "Assets/Friends.png";
+
 	inline const std::string CARD_IMAGE_INDICATOR = "Assets/Indicator.png";
 	inline const std::string CARD_IMAGE_PROTOTYPE = "Assets/Prototype.png";
 

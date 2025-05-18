@@ -111,7 +111,7 @@ public:
 
 	static CardStats Dread()
 	{
-		return CardStats(Conf::CARD_IMAGE_PROTOTYPE, 0,
+		return CardStats(Conf::CARD_IMAGE_DREAD, 0,
 			MinionStats("Dread", "Gives 5 Spiral and then Dies",
 				[](Minion* self, int index) -> bool {
 					self->GetField()->ChangeSpiralCombo(4);
@@ -122,7 +122,7 @@ public:
 
 	static CardStats Firstly()
 	{
-		return CardStats(Conf::CARD_IMAGE_PROTOTYPE, 5,
+		return CardStats(Conf::CARD_IMAGE_FIRSTLY, 5,
 			MinionStats("Firstly", "Triggers first card (Compulsion with 50%. Cant Trigger itself)",
 				[](Minion* self, int index) -> bool {
 					Minion* triggerMinion = self->GetField()->GetMinionAt(0);
@@ -159,7 +159,7 @@ public:
 	static CardStats Hobby()
 	{
 		std::shared_ptr<int> turns = std::make_shared<int>(3);
-		return CardStats(Conf::CARD_IMAGE_PROTOTYPE, 0,
+		return CardStats(Conf::CARD_IMAGE_HOBBY, 0,
 			MinionStats("Hobby", "Activated after " + std::to_string(*turns) + " turn. Deducts 10 spiral",
 				[turns](Minion* self, int index) -> bool {return EnemyFunctions(self, index, turns, 10);}
 			));
@@ -168,7 +168,7 @@ public:
 	static CardStats Friends()
 	{
 		std::shared_ptr<int> turns = std::make_shared<int>(5);
-		return CardStats(Conf::CARD_IMAGE_PROTOTYPE, 0,
+		return CardStats(Conf::CARD_IMAGE_FRIENDS, 0,
 			MinionStats("Friends", "Activated after " + std::to_string(*turns) + " turn. Deducts 15 spiral",
 				[turns](Minion* self, int index) -> bool {return EnemyFunctions(self, index, turns, 15);}
 			));
@@ -176,28 +176,36 @@ public:
 
 	static CardStats Null() { return CardStats(); }
 
-	static std::unique_ptr<GameObject> NewCard(CardStats stats, CardUI* cardUI = nullptr)
+	static std::unique_ptr<GameObject> NewCard(CardStats stats)
+	{
+		if (!stats.isValid()) return nullptr;
+
+		auto cardObj = NewCardSkin(stats);
+		Card* card = new Card(cardObj.get(), stats.spiralCost, stats.minionStats);
+		cardObj->AddComponent(card);
+
+		return cardObj;
+	}
+
+	static std::unique_ptr<GameObject> NewCardSkin(CardStats stats, CardUI* cardUI = nullptr)
 	{
 		if (!stats.isValid()) return nullptr;
 
 		auto cardObj = std::make_unique<GameObject>(0, 0, Conf::CARD_WIDTH, Conf::CARD_HEIGHT);
-		Card* card = new Card(cardObj.get(), stats.spiralCost, stats.minionStats);
-		cardObj->AddComponent(card);
 
 		Image* image = new Image(cardObj.get(), stats.imagePath);
 		cardObj->AddComponent(image);
 
 		auto priceText = std::make_unique<GameObject>(
-			Conf::PADDING, Conf::CARD_HEIGHT - Conf::PADDING - 25, 35, 30);
-		priceText->AddComponent(new Rectangle(priceText.get()));
+			Conf::PADDING-2, Conf::CARD_HEIGHT - Conf::PADDING - 23, 35, 30);
 
 		Text* text = new Text(priceText.get(), std::to_string(stats.spiralCost), Conf::SPIRAL_COLOR, 25);
 		priceText->AddComponent(text);
+
 		cardObj->AdoptChild(std::move(priceText));
 
 		if (cardUI)
 		{
-			cardUI->button = card;
 			cardUI->image = image;
 			cardUI->stats = stats;
 			cardUI->price = text;

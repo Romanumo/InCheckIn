@@ -59,8 +59,7 @@ private:
 	{
 		CardUI UI;
 
-		auto card = CardFactory::NewCard(stats, &UI);
-		card->RemoveComponent<Card>();
+		auto card = CardFactory::NewCardSkin(stats, &UI);
 		Button* button = new Button(card.get());
 		UI.button = button;
 
