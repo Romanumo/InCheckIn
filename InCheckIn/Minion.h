@@ -66,6 +66,7 @@ private:
 			{
 				hammer->SetHammerMode(false);
 				field->RemoveCard(this);
+				SoundManager::GetInstance().PlaySFX(Conf::SOUND_HAMMER_USE);
 			}
 			});
 	}

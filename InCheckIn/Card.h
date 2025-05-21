@@ -79,6 +79,7 @@ private:
 		AddOnLeftClick([this, relTF] {
 			if (state == CardState::HOVERED)
 			{
+				SoundManager::GetInstance().PlaySFX(Conf::SOUND_CARD_SELECT);
 				GetParent()->SetRelPosition(relTF->x, relTF->y - 15);
 				state = CardState::CHOSEN;
 				PopUpManager::GetInstance().HideHint();

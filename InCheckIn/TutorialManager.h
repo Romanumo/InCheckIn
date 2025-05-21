@@ -63,6 +63,7 @@ public:
 			break;
 		}
 
+		SoundManager::GetInstance().PlaySFX(Conf::SOUND_TUTORIAL);
 		tutorialProgression[step] = true;
 	}
 

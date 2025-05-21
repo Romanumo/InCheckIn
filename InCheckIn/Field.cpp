@@ -19,6 +19,10 @@ Field::Field(FieldContext context, int comboAdd, Hand* hand) :
     context.GM->AddOnNewGame([this] {
         EmptyField();
         });
+
+    onCardPlaced.AddEvent([this] {
+        SoundManager::GetInstance().PlaySFX(Conf::SOUND_CARD_PLACE);
+    });
 }
 
 void Field::PlayTurn()
@@ -45,6 +49,7 @@ void Field::TriggerCard(int index)
     }
 
     UpdateIndicator();
+
     if (!minionPlaced[index] || !minionPlaced[index]->GetParent()->IsActive()) 
         TriggerCard(++cardQueue);
     else QueueCardAnimation(index);
@@ -94,6 +99,8 @@ void Field::QueueCardAnimation(int index)
         minionPlaced[index]->GetParent()->SetRelPosition(rect->x, rect->y - 15);
 
         context.spiral->ChangeSpiralCombo(comboAdd);
+        SoundManager::GetInstance().PlaySFX(Conf::SOUND_CARD_TRIGGER);
+ 
         bool isBreaker = minionPlaced[index]->Trigger(index);
         if (isBreaker)
         {

@@ -48,7 +48,7 @@ namespace Conf
 	inline const std::string HAMMER_ON_IMAGE = "Assets/HammerUse.png";
 	inline const std::string HAMMER_OFF_IMAGE = "Assets/Hammer.png";
 
-	//Units Assets
+	//Card Images
 	inline const std::string CARD_IMAGE_BASIC = "Assets/Basic.png";
 	inline const std::string CARD_IMAGE_LEFTY = "Assets/Lefty.png";
 	inline const std::string CARD_IMAGE_RIGHTY = "Assets/Righty.png";
@@ -62,6 +62,15 @@ namespace Conf
 
 	inline const std::string CARD_IMAGE_INDICATOR = "Assets/Indicator.png";
 	inline const std::string CARD_IMAGE_PROTOTYPE = "Assets/Prototype.png";
+
+	//Sounds
+	inline const std::string SOUND_CARD_SELECT = "Assets/Select.mp3";
+	inline const std::string SOUND_CARD_PLACE = "Assets/PlacingCard.mp3";
+	inline const std::string SOUND_CARD_TRIGGER = "Assets/Trigger.mp3";
+	inline const std::string SOUND_HAMMER_ON = "Assets/HammerOn.mp3";
+	inline const std::string SOUND_HAMMER_USE = "Assets/HammerUse.mp3";
+	inline const std::string SOUND_TUTORIAL = "Assets/Tutorial.mp3";
+	inline const std::string MUSIC = "Assets/Balatro.mp3";
 
 	//Max Chilren
 	inline constexpr int MAX_CHILDREN = 20;

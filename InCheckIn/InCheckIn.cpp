@@ -41,7 +41,7 @@ int main(int argc, char** argv)
     CardFactory::Init();
     SceneManager SM = SceneManager();
 
-    //SoundManager::GetInstance().PlayMusic(Config::BCG_MUSIC);
+    SoundManager::GetInstance().PlayMusic(Conf::MUSIC);
 
     while (!shouldQuit)
     {

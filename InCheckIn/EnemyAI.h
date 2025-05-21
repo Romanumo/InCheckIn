@@ -45,22 +45,10 @@ public:
 			slot = Random::Int(0, Conf::MAX_CARDS - 1);
 		}
 
-		//CardStats stats = GetEnemy();
-		//if(stats.isValid())field->PlaceCard(CardFactory::NewCard(stats), slot);
+		CardStats stats = GetEnemy();
+		if(stats.isValid())field->PlaceCard(CardFactory::NewCard(stats), slot);
 
 		field->PlaceCard(CardFactory::NewCard(CardFactory::Sun()), slot);
-
-		while (field->GetMinionAt(slot))
-		{
-			slot = Random::Int(0, Conf::MAX_CARDS - 1);
-		}
-		field->PlaceCard(CardFactory::NewCard(CardFactory::Hobby()), slot);
-
-		while (field->GetMinionAt(slot))
-		{
-			slot = Random::Int(0, Conf::MAX_CARDS - 1);
-		}
-		field->PlaceCard(CardFactory::NewCard(CardFactory::Friends()), slot);
 	}
 
 private:
