@@ -34,7 +34,8 @@ public:
 		playerCards[Lefty] = 15;
 		playerCards[Righty] = 15;
 		playerCards[Repeater] = 15;
-		playerCards[Firstly] = 20;
+		playerCards[Spiral] = 15;
+		playerCards[Firstly] = 15;
 		playerCards[Dread] = 20;
 		playerCards[Basic] = 20;
 	}
@@ -145,6 +146,16 @@ public:
 					self->GetField()->ChangeSpiralCombo(1);
 					return true;
 			}));
+	}
+
+	static CardStats Spiral()
+	{
+		return CardStats(Conf::CARD_IMAGE_PROTOTYPE, 5,
+			MinionStats("Threat", "Gives 4 spiral",
+				[](Minion* self, int index) -> bool { // Was 3
+					self->GetField()->ChangeSpiralCombo(3);
+					return true;
+				}));
 	}
 
 	static CardStats Sun()

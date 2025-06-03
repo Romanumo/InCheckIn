@@ -11,12 +11,17 @@ class Deck
 public:
 	Deck()
 	{
-		cards.push_back(CardFactory::Dread());
-		cards.push_back(CardFactory::Firstly());
 		cards.push_back(CardFactory::Basic());
-		cards.push_back(CardFactory::Repeater());
-		cards.push_back(CardFactory::Righty());
-		cards.push_back(CardFactory::Lefty());
+		cards.push_back(CardFactory::Basic());
+		cards.push_back(CardFactory::Dread());
+		cards.push_back(CardFactory::Dread());
+
+		//cards.push_back(CardFactory::Spiral());
+		//cards.push_back(CardFactory::Firstly());
+		//cards.push_back(CardFactory::Basic());
+		//cards.push_back(CardFactory::Repeater());
+		//cards.push_back(CardFactory::Righty());
+		//cards.push_back(CardFactory::Lefty());
 	}
 
 	void ConnectToGM(GameManager& GM)

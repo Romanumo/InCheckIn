@@ -85,9 +85,10 @@ void Field::RemoveCard(int index)
     if (minionPlaced[index])
     {
         slots[index]->SetEnabled(true);
-        slots[index]->GetParent()->RemoveChild(minionPlaced[index]->GetParent());
-        minionPlaced[index] = nullptr;
-        return;
+
+        auto parent = minionPlaced[index]->GetParent();
+        minionPlaced[index] = nullptr; 
+        slots[index]->GetParent()->RemoveChild(parent); 
     }
 }
 

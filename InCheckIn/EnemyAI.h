@@ -46,9 +46,7 @@ public:
 		}
 
 		CardStats stats = GetEnemy();
-		if(stats.isValid())field->PlaceCard(CardFactory::NewCard(stats), slot);
-
-		field->PlaceCard(CardFactory::NewCard(CardFactory::Sun()), slot);
+		if(stats.isValid()) field->PlaceCard(CardFactory::NewCard(stats), slot);
 	}
 
 private:
