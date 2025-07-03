@@ -239,21 +239,19 @@ void GameObject::HandleEvent(const SDL_Event& event) const
 void GameObject::Render(SDL_Surface* surface) const
 {
 	//Persistent Bug here, Field Clearing
-	//Probaby proeblme with unsubscribe
+	//Probably problem with unsubscribe
 	if (!isActive) return;
 
 	for (auto& component : components)
 	{
-		try { component->Render(surface);}
-		catch (const std::exception& e) {
-			std::cout << "Exception during render: " << e.what() << std::endl;
-		}
+		component->Render(surface);
 	}
 
 	if (children.size() < 1) return;
 
 	for (const auto& gameObject : children)
 	{
+		if (!gameObject.get()) std::cout << "ERROR" << std::endl;
 		gameObject->Render(surface);
 	}
 }

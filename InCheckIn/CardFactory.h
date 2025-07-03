@@ -150,9 +150,9 @@ public:
 
 	static CardStats Spiral()
 	{
-		return CardStats(Conf::CARD_IMAGE_PROTOTYPE, 5,
-			MinionStats("Threat", "Gives 4 spiral",
-				[](Minion* self, int index) -> bool { // Was 3
+		return CardStats(Conf::CARD_IMAGE_ISOLATION, 5,
+			MinionStats("Isolation", "Gives 4 spiral",
+				[](Minion* self, int index) -> bool {
 					self->GetField()->ChangeSpiralCombo(3);
 					return true;
 				}));
@@ -160,25 +160,27 @@ public:
 
 	static CardStats Sun()
 	{
-		std::shared_ptr<int> turns = std::make_shared<int>(1);
 		return CardStats(Conf::CARD_IMAGE_SUN, 0,
-			MinionStats("Sun", "Activated after " + std::to_string(*turns) + " turn. Deducts 3 spiral",
-				[turns](Minion* self, int index) -> bool {return EnemyFunctions(self, index, turns, 3);}
+			MinionStats("Sun", "Deducts 2 spiral",
+				[](Minion* self, int index) -> bool {
+					self->GetField()->ChangeSpiralCombo(-2);
+					return true;
+				}
 				));
 	}
 
 	static CardStats Hobby()
 	{
-		std::shared_ptr<int> turns = std::make_shared<int>(3);
+		std::shared_ptr<int> turns = std::make_shared<int>(2);
 		return CardStats(Conf::CARD_IMAGE_HOBBY, 0,
-			MinionStats("Hobby", "Activated after " + std::to_string(*turns) + " turn. Deducts 10 spiral",
-				[turns](Minion* self, int index) -> bool {return EnemyFunctions(self, index, turns, 10);}
+			MinionStats("Hobby", "Activated after " + std::to_string(*turns) + " turn. Deducts 7 spiral",
+				[turns](Minion* self, int index) -> bool {return EnemyFunctions(self, index, turns, 7);}
 			));
 	}
 
 	static CardStats Friends()
 	{
-		std::shared_ptr<int> turns = std::make_shared<int>(5);
+		std::shared_ptr<int> turns = std::make_shared<int>(3);
 		return CardStats(Conf::CARD_IMAGE_FRIENDS, 0,
 			MinionStats("Friends", "Activated after " + std::to_string(*turns) + " turn. Deducts 15 spiral",
 				[turns](Minion* self, int index) -> bool {return EnemyFunctions(self, index, turns, 15);}

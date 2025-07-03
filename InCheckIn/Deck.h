@@ -50,6 +50,7 @@ public:
 
 	void AddCard(CardStats stats)
 	{
+		SoundManager::GetInstance().PlaySFX(Conf::SOUND_NEWCARD);
 		cards.push_back(stats);
 		onNewCard.Invoke();
 	}

@@ -23,9 +23,9 @@ public:
 			if (level == 0) return;
 			else if (level == 1)
 			{
-				enemyCards[CardFactory::Sun] = 70;
-				enemyCards[CardFactory::Hobby] = 25;
-				enemyCards[CardFactory::Friends] = 3;
+				enemyCards[CardFactory::Sun] = 60;
+				enemyCards[CardFactory::Hobby] = 30;
+				enemyCards[CardFactory::Friends] = 10;
 			}
 			else if(level > 1) IncreaseDifficulty(level);
 		});
@@ -55,7 +55,7 @@ private:
 
 	void IncreaseDifficulty(int level)
 	{
-		if(enemyCards[CardFactory::Null] > 25) enemyCards[CardFactory::Null] -= 5;
+		if(enemyCards[CardFactory::Null] > 10) enemyCards[CardFactory::Null] /= 2;
 		enemyCards[CardFactory::Sun] += 3;
 		enemyCards[CardFactory::Hobby] += 4;
 		enemyCards[CardFactory::Friends] += 5;

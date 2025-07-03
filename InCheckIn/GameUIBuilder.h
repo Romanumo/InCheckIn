@@ -116,6 +116,7 @@ private:
             {
                 GM.NextTurn();
                 hand->AddCard(CardFactory::NewCard(deck.GetCard()));
+				SoundManager::GetInstance().PlaySFX(Conf::SOUND_BELL);
             }
             });
 
