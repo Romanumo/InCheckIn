@@ -3,7 +3,7 @@
 #include "Engine/UIFactory.h"
 #include "Engine/GameObject.h"
 #include "GameUIBuilder.h"
-#include "HintManager.h"
+#include "PopUpManager.h"
 using namespace Engine;
 
 class SceneManager
@@ -21,6 +21,7 @@ public:
 
     void Render(SDL_Surface* surface)
     {
+        background->Render(surface);
         mainScene->Render(surface);
         globalUI->Render(surface);
     }
@@ -35,21 +36,25 @@ private:
     inline static bool isInstantiated = false;
 
     GameObject* mainScene;
+    std::unique_ptr<GameObject> background;
     std::unique_ptr<GameObject> globalUI;
     std::unique_ptr<GameObject> gameScene;
     std::unique_ptr<GameObject> shopScene;
 
     void CreateScenes()
     {
-        gameScene = std::make_unique<GameObject>(Conf::PADDING, Conf::PADDING, 0, 0);
+        background = std::make_unique<GameObject>(0, 0, Conf::WINDOW_WIDTH, Conf::WINDOW_HEIGHT);
+        background->AddComponent(new Image(background.get(), Conf::BACKGROUND_IMAGE));
+
+        gameScene = std::make_unique<GameObject>(Conf::PADDING + Conf::WINDOW_OFFSET_W/2, 
+            Conf::PADDING + Conf::WINDOW_OFFSET_H / 2, 0, 0);
         shopScene = std::make_unique<GameObject>(Conf::WINDOW_WIDTH / 3, Conf::WINDOW_HEIGHT / 3, 0, 0);
-        globalUI = std::make_unique<GameObject>(0, 0, 0, 0);
+        globalUI = std::make_unique<GameObject>(0, 0, 0,0);
         mainScene = gameScene.get();
 
+        GameUIBuilder::CreateUI(globalUI.get(), gameScene.get());
         GameUIBuilder::CreateTable(gameScene.get(), [this] {GoToShop();});
         GameUIBuilder::CreateShop(shopScene.get(), [this] {GoToGame();});
-
-        HintManager::GetInstance().Init(globalUI.get());
     }
 
     void GoToShop()

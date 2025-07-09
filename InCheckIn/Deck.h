@@ -12,7 +12,16 @@ public:
 	Deck()
 	{
 		cards.push_back(CardFactory::Basic());
+		cards.push_back(CardFactory::Basic());
 		cards.push_back(CardFactory::Dread());
+		cards.push_back(CardFactory::Dread());
+
+		//cards.push_back(CardFactory::Spiral());
+		//cards.push_back(CardFactory::Firstly());
+		//cards.push_back(CardFactory::Basic());
+		//cards.push_back(CardFactory::Repeater());
+		//cards.push_back(CardFactory::Righty());
+		//cards.push_back(CardFactory::Lefty());
 	}
 
 	void ConnectToGM(GameManager& GM)
@@ -41,10 +50,15 @@ public:
 
 	void AddCard(CardStats stats)
 	{
+		SoundManager::GetInstance().PlaySFX(Conf::SOUND_NEWCARD);
 		cards.push_back(stats);
+		onNewCard.Invoke();
 	}
+
+	void AddOnNewCard(std::function<void()> event) { onNewCard.AddEvent(event); }
 
 private:
 	std::vector<CardStats> cards;
+	Event onNewCard = Event();
 	unsigned int index = 0;
 };

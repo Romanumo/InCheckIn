@@ -1,17 +1,66 @@
 #pragma once 
+#include <unordered_map>
+#include <functional>
 #include "Engine/UIFactory.h"
 #include "Engine/Component.h"
 #include "Engine/Managers/Random.h"
-#include "HintManager.h"
+#include "PopUpManager.h"
 #include "Field.h"
 #include "Card.h"
+
+class CardUI
+{
+public:
+	CardUI() {}
+	CardUI(Image* image, Text* price, Button* button, CardStats stats)
+	{
+		this->image = image;
+		this->button = button;
+		this->price = price;
+		this->stats = stats;
+	}
+
+	Image* image;
+	Text* price;
+	Button* button;
+	CardStats stats;
+};
 
 static class CardFactory
 {
 public:
+	static void Init()
+	{
+		playerCards[Lefty] = 15;
+		playerCards[Righty] = 15;
+		playerCards[Repeater] = 15;
+		playerCards[Spiral] = 15;
+		playerCards[Firstly] = 15;
+		playerCards[Dread] = 20;
+		playerCards[Basic] = 20;
+	}
+
+	static CardStats GetPlayerCard()
+	{
+		int totalChance = 0;
+		for (auto card : playerCards) totalChance += card.second;
+
+		int roll = Random::Int(0, totalChance);
+		int cumulative = 0;
+
+		for (auto card : playerCards)
+		{
+			cumulative += card.second;
+			if (cumulative >= roll) return card.first();
+		}
+		
+		std::cout << "No Chance card was given. Return Basic" << std::endl;
+		return Basic();
+	}
+
 	static CardStats Lefty()
 	{
-		return CardStats(Conf::CARD_IMAGE_LEFTY, 10,
+		return CardStats(Conf::CARD_IMAGE_LEFTY, 7,
 			MinionStats("Rumination", "Triggers card to the left (Compulsion with 75%)",
 				[](Minion* self, int index) -> bool {
 				Minion* triggerMinion = self->GetField()->GetMinionAt(index - 1);
@@ -28,7 +77,7 @@ public:
 
 	static CardStats Righty()
 	{
-		return CardStats(Conf::CARD_IMAGE_RIGHTY, 10,
+		return CardStats(Conf::CARD_IMAGE_RIGHTY, 7,
 			MinionStats("Compulsion", "Triggers card to the right (Rumination with 75%)", 
 				[](Minion* self, int index) -> bool {
 				Minion* triggerMinion = self->GetField()->GetMinionAt(index + 1);
@@ -63,7 +112,7 @@ public:
 
 	static CardStats Dread()
 	{
-		return CardStats(Conf::CARD_IMAGE_PROTOTYPE, 0,
+		return CardStats(Conf::CARD_IMAGE_DREAD, 0,
 			MinionStats("Dread", "Gives 5 Spiral and then Dies",
 				[](Minion* self, int index) -> bool {
 					self->GetField()->ChangeSpiralCombo(4);
@@ -74,7 +123,7 @@ public:
 
 	static CardStats Firstly()
 	{
-		return CardStats(Conf::CARD_IMAGE_PROTOTYPE, 5,
+		return CardStats(Conf::CARD_IMAGE_FIRSTLY, 5,
 			MinionStats("Firstly", "Triggers first card (Compulsion with 50%. Cant Trigger itself)",
 				[](Minion* self, int index) -> bool {
 					Minion* triggerMinion = self->GetField()->GetMinionAt(0);
@@ -92,45 +141,101 @@ public:
 	static CardStats Basic()
 	{
 		return CardStats(Conf::CARD_IMAGE_BASIC, 0,
-			MinionStats("Thought", "Gives 1 spiral ",
+			MinionStats("Thought", "Gives 2 spiral ",
 				[](Minion* self, int index) -> bool {
-				return true;
+					self->GetField()->ChangeSpiralCombo(1);
+					return true;
 			}));
+	}
+
+	static CardStats Spiral()
+	{
+		return CardStats(Conf::CARD_IMAGE_ISOLATION, 5,
+			MinionStats("Isolation", "Gives 4 spiral",
+				[](Minion* self, int index) -> bool {
+					self->GetField()->ChangeSpiralCombo(3);
+					return true;
+				}));
 	}
 
 	static CardStats Sun()
 	{
-		std::shared_ptr<int> turns = std::make_shared<int>(1);
 		return CardStats(Conf::CARD_IMAGE_SUN, 0,
-			MinionStats("Sun", "Activated after " + std::to_string(*turns) + " turn. Deducts 3 spiral",
-				[turns](Minion* self, int index) -> bool {return EnemyFunctions(self, index, turns, 3);}
+			MinionStats("Sun", "Deducts 2 spiral",
+				[](Minion* self, int index) -> bool {
+					self->GetField()->ChangeSpiralCombo(-2);
+					return true;
+				}
 				));
 	}
 
 	static CardStats Hobby()
 	{
-		std::shared_ptr<int> turns = std::make_shared<int>(3);
-		return CardStats(Conf::CARD_IMAGE_PROTOTYPE, 0,
-			MinionStats("Hobby", "Activated after " + std::to_string(*turns) + " turn. Deducts 10 spiral",
-				[turns](Minion* self, int index) -> bool {return EnemyFunctions(self, index, turns, 10);}
+		std::shared_ptr<int> turns = std::make_shared<int>(2);
+		return CardStats(Conf::CARD_IMAGE_HOBBY, 0,
+			MinionStats("Hobby", "Activated after " + std::to_string(*turns) + " turn. Deducts 7 spiral",
+				[turns](Minion* self, int index) -> bool {return EnemyFunctions(self, index, turns, 7);}
 			));
 	}
 
 	static CardStats Friends()
 	{
-		std::shared_ptr<int> turns = std::make_shared<int>(5);
-		return CardStats(Conf::CARD_IMAGE_PROTOTYPE, 0,
+		std::shared_ptr<int> turns = std::make_shared<int>(3);
+		return CardStats(Conf::CARD_IMAGE_FRIENDS, 0,
 			MinionStats("Friends", "Activated after " + std::to_string(*turns) + " turn. Deducts 15 spiral",
 				[turns](Minion* self, int index) -> bool {return EnemyFunctions(self, index, turns, 15);}
 			));
 	}
+
+	static CardStats Null() { return CardStats(); }
+
+	static std::unique_ptr<GameObject> NewCard(CardStats stats)
+	{
+		if (!stats.isValid()) return nullptr;
+
+		auto cardObj = NewCardSkin(stats);
+		Card* card = new Card(cardObj.get(), stats.spiralCost, stats.minionStats);
+		cardObj->AddComponent(card);
+
+		return cardObj;
+	}
+
+	static std::unique_ptr<GameObject> NewCardSkin(CardStats stats, CardUI* cardUI = nullptr)
+	{
+		if (!stats.isValid()) return nullptr;
+
+		auto cardObj = std::make_unique<GameObject>(0, 0, Conf::CARD_WIDTH, Conf::CARD_HEIGHT);
+
+		Image* image = new Image(cardObj.get(), stats.imagePath);
+		cardObj->AddComponent(image);
+
+		auto priceText = std::make_unique<GameObject>(
+			Conf::PADDING-2, Conf::CARD_HEIGHT - Conf::PADDING - 23, 35, 30);
+
+		Text* text = new Text(priceText.get(), std::to_string(stats.spiralCost), Conf::SPIRAL_COLOR, 25);
+		priceText->AddComponent(text);
+
+		cardObj->AdoptChild(std::move(priceText));
+
+		if (cardUI)
+		{
+			cardUI->image = image;
+			cardUI->stats = stats;
+			cardUI->price = text;
+		}
+
+		return cardObj;
+	}
+
+private:
+	inline static std::unordered_map<CardStats(*)(), int> playerCards;
 
 	static bool EnemyFunctions(Minion* self, int index, std::shared_ptr<int> turns, int spiralDecrease)
 	{
 		(*turns)--;
 		if (*turns > 0)
 		{
-			self->ChangeDesc("Activated after " + std::to_string(*turns) + " turn. Deducts "+
+			self->ChangeDesc("Activated after " + std::to_string(*turns) + " turn. Deducts " +
 				std::to_string(spiralDecrease) + " spiral");
 			return true;
 		}
@@ -142,22 +247,5 @@ public:
 
 		self->GetField()->ChangeSpiralCombo(spiralDecrease * -1);
 		return true;
-	}
-
-	static std::unique_ptr<GameObject> NewCard(CardStats stats)
-	{
-		if (stats.isEmpty()) return nullptr;
-
-		auto cardObj = std::make_unique<GameObject>(0, 0, Conf::CARD_WIDTH, Conf::CARD_HEIGHT);
-		cardObj->AddComponent(new Card(cardObj.get(), stats.spiralCost, stats.minionStats));
-		cardObj->AddComponent(new Image(cardObj.get(), stats.imagePath));
-
-		auto priceText = std::make_unique<GameObject>(
-			Conf::PADDING, Conf::CARD_HEIGHT - Conf::PADDING - 25, 35, 30);
-		priceText->AddComponent(new Rectangle(priceText.get()));
-		priceText->AddComponent(new Text(priceText.get(), std::to_string(stats.spiralCost), Conf::SPIRAL_COLOR, 25));
-		cardObj->AdoptChild(std::move(priceText));
-
-		return cardObj;
 	}
 };

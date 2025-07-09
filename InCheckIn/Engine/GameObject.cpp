@@ -115,13 +115,20 @@ std::unique_ptr<GameObject> GameObject::TransferChild(GameObject* child)
 
 void GameObject::RemoveChild(GameObject* child)
 {
-	child->parent = nullptr;
 	auto it = std::find_if(children.begin(), children.end(),
 		[child](const std::unique_ptr<GameObject>& p) {
 			return p.get() == child;
 		});
 
-	children.erase(it);
+	if (it != children.end())
+	{
+		child->parent = nullptr;
+		children.erase(it);
+	}
+	else
+	{
+		std::cerr << "Warning: Attempted to remove a child that wasn't found.\n";
+	}
 }
 
 bool GameObject::IsMyChild(const GameObject& child) const
@@ -189,6 +196,7 @@ const std::vector<GameObject*> GameObject::GetChildren() const
 }
 
 void GameObject::SetActive(bool isActive) { this->isActive = isActive; }
+void GameObject::SetInteractable(bool isInteractable) { this->isInteractable = isInteractable; }
 const SDL_Rect* GameObject::GetAbsTf() const { return &absTf; }
 SDL_Rect* GameObject::GetAbsTf() { return &absTf; }
 const SDL_Rect* GameObject::GetRelTf() const { return &relTf; }
@@ -197,6 +205,8 @@ const SDL_Rect* GameObject::GetRelTf() const { return &relTf; }
 
 void GameObject::AddComponent(Component* component)
 {
+	if (!component) return;
+
 	for (const auto& comp : components)
 	{
 		if (typeid(*component) == typeid(*comp))
@@ -211,7 +221,7 @@ void GameObject::AddComponent(Component* component)
 
 void GameObject::HandleEvent(const SDL_Event& event) const
 {
-	if (!isActive) return;
+	if (!isActive || !isInteractable) return;
 
 	for (auto& component : components)
 	{
@@ -228,11 +238,16 @@ void GameObject::HandleEvent(const SDL_Event& event) const
 
 void GameObject::Render(SDL_Surface* surface) const
 {
+	//Persistent Bug here, Field Clearing
+	//Probably problem with unsubscribe
 	if (!isActive) return;
 
-	for (auto& component : components)
+	if (components.size() >= 1)
 	{
-		component->Render(surface);
+		for (auto& component : components)
+		{
+			component->Render(surface);
+		}
 	}
 
 	if (children.size() < 1) return;

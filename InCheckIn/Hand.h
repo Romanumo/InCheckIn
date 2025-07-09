@@ -82,7 +82,7 @@ private:
 
     void RemoveCard(Card* card)
     {
-        auto it = std::find(cards.begin(), cards.end(), chosenCard);
+        auto it = std::find(cards.begin(), cards.end(), card);
         if (card == chosenCard) chosenCard = nullptr;
         if (it != cards.end()) cards.erase(it);
     }
@@ -91,8 +91,11 @@ private:
     {
         for (auto card : cards)
         {
-            RemoveCard(card);
-            RemoveChild(card->GetParent());
+            auto parent = card->GetParent();
+            card = nullptr;
+            RemoveChild(parent);
         }
+
+        cards.clear();
     }
 };

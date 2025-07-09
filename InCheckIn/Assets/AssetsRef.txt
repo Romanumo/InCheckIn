@@ -1,1 +1,3 @@
 Font: https://www.fontspace.com/pixelated-elegance-font-f126145
+Sounds: https://pixabay.com/
+Adding New Card Sound: Modified sound from Age Of Empires 2 HD

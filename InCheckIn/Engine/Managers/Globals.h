@@ -27,8 +27,10 @@ namespace Conf
 	inline constexpr int TABLE_WIDTH = (CARD_WIDTH + PADDING) * MAX_CARDS - PADDING;
 	inline constexpr int TABLE_HEIGHT = (CARD_HEIGHT + PADDING) * 3 + PADDING;
 
-	inline constexpr int WINDOW_HEIGHT = TABLE_HEIGHT;
-	inline constexpr int WINDOW_WIDTH = TABLE_WIDTH + 400;
+	inline constexpr int WINDOW_OFFSET_W = 230;
+	inline constexpr int WINDOW_OFFSET_H = 110;
+	inline constexpr int WINDOW_HEIGHT = TABLE_HEIGHT + WINDOW_OFFSET_H;
+	inline constexpr int WINDOW_WIDTH = TABLE_WIDTH + AVATAR_WIDTH + PADDING * 3 + WINDOW_OFFSET_W;
 
 	//Colors
 	inline constexpr SDL_Color BACKGROUND_COLOR{ 170, 170, 170, 255 };
@@ -39,6 +41,7 @@ namespace Conf
 	inline const std::string BUTTON_IMAGE = "Assets/Prototype.png";
 	inline const std::string BUTTON_HOVERED = "Assets/Slot.png";
 
+	inline const std::string BACKGROUND_IMAGE = "Assets/Background.png";
 	inline const std::string SLOT_IMAGE = "Assets/Slot.png";
 	inline const std::string SLOT_SELECTED_IMAGE = "Assets/SlotSelected.png";
 	inline const std::string TURNBT_IMAGE = "Assets/Turn.png";
@@ -48,18 +51,36 @@ namespace Conf
 	inline const std::string HAMMER_ON_IMAGE = "Assets/HammerUse.png";
 	inline const std::string HAMMER_OFF_IMAGE = "Assets/Hammer.png";
 
-	//Units Assets
+	//Card Images
 	inline const std::string CARD_IMAGE_BASIC = "Assets/Basic.png";
 	inline const std::string CARD_IMAGE_LEFTY = "Assets/Lefty.png";
 	inline const std::string CARD_IMAGE_RIGHTY = "Assets/Righty.png";
-	inline const std::string CARD_IMAGE_SUN = "Assets/Sun.png";
+	inline const std::string CARD_IMAGE_FIRSTLY = "Assets/Firstly.png";
+	inline const std::string CARD_IMAGE_DREAD = "Assets/Dread.png";
 	inline const std::string CARD_IMAGE_OBSESSION = "Assets/Obsession.png";
+	inline const std::string CARD_IMAGE_ISOLATION = "Assets/Isolation.png";
+
+	inline const std::string CARD_IMAGE_SUN = "Assets/Sun.png";
+	inline const std::string CARD_IMAGE_HOBBY = "Assets/Hobby.png";
+	inline const std::string CARD_IMAGE_FRIENDS = "Assets/Friends.png";
+
 	inline const std::string CARD_IMAGE_INDICATOR = "Assets/Indicator.png";
 	inline const std::string CARD_IMAGE_PROTOTYPE = "Assets/Prototype.png";
 
+	//Sounds
+	inline const std::string SOUND_CARD_SELECT = "Assets/Select.mp3";
+	inline const std::string SOUND_CARD_PLACE = "Assets/PlacingCard.mp3";
+	inline const std::string SOUND_CARD_TRIGGER = "Assets/Trigger.mp3";
+	inline const std::string SOUND_HAMMER_ON = "Assets/HammerOn.mp3";
+	inline const std::string SOUND_HAMMER_USE = "Assets/HammerUse.mp3";
+	inline const std::string SOUND_TUTORIAL = "Assets/Tutorial.mp3";
+	inline const std::string SOUND_BELL = "Assets/NewTurn.mp3";
+	inline const std::string SOUND_NEWCARD = "Assets/NewCard.mp3";
+	inline const std::string MUSIC = "Assets/MainTheme.mp3";
+
 	//Max Chilren
 	inline constexpr int MAX_CHILDREN = 20;
-	inline constexpr int MAX_OBSERVERS = 5;
+	inline constexpr int MAX_OBSERVERS = 10;
 
 	//Animation Setting
 	inline constexpr int NEW_CARD_T = 200;

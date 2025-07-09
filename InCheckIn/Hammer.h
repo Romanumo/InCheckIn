@@ -28,7 +28,11 @@ public:
     {
         isHammer = hammerMode;
 
-        if (isHammer) image->SetImage(Conf::HAMMER_ON_IMAGE);
+        if (isHammer) 
+        {
+            image->SetImage(Conf::HAMMER_ON_IMAGE);
+            SoundManager::GetInstance().PlaySFX(Conf::SOUND_HAMMER_ON);
+        }
         else image->SetImage(Conf::HAMMER_OFF_IMAGE);
     }
 

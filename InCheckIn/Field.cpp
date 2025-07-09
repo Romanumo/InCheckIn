@@ -16,9 +16,13 @@ Field::Field(FieldContext context, int comboAdd, Hand* hand) :
         else if (!hand && turn == GameFlow::ENEMY) PlayTurn();
         });
 
-    context.GM->AddOnNewGame([this]() {
+    context.GM->AddOnNewGame([this] {
         EmptyField();
         });
+
+    onCardPlaced.AddEvent([this] {
+        SoundManager::GetInstance().PlaySFX(Conf::SOUND_CARD_PLACE);
+    });
 }
 
 void Field::PlayTurn()
@@ -34,7 +38,7 @@ void Field::TriggerCard(int index)
     {
         if (cardQueue >= Conf::MAX_CARDS)
         {
-            AnimationManager::GetInstance().EnqueueAnimation(Animation([=] {
+            AnimationManager::GetInstance().EnqueueAnimation(Animation([&] {
                 cardQueue = 0;
                 UpdateIndicator();
                 ClearInactive();
@@ -45,6 +49,7 @@ void Field::TriggerCard(int index)
     }
 
     UpdateIndicator();
+
     if (!minionPlaced[index] || !minionPlaced[index]->GetParent()->IsActive()) 
         TriggerCard(++cardQueue);
     else QueueCardAnimation(index);
@@ -63,19 +68,27 @@ void Field::PlaceCard(std::unique_ptr<GameObject> card, int slotIndex)
 
     minionPlaced[slotIndex] = minion;
     slots[slotIndex]->SetEnabled(false);
+
+    onCardPlaced.Invoke();
 }
 
 void Field::RemoveCard(Minion* minion)
 {
     for (int i = 0;i < Conf::MAX_CARDS;i++)
     {
-        if (minionPlaced[i] == minion)
-        {
-            slots[i]->SetEnabled(true);
-            slots[i]->GetParent()->RemoveChild(minion->GetParent());
-            minionPlaced[i] = nullptr;
-            return;
-        }
+        if (minionPlaced[i] == minion) RemoveCard(i);
+    }
+}
+
+void Field::RemoveCard(int index)
+{
+    if (minionPlaced[index])
+    {
+        slots[index]->SetEnabled(true);
+
+        auto parent = minionPlaced[index]->GetParent();
+        minionPlaced[index] = nullptr; 
+        slots[index]->GetParent()->RemoveChild(parent); 
     }
 }
 
@@ -87,6 +100,8 @@ void Field::QueueCardAnimation(int index)
         minionPlaced[index]->GetParent()->SetRelPosition(rect->x, rect->y - 15);
 
         context.spiral->ChangeSpiralCombo(comboAdd);
+        SoundManager::GetInstance().PlaySFX(Conf::SOUND_CARD_TRIGGER);
+ 
         bool isBreaker = minionPlaced[index]->Trigger(index);
         if (isBreaker)
         {
@@ -114,7 +129,7 @@ void Field::ClearInactive()
 {
     for (int i = 0;i < Conf::MAX_CARDS;i++)
     {
-        if (minionPlaced[i] && !minionPlaced[i]->GetParent()->IsActive()) RemoveCard(minionPlaced[i]);
+        if (minionPlaced[i] && !minionPlaced[i]->GetParent()->IsActive()) RemoveCard(i);
     }
 }
 
@@ -122,7 +137,7 @@ void Field::EmptyField()
 {
     for (int i = 0;i < Conf::MAX_CARDS;i++)
     {
-        if (minionPlaced[i]) RemoveCard(minionPlaced[i]);
+        if (minionPlaced[i]) RemoveCard(i);
     }
 }
 
@@ -136,6 +151,7 @@ bool Field::IsFull()
     return true;
 }
 
+void Field::AddOnCardPlaced(std::function<void()> event) { onCardPlaced.AddEvent(event); }
 Minion* Field::GetMinionAt(int index) { return minionPlaced[index]; }
 void Field::ChangeSpiralCombo(int amount) { context.spiral->ChangeSpiralCombo(amount); }
 
@@ -179,7 +195,7 @@ void Field::AssignHand(Hand* hand, Button* button, int index)
         if (context.spiral->GetSpiral() < cardCost)
         {
             const SDL_Rect* absTF = this->GetAbsTf();
-            HintManager::GetInstance().CallHint(absTF->x, absTF->y, "Not enough Spiral", " ");
+            PopUpManager::GetInstance().CallHint(absTF->x, absTF->y, "Not enough Spiral", " ");
             return;
         }
 
@@ -196,7 +212,7 @@ void Field::AssignHand(Hand* hand, Button* button, int index)
 
     button->AddOnHoverExit([slotImage] {
         slotImage->SetImage(Conf::SLOT_IMAGE);
-        HintManager::GetInstance().HideHint();
+        PopUpManager::GetInstance().HideHint();
         });
 }
 #pragma endregion

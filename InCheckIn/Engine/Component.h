@@ -4,7 +4,6 @@
 
 namespace Engine
 {
-	//Divide into rendering/Event Abstarcat interfaces
 	class Component
 	{
 	public:

@@ -2,6 +2,8 @@
 #include <functional>
 #include "Engine/UIFactory.h"
 #include "Engine/GameObject.h"
+#include "TutorialManager.h"
+#include "PopUpManager.h"
 #include "GameManager.h"
 #include "EnemyAI.h"
 #include "Shop.h"
@@ -20,6 +22,7 @@ public:
     {
         auto spiral = std::make_unique<Spiral>(GM);
         auto hammer = std::make_unique<Hammer>(GM);
+
         GM.SetMeasureRef(spiral->GetSpiralRef());
         GM.AddOnWin(onWin);
         deck.ConnectToGM(GM);
@@ -34,6 +37,7 @@ public:
         auto pFieldObj = std::make_unique<Field>(player, 1, handObj.get());
 
         EnemyAI* AI = new EnemyAI(GM, eFieldObj.get());
+        BindTutorial(pFieldObj.get(), eFieldObj.get());
 
         Layout* col = new Layout(scene, new Column(), Conf::PADDING, 0);
         col->AddGameObject(std::move(
@@ -67,9 +71,37 @@ public:
         scene->AddComponent(col);
     }
 
+    static void CreateUI(GameObject* scene, GameObject* gameScene)
+    {
+        TM.Init(scene, gameScene);
+        PopUpManager::GetInstance().Init(scene);
+
+        TM.CallTutorial(TutorialStep::GameStart);
+    }
+
 private:
     inline static GameManager GM = GameManager();
+    inline static TutorialManager TM = TutorialManager();
     inline static Deck deck = Deck();
+
+    static void BindTutorial(Field* player, Field* enemy)
+    {
+        GM.AddOnNewGame([tuts = &TM](int level) {
+            if(level == 1) tuts->CallTutorial(TutorialStep::ShopPick);
+        });
+
+        player->AddOnCardPlaced([tuts = &TM] {
+            tuts->CallTutorial(TutorialStep::CardPlace);
+        });
+
+        enemy->AddOnCardPlaced([tuts = &TM] {
+            tuts->CallTutorial(TutorialStep::EnemyPlace);
+        });
+
+        deck.AddOnNewCard([tuts = &TM] {
+            tuts->CallTutorial(TutorialStep::DeckAdd);
+        });
+    }
 
     static std::unique_ptr<GameObject> CreateTurnBell(Hand* hand)
     {
@@ -84,6 +116,7 @@ private:
             {
                 GM.NextTurn();
                 hand->AddCard(CardFactory::NewCard(deck.GetCard()));
+				SoundManager::GetInstance().PlaySFX(Conf::SOUND_BELL);
             }
             });
 
