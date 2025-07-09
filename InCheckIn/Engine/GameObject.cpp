@@ -242,16 +242,18 @@ void GameObject::Render(SDL_Surface* surface) const
 	//Probably problem with unsubscribe
 	if (!isActive) return;
 
-	for (auto& component : components)
+	if (components.size() >= 1)
 	{
-		component->Render(surface);
+		for (auto& component : components)
+		{
+			component->Render(surface);
+		}
 	}
 
 	if (children.size() < 1) return;
 
 	for (const auto& gameObject : children)
 	{
-		if (!gameObject.get()) std::cout << "ERROR" << std::endl;
 		gameObject->Render(surface);
 	}
 }
