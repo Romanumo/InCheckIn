@@ -1,4 +1,4 @@
-# Card Game (WIP)  
+# The Loop (In Check In)
 
 A simple card game built with **C++** and **SDL2**, designed with flexibility and maintainability in mind. This project is still in progress, but it already features a robust architecture and several useful systems for game development.  
 
