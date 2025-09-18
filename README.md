@@ -2,6 +2,9 @@
 
 A card game built with **C++** and **SDL2**, designed with flexibility and maintainability in mind. This project features a custom UI framework, robust architecture and several useful systems for game development. 
 
+<img width="780" height="400" alt="image" src="https://github.com/user-attachments/assets/5796103e-d4e4-4ab9-ac60-50f0e05c13f9" />
+<img width="780" height="400" alt="image" src="https://github.com/user-attachments/assets/fdb8d297-1ce1-464e-8917-80478029782f" />
+
 ## 🚀 Features  
 
 - **🎨 Easy-to-use UI Engine** – Simple to use UI syste
