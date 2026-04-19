@@ -14,7 +14,7 @@ public:
 		cards.push_back(CardFactory::Basic());
 		cards.push_back(CardFactory::Basic());
 		cards.push_back(CardFactory::Dread());
-		cards.push_back(CardFactory::Dread());
+		//cards.push_back(CardFactory::Dread());
 
 		//cards.push_back(CardFactory::Spiral());
 		//cards.push_back(CardFactory::Firstly());

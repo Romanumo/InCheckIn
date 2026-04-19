@@ -55,6 +55,8 @@ private:
         GameUIBuilder::CreateUI(globalUI.get(), gameScene.get());
         GameUIBuilder::CreateTable(gameScene.get(), [this] {GoToShop();});
         GameUIBuilder::CreateShop(shopScene.get(), [this] {GoToGame();});
+
+        gameScene->PrintFamilyTree();
     }
 
     void GoToShop()

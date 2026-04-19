@@ -238,10 +238,10 @@ void GameObject::HandleEvent(const SDL_Event& event) const
 
 void GameObject::Render(SDL_Surface* surface) const
 {
-	//Persistent Bug here, Field Clearing
-	//Probably problem with unsubscribe
 	if (!isActive) return;
 
+	//Persistent Bug here, After Field Clearing
+	//Probably problem with unsubscribe	
 	if (components.size() >= 1)
 	{
 		for (auto& component : components)
