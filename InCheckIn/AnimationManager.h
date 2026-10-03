@@ -3,9 +3,11 @@
 #include <queue>
 #include <SDL.h>
 
+inline Uint32 ANIM_EVENT = (Uint32)-1;
+
 struct Animation
 {
-	Animation() {}
+	Animation() { }
 
 	Animation(int duration) 
 	{
@@ -31,6 +33,8 @@ struct Animation
 		if (onEnd) onEnd();
 	}
 
+	bool IsEmpty() const { return !onPlayed && !onEnd && duration < 0; }
+
 	std::function<void()> onPlayed;
 	std::function<void()> onEnd;
 	int duration;
@@ -49,12 +53,16 @@ public:
 	{
 		auto* heapFunc = new std::function<void()>(std::move(onPlay));
 
-		SDL_AddTimer(delay, [](Uint32 interval, void* onPlay) -> Uint32 {
-				auto* anim = static_cast<std::function<void()>*>(onPlay);
-				(*anim)();
-				delete anim;
-				return 0;
-			}, heapFunc);
+		SDL_TimerID id = SDL_AddTimer(delay, [](Uint32, void* p) -> Uint32 {
+			SDL_Event e{};
+			e.type = ANIM_EVENT;
+			e.user.data1 = p;
+			if (SDL_PushEvent(&e) <= 0) 
+				delete static_cast<std::function<void()>*>(p);
+			return 0;                            
+		}, heapFunc);
+
+		if (id == 0) delete heapFunc;
 	}
 
 	void EnqueueAnimation(Animation animation)
@@ -76,14 +84,19 @@ public:
 		animationQueue.pop();
 
 		currentAnimation.Play();
+	}
 
-		SDL_AddTimer(currentAnimation.duration, 
-			[](Uint32 interval, void* animManager) -> Uint32 {
+	void Update(int ms)
+	{
+		if (!currentAnimation.IsEmpty())
+		{
+			currentAnimation.duration -= ms;
+			if (currentAnimation.duration > 0) return;
+
 			AnimationManager::GetInstance().SetAnimatingState(false);
 			AnimationManager::GetInstance().PlayCurrentEnd();
 			AnimationManager::GetInstance().PlayNextAnimation();
-			return 0;
-			}, nullptr);
+		}
 	}
 
 	void SetAnimatingState(bool isAnim) { isAnimating = isAnim; }

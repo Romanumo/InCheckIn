@@ -60,7 +60,7 @@ public:
 
 	static CardStats Lefty()
 	{
-		return CardStats(Conf::CARD_IMAGE_LEFTY, 7,
+		return CardStats(Conf::CARD_IMAGE_LEFTY, 5,
 			MinionStats("Rumination", "Triggers card to the left (Compulsion with 75%)",
 				[](Minion* self, int index) -> bool {
 				Minion* triggerMinion = self->GetField()->GetMinionAt(index - 1);
@@ -77,7 +77,7 @@ public:
 
 	static CardStats Righty()
 	{
-		return CardStats(Conf::CARD_IMAGE_RIGHTY, 7,
+		return CardStats(Conf::CARD_IMAGE_RIGHTY, 5,
 			MinionStats("Compulsion", "Triggers card to the right (Rumination with 75%)", 
 				[](Minion* self, int index) -> bool {
 				Minion* triggerMinion = self->GetField()->GetMinionAt(index + 1);
@@ -94,7 +94,7 @@ public:
 
 	static CardStats Repeater()
 	{
-		return CardStats(Conf::CARD_IMAGE_OBSESSION, 10,
+		return CardStats(Conf::CARD_IMAGE_OBSESSION, 5,
 			MinionStats("Mental Check", "Triggers random card (Itself with 50%)", 
 				[](Minion* self, int index) -> bool {
 				int slot = Random::Int(0, Conf::MAX_CARDS - 1);
@@ -123,7 +123,7 @@ public:
 
 	static CardStats Firstly()
 	{
-		return CardStats(Conf::CARD_IMAGE_FIRSTLY, 5,
+		return CardStats(Conf::CARD_IMAGE_FIRSTLY, 3,
 			MinionStats("Firstly", "Triggers first card (Compulsion with 50%. Cant Trigger itself)",
 				[](Minion* self, int index) -> bool {
 					Minion* triggerMinion = self->GetField()->GetMinionAt(0);

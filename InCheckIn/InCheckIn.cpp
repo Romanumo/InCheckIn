@@ -39,11 +39,19 @@ int main(int argc, char** argv)
     SoundManager::OpenAudio(); // This create delay in game opening
     CardFactory::Init();
     SceneManager SM = SceneManager();
+    AnimationManager* animManager = &AnimationManager::GetInstance();
 
     SoundManager::GetInstance().PlayMusic(Conf::MUSIC);
+    Uint32 lastTicks = SDL_GetTicks();
+
+    ANIM_EVENT = SDL_RegisterEvents(1);
 
     while (!shouldQuit)
     {
+        Uint32 now = SDL_GetTicks();
+        int dtMs = static_cast<int>(now - lastTicks);
+        lastTicks = now;
+
         while (SDL_PollEvent(&event))
         {
             if (event.type == SDL_QUIT)
@@ -51,9 +59,18 @@ int main(int argc, char** argv)
                 shouldQuit = true;
             }
 
+            if (event.type == ANIM_EVENT)
+            {
+                auto* f = static_cast<std::function<void()>*>(event.user.data1);
+                (*f)();
+                delete f;
+                continue;
+            }
+
             SM.HandleInput(event);
         }
 
+        animManager->Update(dtMs);
         SM.Flush();
 
         window.Render();
