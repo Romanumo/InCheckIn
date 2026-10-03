@@ -78,9 +78,9 @@ void GameObject::PrintFamilyTree(int spacing)
 
 	if (children.size() < 1) return;
 
-	for (const auto& component : children)
+	for (const auto& child : children)
 	{
-		component->PrintFamilyTree(spacing + 1);
+		child->PrintFamilyTree(spacing + 1);
 	}
 }
 
@@ -122,12 +122,26 @@ void GameObject::RemoveChild(GameObject* child)
 
 	if (it != children.end())
 	{
-		child->parent = nullptr;
-		children.erase(it);
+		child->isPendingDestroy = true;
 	}
 	else
 	{
 		std::cerr << "Warning: Attempted to remove a child that wasn't found.\n";
+	}
+}
+
+void GameObject::Flush()
+{
+	children.erase(
+		std::remove_if(children.begin(), children.end(),
+			[](const std::unique_ptr<GameObject>& c) {
+				return c->IsPendingDestroy();
+			}),
+		children.end());
+
+	for (const auto& child : children)
+	{
+		child->Flush();
 	}
 }
 
@@ -181,6 +195,7 @@ void GameObject::ReserveChildrenSize(int reserve) { children.reserve(reserve); }
 #pragma region GettersSetters
 
 bool GameObject::IsActive() const { return isActive; }
+bool GameObject::IsPendingDestroy() const { return isPendingDestroy; }
 std::string GameObject::GetName() const { return typeid(*this).name(); }
 GameObject* GameObject::GetParent() const { return parent; }
 

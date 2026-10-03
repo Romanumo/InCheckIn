@@ -6,6 +6,8 @@
 #include <memory>
 #include "Managers/Globals.h"
 
+class SceneManager;
+
 namespace Engine
 {
 	class Component;
@@ -29,13 +31,15 @@ namespace Engine
 		void SetInteractable(bool isInteractable);
 
 		bool IsActive() const;
+		bool IsPendingDestroy() const;
 		std::string GetName() const;
 		GameObject* GetParent() const; 
 		const std::vector<GameObject*> GetChildren() const;
 
 		void PrintFamilyTree(int spacing = 0);
-		void RemoveChild(GameObject* child);
 		bool AdoptChild(std::unique_ptr<GameObject> child);
+
+		void RemoveChild(GameObject* child);
 		std::unique_ptr<GameObject> TransferChild(GameObject* child);
 
 		void HandleEvent(const SDL_Event& event) const;
@@ -86,6 +90,7 @@ namespace Engine
 
 		bool isActive = true;
 		bool isInteractable = true;
+		bool isPendingDestroy = false;
 
 		GameObject* parent = nullptr;
 		std::vector<std::unique_ptr<GameObject>> children;
@@ -96,5 +101,8 @@ namespace Engine
 		void HandleChildPosition();
 
 		bool CheckChildInheritance(const GameObject* child);
+
+		friend class SceneManager;
+		void Flush();
 	};
 }

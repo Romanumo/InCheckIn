@@ -8,7 +8,6 @@
 #include "Engine/Managers/SoundManager.h"
 #include "Engine/Managers/Globals.h"
 
-#include "Engine/GameObject.h"
 #include "Engine/UIFactory.h"
 
 #include "CardFactory.h"
@@ -54,6 +53,8 @@ int main(int argc, char** argv)
 
             SM.HandleInput(event);
         }
+
+        SM.Flush();
 
         window.Render();
         SM.Render(window.GetSurface());
