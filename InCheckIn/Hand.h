@@ -24,6 +24,7 @@ public:
 
         GM.AddOnNewGame([this, &deck]() {
             EmptyHand();
+            chosenCard = nullptr;
 
             AddCard(CardFactory::NewCard(deck.GetCard()));
             AddCard(CardFactory::NewCard(deck.GetCard()));

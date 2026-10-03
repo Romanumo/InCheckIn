@@ -130,6 +130,8 @@ void GameObject::RemoveChild(GameObject* child)
 	}
 }
 
+void GameObject::Destroy() { isPendingDestroy = true; }
+
 void GameObject::Flush()
 {
 	children.erase(

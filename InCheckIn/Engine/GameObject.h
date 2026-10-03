@@ -39,6 +39,7 @@ namespace Engine
 		void PrintFamilyTree(int spacing = 0);
 		bool AdoptChild(std::unique_ptr<GameObject> child);
 
+		void Destroy();
 		void RemoveChild(GameObject* child);
 		std::unique_ptr<GameObject> TransferChild(GameObject* child);
 

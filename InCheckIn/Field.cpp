@@ -112,6 +112,8 @@ void Field::QueueCardAnimation(int index)
         }
 
         }, [=] {
+            //if (index >= minionPlaced.size() || !minionPlaced[index]) return;
+
             const SDL_Rect* rect = minionPlaced[index]->GetParent()->GetRelTf();
             minionPlaced[index]->GetParent()->SetRelPosition(rect->x, rect->y + 15);
         }, Conf::CARD_ANIM_T));
